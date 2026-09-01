@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Program Files/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Users/admin/Documents/GitHub/ImPlay-clang/out/build/slint-clang/mpv_dev-prefix/src/mpv_dev-stamp/verify-mpv_dev.cmake;COMMAND;C:/Program Files/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Users/admin/Documents/GitHub/ImPlay-clang/out/build/slint-clang/mpv_dev-prefix/src/mpv_dev-stamp/extract-mpv_dev.cmake
+source_dir=C:/Users/admin/Documents/GitHub/ImPlay-clang/out/build/slint-clang/mpv_dev-prefix/src/mpv_dev
+work_dir=C:/Users/admin/Documents/GitHub/ImPlay-clang/out/build/slint-clang/mpv_dev-prefix/src
+url(s)=C:/Users/admin/Documents/GitHub/ImPlay-clang/mpv-dev-x86_64-20260503-git-948c86d24c.7z
+hash=SHA256=2D88F4A6BD63A559814E6FD28A0D2E286EE381028A2D22EFA4452AFD4252000E
+      no_extract=
+
