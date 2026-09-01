@@ -1,5 +1,9 @@
 # ImPlay Clang
 
+<p align="center">
+	<img src="images/ImPlay.jpg" alt="ImPlay" width="800">
+</p>
+
 This repository is a streamlined Windows build of ImPlay using the Clang toolchain instead of the default MSVC setup. It keeps the native app focused on a clean, working build path for modern Windows development.
 
 ## What this repo changes
