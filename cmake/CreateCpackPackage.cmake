@@ -135,11 +135,11 @@ macro(create_package)
     set(MACOSX_BUNDLE_COPYRIGHT "Copyright © 2022-2025 tsl0922. Libraries updated, fixes by Skonester 2026. All rights reserved." )
 
     set(CPACK_GENERATOR DragNDrop)
-    set(CPACK_BUNDLE_NAME ${PROJECT_NAME})
-    set(CPACK_BUNDLE_ICON ${PROJECT_SOURCE_DIR}/resources/macos/app.icns)
-    set(CPACK_BUNDLE_PLIST ${CMAKE_BINARY_DIR}/ImHex.app/Contents/Info.plist)
+    # macOS packaging disabled - this is a Windows-only fork
+    set(CPACK_GENERATOR ZIP WIX)
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(CPACK_GENERATOR TGZ DEB)
+    # Linux packaging disabled - this is a Windows-only fork
+    set(CPACK_GENERATOR ZIP WIX)
     set(CPACK_DEBIAN_PACKAGE_NAME "${PROJECT_NAME}")
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "tsl0922")
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS TRUE)
