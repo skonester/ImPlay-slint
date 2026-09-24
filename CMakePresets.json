@@ -22,7 +22,10 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
-        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe"
+        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
+        "IMPLAY_UI": "slint",
+        "USE_OPENGL_ES3": "ON",
+        "BUILD_SHARED_LIBS": "ON"
       }
     },
     {
@@ -40,7 +43,30 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_COMPILER": "cl"
+        "CMAKE_CXX_COMPILER": "cl",
+        "IMPLAY_UI": "slint",
+        "USE_OPENGL_ES3": "ON",
+        "BUILD_SHARED_LIBS": "ON"
+      }
+    },
+    {
+      "name": "x64-clang-imgui-release",
+      "displayName": "x64 Clang Release (ImGui UI)",
+      "inherits": "x64-clang-release",
+      "cacheVariables": {
+        "IMPLAY_UI": "imgui",
+        "USE_OPENGL_ES3": "OFF",
+        "BUILD_SHARED_LIBS": "OFF"
+      }
+    },
+    {
+      "name": "x64-msvc-imgui-release",
+      "displayName": "x64 MSVC Release (ImGui UI)",
+      "inherits": "x64-msvc-release",
+      "cacheVariables": {
+        "IMPLAY_UI": "imgui",
+        "USE_OPENGL_ES3": "OFF",
+        "BUILD_SHARED_LIBS": "OFF"
       }
     }
   ],
@@ -52,6 +78,14 @@
     {
       "name": "x64-msvc-release",
       "configurePreset": "x64-msvc-release"
+    },
+    {
+      "name": "x64-clang-imgui-release",
+      "configurePreset": "x64-clang-imgui-release"
+    },
+    {
+      "name": "x64-msvc-imgui-release",
+      "configurePreset": "x64-msvc-imgui-release"
     }
   ]
 }

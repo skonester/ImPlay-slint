@@ -1,27 +1,13 @@
-cmake_minimum_required(VERSION 3.24)
+# ImGui frontend of ImPlay. Included from the root CMakeLists.txt when IMPLAY_UI=imgui,
+# so CMAKE_SOURCE_DIR / PROJECT_SOURCE_DIR still point at the repo root (shared
+# third_party libs, resources/, cmake/ and the mpv dev archive live there).
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-include(GetGitVersion)
-
-get_git_version(GIT_VERSION SEM_VER)
-
-project(ImPlay VERSION "${SEM_VER}")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(IMPLAY_UI "slint" CACHE STRING "UI frontend to build: slint or imgui")
-set_property(CACHE IMPLAY_UI PROPERTY STRINGS slint imgui)
-if(IMPLAY_UI STREQUAL "imgui")
-  include(imgui/ImPlayImGui.cmake)
-  return()
-elseif(NOT IMPLAY_UI STREQUAL "slint")
-  message(FATAL_ERROR "IMPLAY_UI must be 'slint' or 'imgui', got '${IMPLAY_UI}'")
-endif()
+set(IMGUI_UI_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 include(CMakeDependentOption)
 
-option(USE_OPENGL_ES3 "Compile with OpenGL ES 3.0 loader" ON)
+option(USE_OPENGL_ES3 "Compile with OpenGL ES 3.0 loader" OFF)
+option(USE_PATCHED_GLFW "Use patched GLFW to support additional features" OFF)
 option(CREATE_PACKAGE "Create binary packages with CPack" OFF)
 cmake_dependent_option(USE_MPV_WIN_BUILD "Use Prebuilt static mpv dll on Windows" ON "WIN32" OFF)
 cmake_dependent_option(USE_XDG_PORTAL "Use xdg-desktop-portal for file dialogs on Linux" OFF "UNIX;NOT APPLE" OFF)
@@ -31,21 +17,17 @@ include(FetchContent)
 
 FetchContent_Declare(
   fmt
-  URL https://github.com/fmtlib/fmt/archive/refs/tags/11.2.0.zip
+  URL https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.zip
 )
 FetchContent_Declare(
   json
   URL https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.zip
 )
 FetchContent_Declare(
-  Slint
-  GIT_REPOSITORY https://github.com/slint-ui/slint.git
-  GIT_TAG v1.12.1
-  SOURCE_SUBDIR api/cpp
+  freetype
+  URL https://github.com/freetype/freetype/archive/refs/tags/VER-2-13-2.zip
 )
-set(SLINT_FEATURE_RENDERER_FEMTOVG ON CACHE BOOL "" FORCE)
-set(SLINT_FEATURE_RENDERER_SOFTWARE OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(fmt json Slint)
+FetchContent_MakeAvailable(fmt json freetype)
 
 find_package(Threads REQUIRED)
 
@@ -54,13 +36,14 @@ if(USE_MPV_WIN_BUILD)
   get_mpv_win_dev(mpv_dev)
 endif()
 
+if(USE_PATCHED_GLFW OR WIN32)
+  add_subdirectory(${IMGUI_UI_DIR}/third_party/glfw ${CMAKE_BINARY_DIR}/third_party/glfw)
+  set(GLFW_LIBRARIES glfw)
+endif()
+
 set(LIBROMFS_PROJECT_NAME ${PROJECT_NAME})
 set(LIBROMFS_RESOURCE_LOCATION "${CMAKE_SOURCE_DIR}/resources/romfs")
 set(OPENGL_LIBRARIES "glad")
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wno-deprecated-literal-operator)
-endif()
 
 # Clang support on Windows
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -71,23 +54,32 @@ endif()
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/natsort)
 add_subdirectory(third_party/inipp)
-set(IMPLAY_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-set(BUILD_SHARED_LIBS OFF)
+add_subdirectory(${IMGUI_UI_DIR}/third_party/imgui ${CMAKE_BINARY_DIR}/third_party/imgui)
 add_subdirectory(third_party/nativefiledialog)
-set(BUILD_SHARED_LIBS ${IMPLAY_BUILD_SHARED_LIBS})
 add_subdirectory(third_party/libromfs)
 
 set(SOURCE_FILES
+  source/helpers/imgui.cpp
   source/helpers/lang.cpp
   source/helpers/nfd.cpp
   source/helpers/utils.cpp
+  source/views/view.cpp
+  source/views/command_palette.cpp
+  source/views/context_menu.cpp
+  source/views/debug.cpp
+  source/views/about.cpp
+  source/views/quickview.cpp
+  source/views/settings.cpp
+  source/theme.cpp
   source/config.cpp
   source/mpv.cpp
+  source/player.cpp
   source/window.cpp
   source/main.cpp
 )
-set(INCLUDE_DIRS include ${MPV_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
-set(LINK_LIBS Slint::Slint glad fmt::fmt natsort nlohmann_json::nlohmann_json inipp nfd ${CMAKE_THREAD_LIBS_INIT} ${MPV_LIBRARIES} ${LIBROMFS_LIBRARY})
+list(TRANSFORM SOURCE_FILES PREPEND ${IMGUI_UI_DIR}/)
+set(INCLUDE_DIRS ${IMGUI_UI_DIR}/include ${MPV_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
+set(LINK_LIBS glad fmt::fmt natsort nlohmann_json::nlohmann_json inipp nfd imgui ${CMAKE_THREAD_LIBS_INIT} ${MPV_LIBRARIES} ${GLFW_LIBRARIES} ${LIBROMFS_LIBRARY})
 
 if(WIN32)
   configure_file(${PROJECT_SOURCE_DIR}/resources/win32/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
@@ -96,7 +88,6 @@ endif()
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCE_FILES})
 if(WIN32)
-  target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif()
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
@@ -104,13 +95,9 @@ target_link_directories(${PROJECT_NAME} PRIVATE ${MPV_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE
   APP_VERSION="${GIT_VERSION}"
+  $<$<BOOL:${USE_OPENGL_ES3}>:IMGUI_IMPL_OPENGL_ES3>
+  $<$<BOOL:${USE_PATCHED_GLFW}>:GLFW_PATCHED>
 )
-slint_target_sources(${PROJECT_NAME} ui/app-window.slint)
-if(WIN32)
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND_EXPAND_LISTS)
-endif()
 if(USE_MPV_WIN_BUILD)
   add_dependencies(${PROJECT_NAME} mpv_dev)
 endif()
