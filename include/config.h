@@ -5,7 +5,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <imgui.h>
 #include <inipp.h>
 
 namespace ImPlay {
@@ -84,10 +83,7 @@ class Config {
   void addRecentFile(const std::string& path, const std::string& title);
   void clearRecentFiles();
 
-  const ImWchar* buildGlyphRanges();
-
   ConfigData Data;
-  bool FontReload = false;
 
  private:
   inipp::Ini<char> ini;

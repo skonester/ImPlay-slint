@@ -11,8 +11,7 @@
 #include <fmt/format.h>
 #include <fmt/chrono.h>
 #include <fmt/color.h>
-#include <imgui.h>
-#include <imgui_internal.h>
+#include <fmt/ranges.h>
 #include "lang.h"
 
 namespace ImPlay {
@@ -23,9 +22,6 @@ struct OptionParser {
   void parse(int argc, char** argv);
   bool check(std::string key, std::string value);
 };
-
-inline float scaled(float n) { return n * ImGui::GetFontSize(); }
-inline ImVec2 scaled(const ImVec2& vector) { return vector * ImGui::GetFontSize(); }
 
 bool fileExists(std::string path);
 

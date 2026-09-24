@@ -4,7 +4,6 @@
 #pragma once
 #include <string>
 #include <map>
-#include <imgui.h>
 
 namespace ImPlay {
 struct LangFont {
@@ -35,8 +34,6 @@ class LangStr {
 };
 
 inline std::string format_as(LangStr s) { return s; }
-
-const ImWchar* getLangGlyphRanges();
 
 std::map<std::string, LangData>& getLangs();
 std::string& getLangFallback();

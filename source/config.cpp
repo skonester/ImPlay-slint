@@ -97,22 +97,6 @@ void Config::save() {
   ini.generate(file);
 }
 
-const ImWchar* Config::buildGlyphRanges() {
-  ImFontAtlas* fonts = ImGui::GetIO().Fonts;
-  ImFontGlyphRangesBuilder glyphRangesBuilder;
-  static ImVector<ImWchar> glyphRanges;
-  glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesDefault());
-  glyphRangesBuilder.AddRanges(getLangGlyphRanges());
-  if (Data.Font.GlyphRange & GlyphRange_Chinese) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesChineseFull());
-  if (Data.Font.GlyphRange & GlyphRange_Japanese) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesJapanese());
-  if (Data.Font.GlyphRange & GlyphRange_Cyrillic) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesCyrillic());
-  if (Data.Font.GlyphRange & GlyphRange_Korean) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesKorean());
-  if (Data.Font.GlyphRange & GlyphRange_Thai) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesThai());
-  if (Data.Font.GlyphRange & GlyphRange_Vietnamese) glyphRangesBuilder.AddRanges(fonts->GetGlyphRangesVietnamese());
-  glyphRangesBuilder.BuildRanges(&glyphRanges);
-  return &glyphRanges[0];
-}
-
 void Config::addRecentFile(const std::string& path, const std::string& title) {
   if (Data.Recent.Limit == 0) {
     if (recentFiles.size() > 0) recentFiles.clear();

@@ -1,0 +1,288 @@
+import { Ic } from "icons.slint";
+import { MenuItem, MenuSep, MenuSurface, VScroll } from "widgets.slint";
+import { PlayerState, RatioRow, Catalog } from "state.slint";
+
+export component ContextMenu inherits Rectangle {
+    callback command(string);
+    callback open-file();
+    callback open-folder();
+    callback open-url();
+    callback open-clipboard();
+    callback open-disc();
+    callback open-iso();
+    callback open-recent(string);
+    callback clear-recent();
+    callback select-sub(int);
+    callback select-audio(int);
+    callback select-video(int);
+    callback select-audio-device(string);
+    callback apply-profile(string);
+    callback seek-chapter(int);
+    callback set-aspect(string);
+    callback set-always-on-top(bool);
+    callback playlist-add-files();
+    callback playlist-add-folder();
+
+    property <[RatioRow]> ratios: [
+        { value: "-1", label: "Auto" }, { value: "16:9", label: "16:9" },
+        { value: "16:10", label: "16:10" }, { value: "4:3", label: "4:3" },
+        { value: "2.35:1", label: "2.35:1" }, { value: "1.85:1", label: "1.85:1" },
+        { value: "1:1", label: "1:1" },
+    ];
+
+    TouchArea { clicked => { PlayerState.ctx-show = false; } }
+    card := MenuSurface {
+        width: 248px;
+        height: min(items.preferred-height, root.height - 16px);
+        x: clamp(PlayerState.ctx-x, 8px, root.width - self.width - 8px);
+        y: PlayerState.ctx-y + self.height > root.height - 8px ? max(8px, PlayerState.ctx-y - self.height) : min(PlayerState.ctx-y, root.height - self.height - 8px);
+        VScroll {
+            items := VerticalLayout {
+                padding-top: 8px; padding-bottom: 8px;
+                if PlayerState.ctx-page == "main": VerticalLayout {
+                    MenuItem { icon: PlayerState.playing ? Ic.pause : Ic.play; label: PlayerState.playing ? "Pause" : "Play"; key-hint: "Space"; clicked => { root.command("cycle pause"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Stop"; clicked => { root.command("stop"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.folder-open; label: "Open"; arrow: true; clicked => { PlayerState.ctx-page = "open"; } }
+                    MenuItem { icon: Ic.play-circle; label: "Playback"; arrow: true; clicked => { PlayerState.ctx-page = "playback"; } }
+                    MenuItem { icon: Ic.audio; label: "Audio"; arrow: true; clicked => { PlayerState.ctx-page = "audio"; } }
+                    MenuItem { icon: Ic.movie; label: "Video"; arrow: true; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuItem { icon: Ic.subtitles; label: "Subtitles"; arrow: true; clicked => { PlayerState.ctx-page = "subtitle"; } }
+                    MenuItem { icon: Ic.playlist; label: "Playlist"; arrow: true; clicked => { PlayerState.ctx-page = "playlist"; } }
+                    MenuItem { icon: Ic.segment; label: "Chapters"; arrow: true; clicked => { PlayerState.ctx-page = "chapters"; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.fullscreen; label: "Fullscreen"; key-hint: "F"; clicked => { root.command("cycle fullscreen"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.tune; label: "Quick View"; clicked => { PlayerState.active-panel = "video"; PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.keyboard; label: "Command Palette"; key-hint: "Ctrl+Shift+P"; clicked => { PlayerState.active-panel = "command"; PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.settings; label: "Tools"; arrow: true; clicked => { PlayerState.ctx-page = "tools"; } }
+                    MenuItem { icon: Ic.settings; label: "Settings"; clicked => { PlayerState.active-panel = "settings"; PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.info; label: "About ImPlay"; clicked => { PlayerState.settings-tab = "about"; PlayerState.active-panel = "settings"; PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.close-x; label: "Quit ImPlay"; key-hint: "Q"; clicked => { root.command("quit"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "open": VerticalLayout {
+                    MenuItem { label: "<-  Open"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.file; label: "Files..."; key-hint: "Ctrl+O"; clicked => { root.open-file(); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.folder-open; label: "Folder..."; clicked => { root.open-folder(); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.history; label: "Recent"; arrow: true; clicked => { PlayerState.ctx-page = "recent"; } }
+                    MenuItem { icon: Ic.link; label: "URL..."; key-hint: "Ctrl+U"; clicked => { root.open-url(); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Clipboard"; clicked => { root.open-clipboard(); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { label: "Disc"; clicked => { root.open-disc(); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "ISO..."; clicked => { root.open-iso(); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "recent": VerticalLayout {
+                    MenuItem { label: "<-  Recent"; clicked => { PlayerState.ctx-page = "open"; } }
+                    MenuSep {}
+                    for item in PlayerState.recent-items: MenuItem { label: item.label; clicked => { root.open-recent(item.value); PlayerState.ctx-show = false; } }
+                    if PlayerState.recent-items.length == 0: MenuItem { label: "No recent media"; }
+                    MenuSep {}
+                    MenuItem { icon: Ic.trash; label: "Clear recent files"; clicked => { root.clear-recent(); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "playback": VerticalLayout {
+                    MenuItem { label: "<-  Playback"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Seek forward 10 seconds"; key-hint: "Right"; clicked => { root.command("seek 10 relative"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Seek forward 1 minute"; key-hint: "Up"; clicked => { root.command("seek 60 relative"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Seek back 10 seconds"; key-hint: "Left"; clicked => { root.command("seek -10 relative"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Seek back 1 minute"; key-hint: "Down"; clicked => { root.command("seek -60 relative"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { label: "Next frame"; key-hint: "."; clicked => { root.command("frame-step"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Previous frame"; key-hint: ","; clicked => { root.command("frame-back-step"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.speed; label: "Speed"; value-hint: "\{PlayerState.speed}x"; arrow: true; clicked => { PlayerState.ctx-page = "speed"; } }
+                    MenuSep {}
+                    MenuItem { label: "Next media"; key-hint: ">"; clicked => { root.command("playlist-next"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Previous media"; key-hint: "<"; clicked => { root.command("playlist-prev"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Next chapter"; key-hint: "PgUp"; clicked => { root.command("add chapter 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Previous chapter"; key-hint: "PgDn"; clicked => { root.command("add chapter -1"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.repeat; label: "A-B loop"; key-hint: "L"; clicked => { root.command("ab-loop"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Loop file"; clicked => { root.command("cycle-values loop-file inf no"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Loop playlist"; clicked => { root.command("cycle-values loop-playlist inf no"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "speed": VerticalLayout {
+                    MenuItem { label: "<-  Speed"; clicked => { PlayerState.ctx-page = "playback"; } }
+                    MenuSep {}
+                    for s in Catalog.speeds: MenuItem { show-check: true; checked: PlayerState.speed == s; active: PlayerState.speed == s; label: "\{s}x"; clicked => { root.command("set speed \{s}"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "audio": VerticalLayout {
+                    MenuItem { label: "<-  Audio"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Tracks"; arrow: true; clicked => { PlayerState.ctx-page = "audio-tracks"; } }
+                    MenuItem { label: "Output device"; arrow: true; clicked => { PlayerState.ctx-page = "audio-devices"; } }
+                    MenuSep {}
+                    MenuItem { label: "Volume +2"; key-hint: "0"; clicked => { root.command("add volume 2"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Volume -2"; key-hint: "9"; clicked => { root.command("add volume -2"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.volume-off; label: "Mute"; key-hint: "M"; clicked => { root.command("cycle mute"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { label: "Audio delay +0.1s"; clicked => { root.command("add audio-delay 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Audio delay -0.1s"; clicked => { root.command("add audio-delay -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.graphic-eq; label: "Audio quick view"; clicked => { PlayerState.active-panel = "audio"; PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "audio-tracks": VerticalLayout {
+                    MenuItem { label: "<-  Audio tracks"; clicked => { PlayerState.ctx-page = "audio"; } }
+                    MenuSep {}
+                    for t in PlayerState.ctx-audio-tracks: MenuItem { show-check: true; checked: t.selected; active: t.selected; label: t.label; clicked => { root.select-audio(t.id); PlayerState.ctx-show = false; } }
+                    MenuItem { show-check: true; label: "Disabled"; clicked => { root.select-audio(-1); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "audio-devices": VerticalLayout {
+                    MenuItem { label: "<-  Output device"; clicked => { PlayerState.ctx-page = "audio"; } }
+                    MenuSep {}
+                    for d in PlayerState.audio-devices: MenuItem { show-check: true; checked: d.selected; active: d.selected; label: d.label; clicked => { root.select-audio-device(d.value); PlayerState.ctx-show = false; } }
+                }
+                if PlayerState.ctx-page == "video": VerticalLayout {
+                    MenuItem { label: "<-  Video"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Tracks"; arrow: true; clicked => { PlayerState.ctx-page = "video-tracks"; } }
+                    MenuItem { label: "Rotate"; arrow: true; clicked => { PlayerState.ctx-page = "rotate"; } }
+                    MenuItem { label: "Window scale"; arrow: true; clicked => { PlayerState.ctx-page = "scale"; } }
+                    MenuItem { label: "Pan, scan and zoom"; arrow: true; clicked => { PlayerState.ctx-page = "pan"; } }
+                    MenuItem { icon: Ic.aspect; label: "Aspect ratio"; arrow: true; clicked => { PlayerState.ctx-page = "aspect"; } }
+                    MenuItem { icon: Ic.tune; label: "Equalizer"; arrow: true; clicked => { PlayerState.ctx-page = "video-eq"; } }
+                    MenuSep {}
+                    MenuItem { label: "Toggle hardware decoding"; key-hint: "Ctrl+H"; clicked => { root.command("cycle-values hwdec auto no"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Toggle deinterlace"; key-hint: "D"; clicked => { root.command("cycle deinterlace"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.movie; label: "Video quick view"; clicked => { PlayerState.active-panel = "video"; PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "video-tracks": VerticalLayout {
+                    MenuItem { label: "<-  Video tracks"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    for t in PlayerState.ctx-video-tracks: MenuItem { show-check: true; checked: t.selected; active: t.selected; label: t.label; clicked => { root.select-video(t.id); PlayerState.ctx-show = false; } }
+                    MenuItem { show-check: true; label: "Disabled"; clicked => { root.select-video(-1); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "rotate": VerticalLayout {
+                    MenuItem { label: "<-  Rotate"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    MenuItem { label: "0 degrees"; clicked => { root.command("set video-rotate 0"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "90 degrees"; clicked => { root.command("set video-rotate 90"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "180 degrees"; clicked => { root.command("set video-rotate 180"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "270 degrees"; clicked => { root.command("set video-rotate 270"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "scale": VerticalLayout {
+                    MenuItem { label: "<-  Window scale"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    MenuItem { label: "Decrease 10%"; clicked => { root.command("add window-scale -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Increase 10%"; clicked => { root.command("add window-scale 0.1"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { label: "25%"; clicked => { root.command("set window-scale 0.25"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "50%"; clicked => { root.command("set window-scale 0.5"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "100%"; clicked => { root.command("set window-scale 1.0"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "200%"; clicked => { root.command("set window-scale 2.0"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "pan": VerticalLayout {
+                    MenuItem { label: "<-  Pan, scan and zoom"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    MenuItem { label: "Pan-scan +0.1"; clicked => { root.command("add panscan 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Pan-scan -0.1"; clicked => { root.command("add panscan -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Move left"; clicked => { root.command("add video-pan-x -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Move right"; clicked => { root.command("add video-pan-x 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Move up"; clicked => { root.command("add video-pan-y -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Move down"; clicked => { root.command("add video-pan-y 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Zoom in"; clicked => { root.command("add video-zoom 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Zoom out"; clicked => { root.command("add video-zoom -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.refresh; label: "Reset position and zoom"; clicked => { root.command("set video-zoom 0; set video-pan-x 0; set video-pan-y 0"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "aspect": VerticalLayout {
+                    MenuItem { label: "<-  Aspect ratio"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    for r in root.ratios: MenuItem { show-check: true; checked: r.value == PlayerState.current-aspect; active: r.value == PlayerState.current-aspect; label: r.label; clicked => { root.set-aspect(r.value); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "video-eq": VerticalLayout {
+                    MenuItem { label: "<-  Video equalizer"; clicked => { PlayerState.ctx-page = "video"; } }
+                    MenuSep {}
+                    MenuItem { label: "Brightness +1"; clicked => { root.command("add brightness 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Brightness -1"; clicked => { root.command("add brightness -1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Contrast +1"; clicked => { root.command("add contrast 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Contrast -1"; clicked => { root.command("add contrast -1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Saturation +1"; clicked => { root.command("add saturation 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Saturation -1"; clicked => { root.command("add saturation -1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Gamma +1"; clicked => { root.command("add gamma 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Gamma -1"; clicked => { root.command("add gamma -1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Hue +1"; clicked => { root.command("add hue 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Hue -1"; clicked => { root.command("add hue -1"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "subtitle": VerticalLayout {
+                    MenuItem { label: "<-  Subtitles"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Tracks"; arrow: true; clicked => { PlayerState.ctx-page = "sub-tracks"; } }
+                    MenuItem { icon: Ic.folder-open; label: "Load subtitle..."; clicked => { PlayerState.active-panel = "sub"; PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Show / hide"; key-hint: "V"; clicked => { root.command("cycle sub-visibility"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    MenuItem { label: "Move up"; key-hint: "R"; clicked => { root.command("add sub-pos -1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Move down"; key-hint: "Shift+R"; clicked => { root.command("add sub-pos 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Delay +0.1s"; key-hint: "Z"; clicked => { root.command("add sub-delay 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Delay -0.1s"; key-hint: "Shift+Z"; clicked => { root.command("add sub-delay -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Scale +0.1"; key-hint: "F"; clicked => { root.command("add sub-scale 0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Scale -0.1"; key-hint: "G"; clicked => { root.command("add sub-scale -0.1"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.subtitles; label: "Subtitle quick view"; clicked => { PlayerState.active-panel = "sub"; PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "sub-tracks": VerticalLayout {
+                    MenuItem { label: "<-  Subtitle tracks"; clicked => { PlayerState.ctx-page = "subtitle"; } }
+                    MenuSep {}
+                    MenuItem { show-check: true; label: "Disabled"; clicked => { root.select-sub(-1); PlayerState.ctx-show = false; } }
+                    for t in PlayerState.ctx-sub-tracks: MenuItem { show-check: true; checked: t.selected; active: t.selected; label: t.label; clicked => { root.select-sub(t.id); PlayerState.ctx-show = false; } }
+                }
+                if PlayerState.ctx-page == "playlist": VerticalLayout {
+                    MenuItem { label: "<-  Playlist"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Next"; key-hint: ">"; clicked => { root.command("playlist-next"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Previous"; key-hint: "<"; clicked => { root.command("playlist-prev"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.plus; label: "Add files..."; clicked => { root.playlist-add-files(); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.add-folder; label: "Add folder..."; clicked => { root.playlist-add-folder(); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.shuffle; label: "Shuffle"; clicked => { root.command("playlist-shuffle"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.repeat; label: "Loop playlist"; clicked => { root.command("cycle-values loop-playlist inf no"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.trash; label: "Clear"; clicked => { root.command("playlist-clear"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.playlist; label: "Playlist quick view"; clicked => { PlayerState.active-panel = "playlist"; PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "chapters": VerticalLayout {
+                    MenuItem { label: "<-  Chapters"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { label: "Next chapter"; clicked => { root.command("add chapter 1"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Previous chapter"; clicked => { root.command("add chapter -1"); PlayerState.ctx-show = false; } }
+                    MenuSep {}
+                    for ch[i] in PlayerState.chapters: MenuItem { show-check: true; checked: ch.current; active: ch.current; label: ch.title; key-hint: Catalog.fmt-time(ch.time); clicked => { root.seek-chapter(i); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "tools": VerticalLayout {
+                    MenuItem { label: "<-  Tools"; clicked => { PlayerState.ctx-page = "main"; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.camera; label: "Screenshot"; key-hint: "S"; clicked => { root.command("async screenshot"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Toggle window border"; clicked => { root.command("cycle border"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Toggle window dragging"; clicked => { root.command("cycle window-dragging"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.pin; label: "Always on top"; active: PlayerState.pinned; key-hint: "T"; clicked => { root.set-always-on-top(!PlayerState.pinned); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Show progress"; key-hint: "O"; clicked => { root.command("show-progress"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.info; label: "Show statistics"; key-hint: "I"; clicked => { root.command("script-binding stats/display-stats-toggle"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Toggle OSC visibility"; key-hint: "Del"; clicked => { root.command("script-binding osc/visibility"); PlayerState.ctx-show = false; } }
+                    MenuItem { label: "Profiles"; arrow: true; clicked => { PlayerState.ctx-page = "profiles"; } }
+                    MenuSep {}
+                    MenuItem { icon: Ic.keyboard; label: "Debug console"; key-hint: "Backtick"; clicked => { PlayerState.active-panel = "command"; PlayerState.ctx-show = false; } }
+                    MenuItem { icon: Ic.folder-open; label: "Open configuration folder"; clicked => { root.command("implay-open-config"); PlayerState.ctx-show = false; } }
+                }
+
+                if PlayerState.ctx-page == "profiles": VerticalLayout {
+                    MenuItem { label: "<-  Profiles"; clicked => { PlayerState.ctx-page = "tools"; } }
+                    MenuSep {}
+                    for p in PlayerState.profiles: MenuItem { label: p.label; clicked => { root.apply-profile(p.value); PlayerState.ctx-show = false; } }
+                    if PlayerState.profiles.length == 0: MenuItem { label: "No mpv profiles"; }
+                }
+            }
+        }
+    }
+}
