@@ -1,4 +1,5 @@
-// Copyright (c) 2022-2025 tsl0922. Libraries updated, fixes by Skonester 2026.
+// ImPlay-Slint. Copyright (c) 2026 Skonester.
+// Based on ImPlay, Copyright (c) 2022-2025 tsl0922 (https://github.com/tsl0922/ImPlay).
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "window.h"
