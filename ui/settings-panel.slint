@@ -6,6 +6,7 @@ import { Theme } from "theme.slint";
 import { Ic, AppIcon } from "icons.slint";
 import { CtrlButton, MenuSurface, SettingToggleRow, SettingNavRow, SettingSliderRow, TextButton, VScroll, RailItem } from "widgets.slint";
 import { PlayerState } from "state.slint";
+import { AboutSlint, Palette } from "std-widgets.slint";
 
 export component SettingsPanel inherits Rectangle {
     callback update-setting(string, string);
@@ -200,6 +201,15 @@ export component SettingsPanel inherits Rectangle {
                             Text { text: "ImPlay-Slint (c) 2026 Skonester, based on ImPlay (c) 2022-2025 tsl0922."; color: #ffffff73; font-size: 11px; horizontal-alignment: center; wrap: word-wrap; }
                             Text { text: "Slint UI based on Vayou (c) 2026 Vayou contributors, MIT License."; color: #ffffff73; font-size: 11px; horizontal-alignment: center; wrap: word-wrap; }
                             Text { text: "Licensed under GNU GPL-2.0-only"; color: #ffffff73; font-size: 11px; horizontal-alignment: center; }
+                            // Required attribution under the Slint Royalty-free License 2.0.
+                            HorizontalLayout {
+                                alignment: center;
+                                AboutSlint {
+                                    height: self.min-height;
+                                    max-width: 280px;
+                                    init => { Palette.color-scheme = ColorScheme.dark; }
+                                }
+                            }
                             HorizontalLayout { alignment: center; TextButton { text: "Open ImPlay project page"; clicked => { root.open-project(); } } }
                         }
                     }
