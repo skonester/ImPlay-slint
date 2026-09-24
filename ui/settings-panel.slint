@@ -1,0 +1,205 @@
+import { Theme } from "theme.slint";
+import { Ic, AppIcon } from "icons.slint";
+import { CtrlButton, MenuSurface, SettingToggleRow, SettingNavRow, SettingSliderRow, TextButton, VScroll, RailItem } from "widgets.slint";
+import { PlayerState } from "state.slint";
+
+export component SettingsPanel inherits Rectangle {
+    callback update-setting(string, string);
+    callback pick-font();
+    callback open-config();
+    callback open-project();
+
+    background: #00000066;
+    TouchArea { clicked => { PlayerState.active-panel = ""; } }
+
+    MenuSurface {
+        width: min(760px, root.width - 40px);
+        height: min(480px, root.height - 40px);
+        x: (root.width - self.width) / 2;
+        y: (root.height - self.height) / 2;
+        TouchArea {}
+
+        VerticalLayout {
+            HorizontalLayout {
+                height: 48px;
+                padding-left: 18px; padding-right: 8px;
+                Text {
+                    text: "ImPlay Settings";
+                    color: #ffffffe6;
+                    font-size: 16px;
+                    font-weight: 600;
+                    vertical-alignment: center;
+                    horizontal-stretch: 1;
+                }
+                VerticalLayout {
+                    alignment: center;
+                    CtrlButton { width: 30px; height: 30px; icon-size: 14px; icon: Ic.close-x; clicked => { PlayerState.active-panel = ""; } }
+                }
+            }
+            Rectangle { height: 1px; background: #ffffff14; }
+            HorizontalLayout {
+                Rectangle {
+                    width: 178px;
+                    background: #ffffff08;
+                    VerticalLayout {
+                        padding: 10px; spacing: 3px;
+                        RailItem { icon: Ic.settings; label: "General"; selected: PlayerState.settings-tab == "general"; clicked => { PlayerState.settings-tab = "general"; } }
+                        RailItem { icon: Ic.palette; label: "Interface"; selected: PlayerState.settings-tab == "interface"; clicked => { PlayerState.settings-tab = "interface"; } }
+                        RailItem { icon: Ic.text-fields; label: "Font"; selected: PlayerState.settings-tab == "font"; clicked => { PlayerState.settings-tab = "font"; } }
+                        RailItem { icon: Ic.keyboard; label: "Debug"; selected: PlayerState.settings-tab == "debug"; clicked => { PlayerState.settings-tab = "debug"; } }
+                        Rectangle {}
+                        RailItem { icon: Ic.info; label: "About"; selected: PlayerState.settings-tab == "about"; clicked => { PlayerState.settings-tab = "about"; } }
+                    }
+                }
+                Rectangle { width: 1px; background: #ffffff14; }
+                VScroll {
+                    horizontal-stretch: 1;
+                    VerticalLayout {
+                        padding-top: 12px; padding-bottom: 16px;
+
+                        if PlayerState.settings-tab == "general": VerticalLayout {
+                            Text { text: "PLAYER"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 28px; vertical-alignment: center; x: 16px; }
+                            SettingToggleRow {
+                                icon: Ic.history; title: "Save playback position"; on: PlayerState.cfg-watch-later;
+                                toggled => { PlayerState.cfg-watch-later = !PlayerState.cfg-watch-later; root.update-setting("mpv.watch-later", PlayerState.cfg-watch-later ? "true" : "false"); }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.volume-on; title: "Default volume"; value: "\{round(PlayerState.def-volume)}%";
+                                svalue: PlayerState.def-volume; minimum: 0; maximum: 200;
+                                changed(v) => { PlayerState.def-volume = round(v); root.update-setting("mpv.volume", "\{round(v)}"); }
+                            }
+                            SettingToggleRow {
+                                icon: Ic.file; title: "Use user's mpv.conf"; on: PlayerState.cfg-use-config;
+                                toggled => { PlayerState.cfg-use-config = !PlayerState.cfg-use-config; root.update-setting("mpv.config", PlayerState.cfg-use-config ? "true" : "false"); }
+                            }
+                            Text { text: "WINDOW AND HISTORY"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 34px; vertical-alignment: center; x: 16px; }
+                            SettingToggleRow {
+                                icon: Ic.win-max; title: "Save window size"; on: PlayerState.cfg-window-save;
+                                toggled => { PlayerState.cfg-window-save = !PlayerState.cfg-window-save; root.update-setting("window.save", PlayerState.cfg-window-save ? "true" : "false"); }
+                            }
+                            SettingToggleRow {
+                                icon: Ic.play-circle; title: "Single application instance"; on: PlayerState.cfg-window-single;
+                                toggled => { PlayerState.cfg-window-single = !PlayerState.cfg-window-single; root.update-setting("window.single", PlayerState.cfg-window-single ? "true" : "false"); }
+                            }
+                            SettingToggleRow {
+                                icon: Ic.play; title: "Space opens last media when idle"; on: PlayerState.cfg-space-play-last;
+                                toggled => { PlayerState.cfg-space-play-last = !PlayerState.cfg-space-play-last; root.update-setting("recent.space-to-play-last", PlayerState.cfg-space-play-last ? "true" : "false"); }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.history; title: "Recent file limit"; value: "\{PlayerState.cfg-recent-limit}";
+                                svalue: PlayerState.cfg-recent-limit; minimum: 0; maximum: 50;
+                                changed(v) => { PlayerState.cfg-recent-limit = round(v); root.update-setting("recent.limit", "\{round(v)}"); }
+                            }
+                        }
+
+                        if PlayerState.settings-tab == "interface": VerticalLayout {
+                            Text { text: "APPEARANCE"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 28px; vertical-alignment: center; x: 16px; }
+                            SettingNavRow {
+                                icon: Ic.language; title: "Language"; value: PlayerState.cfg-language;
+                                clicked => {
+                                    PlayerState.cfg-language = PlayerState.cfg-language == "en-US" ? "zh-CN" : "en-US";
+                                    root.update-setting("interface.lang", PlayerState.cfg-language);
+                                }
+                            }
+                            SettingNavRow {
+                                icon: Ic.palette; title: "Theme"; value: PlayerState.cfg-theme;
+                                clicked => {
+                                    PlayerState.cfg-theme = PlayerState.cfg-theme == "dark" ? "light" : "dark";
+                                    Theme.name = PlayerState.cfg-theme;
+                                    root.update-setting("interface.theme", PlayerState.cfg-theme);
+                                }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.zoom-in; title: "UI scale"; value: "\{round(PlayerState.cfg-scale * 100)}%";
+                                svalue: PlayerState.cfg-scale; minimum: 0.5; maximum: 2.0;
+                                changed(v) => { PlayerState.cfg-scale = round(v * 20) / 20; }
+                                committed(v) => {
+                                    PlayerState.cfg-scale = round(v * 20) / 20;
+                                    root.update-setting("interface.scale", "\{PlayerState.cfg-scale}");
+                                }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.speed; title: "Interface frame rate"; value: "\{PlayerState.cfg-fps} fps";
+                                svalue: PlayerState.cfg-fps; minimum: 10; maximum: 120;
+                                changed(v) => { PlayerState.cfg-fps = round(v); root.update-setting("interface.fps", "\{round(v)}"); }
+                            }
+                            SettingToggleRow {
+                                icon: Ic.style; title: "Rounded surfaces"; on: PlayerState.cfg-rounding;
+                                toggled => { PlayerState.cfg-rounding = !PlayerState.cfg-rounding; Theme.rounding = PlayerState.cfg-rounding; root.update-setting("interface.rounding", PlayerState.cfg-rounding ? "true" : "false"); }
+                            }
+                            SettingToggleRow {
+                                icon: Ic.contrast; title: "Panel shadows"; on: PlayerState.cfg-shadow;
+                                toggled => { PlayerState.cfg-shadow = !PlayerState.cfg-shadow; Theme.shadows = PlayerState.cfg-shadow; root.update-setting("interface.shadow", PlayerState.cfg-shadow ? "true" : "false"); }
+                            }
+                        }
+
+                        if PlayerState.settings-tab == "font": VerticalLayout {
+                            Text { text: "FONT"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 28px; vertical-alignment: center; x: 16px; }
+                            SettingNavRow {
+                                icon: Ic.text-fields; title: "Font file"; value: PlayerState.cfg-font-path == "" ? "System default" : PlayerState.cfg-font-path;
+                                clicked => { root.pick-font(); }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.format-size; title: "Font size"; value: "\{PlayerState.cfg-font-size} px";
+                                svalue: PlayerState.cfg-font-size; minimum: 8; maximum: 36;
+                                changed(v) => { PlayerState.cfg-font-size = round(v); root.update-setting("font.size", "\{round(v)}"); }
+                            }
+                            Text { text: "GLYPH RANGE"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 34px; vertical-alignment: center; x: 16px; }
+                            SettingNavRow {
+                                icon: Ic.language; title: "Character set"; value:
+                                    PlayerState.cfg-glyph-range == 1 ? "Chinese"
+                                    : PlayerState.cfg-glyph-range == 2 ? "Cyrillic"
+                                    : PlayerState.cfg-glyph-range == 4 ? "Japanese"
+                                    : PlayerState.cfg-glyph-range == 8 ? "Korean"
+                                    : PlayerState.cfg-glyph-range == 16 ? "Thai"
+                                    : PlayerState.cfg-glyph-range == 32 ? "Vietnamese"
+                                    : "Default";
+                                clicked => {
+                                    PlayerState.cfg-glyph-range = PlayerState.cfg-glyph-range >= 32 ? 0 : (PlayerState.cfg-glyph-range == 0 ? 1 : PlayerState.cfg-glyph-range * 2);
+                                    root.update-setting("font.glyph-range", "\{PlayerState.cfg-glyph-range}");
+                                }
+                            }
+                        }
+
+                        if PlayerState.settings-tab == "debug": VerticalLayout {
+                            Text { text: "LOGGING"; color: Theme.accent; font-size: 10px; font-weight: 600; height: 28px; vertical-alignment: center; x: 16px; }
+                            SettingNavRow {
+                                icon: Ic.keyboard; title: "Log level"; value: PlayerState.cfg-log-level;
+                                clicked => {
+                                    PlayerState.cfg-log-level = PlayerState.cfg-log-level == "status" ? "info" : (PlayerState.cfg-log-level == "info" ? "debug" : "status");
+                                    root.update-setting("debug.log-level", PlayerState.cfg-log-level);
+                                }
+                            }
+                            SettingSliderRow {
+                                icon: Ic.history; title: "Log line limit"; value: "\{PlayerState.cfg-log-limit}";
+                                svalue: PlayerState.cfg-log-limit; minimum: 100; maximum: 5000;
+                                changed(v) => { PlayerState.cfg-log-limit = round(v / 100) * 100; root.update-setting("debug.log-limit", "\{PlayerState.cfg-log-limit}"); }
+                            }
+                            HorizontalLayout {
+                                padding: 16px; spacing: 8px;
+                                TextButton { text: "Open configuration folder"; clicked => { root.open-config(); } }
+                            }
+                        }
+
+                        if PlayerState.settings-tab == "about": VerticalLayout {
+                            padding: 28px; spacing: 14px;
+                            HorizontalLayout {
+                                alignment: center;
+                                AppIcon { data: Ic.play-circle; size: 52px; color: Theme.accent; }
+                            }
+                            Text { text: "ImPlay"; color: #ffffffe6; font-size: 25px; font-weight: 700; horizontal-alignment: center; }
+                            Text { text: "Version \{PlayerState.app-version}"; color: #ffffff80; font-size: 12px; horizontal-alignment: center; }
+                            Text {
+                                text: "A cross-platform desktop media player powered by mpv and Slint.";
+                                color: #ffffffb3; font-size: 13px; horizontal-alignment: center; wrap: word-wrap;
+                            }
+                            Text { text: "Copyright (c) 2022-2025 tsl0922. Libraries updated and fixes by Skonester 2026."; color: #ffffff73; font-size: 11px; horizontal-alignment: center; wrap: word-wrap; }
+                            Text { text: "Licensed under GNU GPL-2.0-only"; color: #ffffff73; font-size: 11px; horizontal-alignment: center; }
+                            HorizontalLayout { alignment: center; TextButton { text: "Open ImPlay project page"; clicked => { root.open-project(); } } }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

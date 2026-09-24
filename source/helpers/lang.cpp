@@ -22,19 +22,6 @@ LangStr::operator std::string_view() const { return m_str; }
 
 LangStr::operator const char*() const { return m_str.c_str(); }
 
-const ImWchar* getLangGlyphRanges() {
-  static ImVector<ImWchar> glyphRanges;
-  if (glyphRanges.empty()) {
-    ImFontGlyphRangesBuilder builder;
-    for (auto& [code, lang] : getLangs()) {
-      builder.AddText(lang.title.c_str());
-      for (auto& [key, value] : lang.entries) builder.AddText(value.c_str());
-    }
-    builder.BuildRanges(&glyphRanges);
-  }
-  return &glyphRanges[0];
-}
-
 static std::pair<LangData, bool> parseLang(nlohmann::json& j) {
   LangData lang;
   const auto& code = j["code"];
