@@ -16,7 +16,7 @@ export { ChapterRow, TrackRow, ChoiceRow, PlaylistRow, InfoRow }
 export component AppWindow inherits Window {
     title: "ImPlay";
     no-frame: true;
-    background: transparent;
+    background: black;
     default-font-family: Theme.font;
     preferred-width: 896px;
     preferred-height: 504px;
@@ -46,6 +46,7 @@ export component AppWindow inherits Window {
 
     // --- UI state ---
     in-out property <bool> controls-visible <=> PlayerState.controls-visible;
+    in-out property <bool> osc-controls-active <=> PlayerState.osc-controls-active;
     in-out property <string> active-panel <=> PlayerState.active-panel;
     in-out property <bool> url-show <=> PlayerState.url-show;
     in-out property <string> url-text <=> PlayerState.url-text;
@@ -139,6 +140,7 @@ export component AppWindow inherits Window {
     callback command(string);
     callback toggle-fullscreen();
     callback seek-fraction(float, bool);  // (fraction, exact) — exact only on drag release
+    callback osc-pointer(float, float, string);
     callback adjust-volume(float);
     callback set-volume(float);
     callback toggle-mute();
@@ -204,6 +206,7 @@ export component AppWindow inherits Window {
         : t == Key.PageDown ? "PageDown"
         : t == Key.Space ? "Space"
         : t == Key.Escape ? "Escape"
+        : t == Key.Delete ? "Delete"
         : t == Key.F11 ? "F11"
         : t
     }
@@ -303,25 +306,34 @@ export component AppWindow inherits Window {
     Rectangle {
         background: root.has-file ? transparent : #000000;
         area := TouchArea {
+            property <bool> playback-click-enabled: false;
             mouse-cursor: root.cursor-hidden ? MouseCursor.none : MouseCursor.default;
             double-clicked => { root.toggle-fullscreen(); }
             clicked => {
-                if (root.has-file && root.active-panel == "" && !root.ctx-show) {
+                if (root.has-file && self.playback-click-enabled && !root.osc-controls-active && root.active-panel == "" && !root.ctx-show) {
                     root.toggle-pause();
                 }
+                self.playback-click-enabled = false;
             }
             pointer-event(e) => {
                 if (e.kind == PointerEventKind.move) {
+                    if (root.osc-controls-active) { root.osc-pointer(self.mouse-x / 1px, self.mouse-y / 1px, "move"); }
                     root.idle-ticks = 0;
                     root.cursor-hidden = false;
                     if (!root.fullscreen) { root.controls-visible = true; }
                     else { root.controls-visible = self.mouse-y <= 50px || self.mouse-y >= root.height - 80px; }
                 } else if (e.kind == PointerEventKind.down) {
+                    self.playback-click-enabled = e.button == PointerEventButton.left && !root.osc-controls-active && root.active-panel == "" && !root.ctx-show;
+                    if (root.osc-controls-active && e.button == PointerEventButton.left) {
+                        root.osc-pointer(self.mouse-x / 1px, self.mouse-y / 1px, "down");
+                    }
                     if (e.button == PointerEventButton.right) {
                         root.request-context-menu(self.mouse-x, self.mouse-y);
                     } else if (e.button == PointerEventButton.left) {
                         root.close-panels();
                     }
+                } else if (e.kind == PointerEventKind.up && root.osc-controls-active && e.button == PointerEventButton.left) {
+                    root.osc-pointer(self.mouse-x / 1px, self.mouse-y / 1px, "up");
                 }
             }
             scroll-event(e) => { root.adjust-volume(e.delta-y > 0 ? 5 : -5); accept }
@@ -395,7 +407,7 @@ export component AppWindow inherits Window {
     }
 
     // --- Bottom controls ---
-    if root.controls-visible: Rectangle {
+    if root.controls-visible && !root.osc-controls-active: Rectangle {
         y: parent.height - self.height;
         height: bottombox.preferred-height;
         background: @linear-gradient(180deg, #00000000 0%, #000000cc 100%);
@@ -928,6 +940,7 @@ export component AppWindow inherits Window {
     // --- Context menu (right-click / hamburger) ---
     if root.ctx-show: ContextMenu {
         command(c) => { root.command(c); }
+        toggle-pause => { root.toggle-pause(); }
         open-file => { root.open-file(); }
         open-folder => { root.open-folder(); }
         open-url => { root.open-url(); }

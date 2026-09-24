@@ -36,8 +36,8 @@ class Window {
   void configureMpv();
   void initMpv();
   void initObservers();
+  void recordRecentFile();
   void initCallbacks();
-  void syncUi();
   void syncCollections();
   void renderFrame();
   void releaseRenderer();
@@ -48,6 +48,7 @@ class Window {
 #endif
 
   void execute(const std::string& command);
+  void toggleOscControls();
   void openFiles(bool append = false);
   void openFolder(bool append = false);
   void openDisc();
@@ -69,6 +70,9 @@ class Window {
   slint::ComponentHandle<AppWindow> app;
   std::map<std::string, std::string> options;
   std::vector<std::string> initialPaths;
+  std::string currentPath;
+  std::string currentTitle;
+  bool recentPending = false;
 
   unsigned int texture = 0;
   unsigned int framebuffer = 0;
@@ -78,6 +82,8 @@ class Window {
   bool shuttingDown = false;
   bool windowMaximized = false;
   bool windowFullscreen = false;
+  bool idleActive = true;
+  bool paused = false;
   float nativeScaleFactor = 1.0F;
   bool audioEqEnabled = false;
   std::array<int, 10> audioEqBands{};

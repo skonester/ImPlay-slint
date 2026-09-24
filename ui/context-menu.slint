@@ -8,6 +8,7 @@ import { PlayerState, RatioRow, Catalog } from "state.slint";
 
 export component ContextMenu inherits Rectangle {
     callback command(string);
+    callback toggle-pause();
     callback open-file();
     callback open-folder();
     callback open-url();
@@ -44,7 +45,7 @@ export component ContextMenu inherits Rectangle {
             items := VerticalLayout {
                 padding-top: 8px; padding-bottom: 8px;
                 if PlayerState.ctx-page == "main": VerticalLayout {
-                    MenuItem { icon: PlayerState.playing ? Ic.pause : Ic.play; label: PlayerState.playing ? "Pause" : "Play"; key-hint: "Space"; clicked => { root.command("cycle pause"); PlayerState.ctx-show = false; } }
+                    MenuItem { icon: PlayerState.playing ? Ic.pause : Ic.play; label: PlayerState.playing ? "Pause" : "Play"; key-hint: "Space"; clicked => { root.toggle-pause(); PlayerState.ctx-show = false; } }
                     MenuItem { label: "Stop"; clicked => { root.command("stop"); PlayerState.ctx-show = false; } }
                     MenuSep {}
                     MenuItem { icon: Ic.folder-open; label: "Open"; arrow: true; clicked => { PlayerState.ctx-page = "open"; } }

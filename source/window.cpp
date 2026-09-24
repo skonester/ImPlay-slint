@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <stdexcept>
+#include <string_view>
 #include <utility>
 
 #include <fmt/format.h>
@@ -235,24 +236,42 @@ void Window::initMpv() {
     if (path == "-") mpv->property("input-terminal", "yes");
     mpv->commandv("loadfile", path.c_str(), "append-play", nullptr);
   }
-  syncUi();
 }
 
 void Window::initObservers() {
+  // A synchronous mpv property read here can deadlock when the core waits for
+  // this UI thread to render a frame. Use property-change payloads instead.
   mpv->observeEvent(MPV_EVENT_SHUTDOWN, [this](void*) {
     postToUi([this] {
       if (!shuttingDown) app->hide();
     });
   });
-  mpv->observeEvent(MPV_EVENT_FILE_LOADED, [this](void*) {
-    const auto path = mpv->property("path");
-    if (!path.empty() && path != "bd://" && path != "dvd://")
-      config->addRecentFile(path, mpv->property("media-title"));
-    syncUi();
+  mpv->observeEvent(MPV_EVENT_START_FILE, [this](void*) {
+    currentPath.clear();
+    currentTitle.clear();
+    recentPending = false;
   });
-  mpv->observeProperty<int, MPV_FORMAT_FLAG>("idle-active", [this](int) { syncUi(); });
-  mpv->observeProperty<int, MPV_FORMAT_FLAG>("pause", [this](int) { syncUi(); });
-  mpv->observeProperty<int, MPV_FORMAT_FLAG>("mute", [this](int) { syncUi(); });
+  mpv->observeEvent(MPV_EVENT_FILE_LOADED, [this](void*) {
+    recentPending = true;
+    recordRecentFile();
+    syncCollections();
+  });
+  mpv->observeProperty<char*, MPV_FORMAT_STRING>("path", [this](char* path) {
+    currentPath = path != nullptr ? path : "";
+    recordRecentFile();
+  });
+  mpv->observeProperty<int, MPV_FORMAT_FLAG>("idle-active", [this](int flag) {
+    idleActive = flag != 0;
+    app->set_has_file(!idleActive);
+    app->set_playing(!idleActive && !paused);
+  });
+  mpv->observeProperty<int, MPV_FORMAT_FLAG>("pause", [this](int flag) {
+    paused = flag != 0;
+    app->set_playing(!idleActive && !paused);
+  });
+  mpv->observeProperty<int, MPV_FORMAT_FLAG>("mute", [this](int flag) {
+    app->set_muted(flag != 0);
+  });
   mpv->observeProperty<int, MPV_FORMAT_FLAG>("fullscreen", [this](int flag) {
     const bool fullscreen = flag != 0;
     windowFullscreen = fullscreen;
@@ -266,7 +285,18 @@ void Window::initObservers() {
       if (windowMaximized) app->window().set_maximized(true);
     }
   });
-  mpv->observeProperty<int64_t, MPV_FORMAT_INT64>("volume", [this](int64_t) { syncUi(); });
+  mpv->observeProperty<int64_t, MPV_FORMAT_INT64>("volume", [this](int64_t value) {
+    app->set_volume(static_cast<float>(value));
+  });
+  mpv->observeProperty<double, MPV_FORMAT_DOUBLE>("speed", [this](double value) {
+    app->set_speed(static_cast<float>(value));
+  });
+  mpv->observeProperty<int, MPV_FORMAT_FLAG>("ontop", [this](int flag) {
+    app->set_pinned(flag != 0);
+  });
+  mpv->observeProperty<char*, MPV_FORMAT_STRING>("video-aspect-override", [this](char* value) {
+    app->set_current_aspect(value != nullptr && *value != '\0' ? value : "-1");
+  });
   mpv->observeProperty<double, MPV_FORMAT_DOUBLE>("time-pos", [this](double value) {
     app->set_current_time(static_cast<float>(std::max(0.0, value)));
   });
@@ -274,7 +304,9 @@ void Window::initObservers() {
     app->set_duration(static_cast<float>(std::max(0.0, value)));
   });
   mpv->observeProperty<char*, MPV_FORMAT_STRING>("media-title", [this](char* title) {
-    app->set_media_title(title != nullptr ? title : "ImPlay");
+    currentTitle = title != nullptr ? title : "";
+    app->set_media_title(currentTitle.empty() ? "ImPlay" : currentTitle.c_str());
+    recordRecentFile();
   });
   mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("playlist", [this](mpv_node) { syncCollections(); });
   mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("track-list", [this](mpv_node) { syncCollections(); });
@@ -315,6 +347,14 @@ void Window::initObservers() {
   });
 }
 
+void Window::recordRecentFile() {
+  if (!recentPending || currentPath.empty()) return;
+  recentPending = false;
+  if (currentPath == "bd://" || currentPath == "dvd://") return;
+  config->addRecentFile(currentPath, currentTitle);
+  syncCollections();
+}
+
 void Window::initCallbacks() {
   app->on_open_file([this] { openFiles(); });
   app->on_open_folder([this] { openFolder(); });
@@ -337,8 +377,12 @@ void Window::initCallbacks() {
       return;
     }
     if (!mpvInitialized || command.empty()) return;
-    if (command == "quit")
+    if (command == "script-binding osc/visibility")
+      toggleOscControls();
+    else if (command == "quit")
       mpv->command(config->Data.Mpv.WatchLater ? "quit-watch-later" : "quit");
+    else if (std::string_view(command.data()).starts_with("seek "))
+      mpv->command(fmt::format("osd-auto {}", command.data()));
     else
       mpv->command(command.data());
   });
@@ -350,10 +394,19 @@ void Window::initCallbacks() {
   app->on_toggle_pause([this] { execute("play-pause"); });
   app->on_toggle_fullscreen([this] { execute("fullscreen"); });
   app->on_toggle_mute([this] { execute("mute"); });
-  app->on_seek_fraction([this](float fraction, bool) {
+  app->on_seek_fraction([this](float fraction, bool exact) {
     if (!mpvInitialized) return;
-    const auto duration = mpv->property<double, MPV_FORMAT_DOUBLE>("duration");
-    mpv->property<double, MPV_FORMAT_DOUBLE>("time-pos", std::clamp<double>(fraction, 0.0, 1.0) * duration);
+    const auto percent = fmt::format("{}", std::clamp<double>(fraction, 0.0, 1.0) * 100.0);
+    mpv->commandv("osd-auto", "seek", percent.c_str(),
+                  exact ? "absolute-percent+exact" : "absolute-percent", nullptr);
+  });
+  app->on_osc_pointer([this](float x, float y, slint::SharedString action) {
+    if (!mpvInitialized || !app->get_osc_controls_active()) return;
+    const auto mouseX = fmt::format("{}", std::lround(x));
+    const auto mouseY = fmt::format("{}", std::lround(y));
+    mpv->commandv("mouse", mouseX.c_str(), mouseY.c_str(), nullptr);
+    if (action == "down") mpv->commandv("keydown", "MBTN_LEFT", nullptr);
+    if (action == "up") mpv->commandv("keyup", "MBTN_LEFT", nullptr);
   });
   app->on_adjust_volume([this](float delta) {
     if (!mpvInitialized) return;
@@ -375,7 +428,8 @@ void Window::initCallbacks() {
   });
 
   app->on_playlist_play([this](int index) {
-    if (mpvInitialized) mpv->property<int64_t, MPV_FORMAT_INT64>("playlist-pos", index);
+    if (mpvInitialized && index >= 0)
+      mpv->commandv("playlist-play-index", std::to_string(index).c_str(), nullptr);
   });
   app->on_playlist_remove([this](int index) {
     if (!mpvInitialized) return;
@@ -420,7 +474,8 @@ void Window::initCallbacks() {
   });
   app->on_seek_chapter([this](int index) {
     if (!mpvInitialized || index < 0 || static_cast<size_t>(index) >= mpv->chapters.size()) return;
-    mpv->property<double, MPV_FORMAT_DOUBLE>("time-pos", mpv->chapters[index].time);
+    const auto position = fmt::format("{}", mpv->chapters[index].time);
+    mpv->commandv("osd-auto", "seek", position.c_str(), "absolute+exact", nullptr);
   });
   app->on_load_external_sub([this] { openSubtitle(); });
   app->on_set_sub_delay([this](float delay) {
@@ -492,10 +547,12 @@ void Window::initCallbacks() {
       openFiles();
     } else if (value == "Space") {
       execute("play-pause");
+    } else if (value == "Delete" || value == "Del") {
+      toggleOscControls();
     } else if (value == "ArrowLeft") {
-      mpv->command(control ? "seek -30 relative exact" : "seek -10 relative exact");
+      mpv->command(control ? "osd-auto seek -30 relative exact" : "osd-auto seek -10 relative exact");
     } else if (value == "ArrowRight") {
-      mpv->command(control ? "seek 30 relative exact" : "seek 10 relative exact");
+      mpv->command(control ? "osd-auto seek 30 relative exact" : "osd-auto seek 10 relative exact");
     } else if (value == "ArrowUp") {
       const auto volume = mpv->property<int64_t, MPV_FORMAT_INT64>("volume");
       mpv->property<int64_t, MPV_FORMAT_INT64>("volume", std::clamp<int64_t>(volume + 5, 0, 150));
@@ -592,32 +649,6 @@ void Window::initCallbacks() {
   });
 }
 
-void Window::syncUi() {
-  if (!mpvInitialized) return;
-  app->set_has_file(mpv->property<int, MPV_FORMAT_FLAG>("idle-active") == 0);
-  app->set_playing(mpv->property<int, MPV_FORMAT_FLAG>("pause") == 0);
-  app->set_muted(mpv->property<int, MPV_FORMAT_FLAG>("mute") != 0);
-  app->set_volume(static_cast<float>(mpv->property<int64_t, MPV_FORMAT_INT64>("volume")));
-  app->set_speed(static_cast<float>(mpv->property<double, MPV_FORMAT_DOUBLE>("speed")));
-  app->set_audio_delay(static_cast<float>(mpv->property<double, MPV_FORMAT_DOUBLE>("audio-delay")));
-  app->set_sub_delay(static_cast<float>(mpv->property<double, MPV_FORMAT_DOUBLE>("sub-delay")));
-  app->set_sub_scale(static_cast<float>(mpv->property<double, MPV_FORMAT_DOUBLE>("sub-scale")));
-  app->set_sub_position(static_cast<int>(mpv->property<int64_t, MPV_FORMAT_INT64>("sub-pos")));
-  app->set_sub_visible(mpv->property<int, MPV_FORMAT_FLAG>("sub-visibility") != 0);
-  app->set_brightness(static_cast<int>(mpv->property<int64_t, MPV_FORMAT_INT64>("brightness")));
-  app->set_contrast(static_cast<int>(mpv->property<int64_t, MPV_FORMAT_INT64>("contrast")));
-  app->set_saturation(static_cast<int>(mpv->property<int64_t, MPV_FORMAT_INT64>("saturation")));
-  app->set_vid_zoom(static_cast<float>(mpv->property<double, MPV_FORMAT_DOUBLE>("video-zoom")));
-  app->set_deinterlace(mpv->property<int, MPV_FORMAT_FLAG>("deinterlace") != 0);
-  app->set_pinned(mpv->property<int, MPV_FORMAT_FLAG>("ontop") != 0);
-  auto aspect = mpv->property("video-aspect-override");
-  app->set_current_aspect(aspect.empty() ? "-1" : aspect.c_str());
-
-  auto title = mpv->property("media-title");
-  app->set_media_title(slint::SharedString(title.empty() ? "ImPlay" : title));
-  syncCollections();
-}
-
 void Window::syncCollections() {
   std::vector<PlaylistRow> playlist;
   playlist.reserve(mpv->playlist.size());
@@ -709,7 +740,8 @@ void Window::renderFrame() {
 
   const int width = std::max(1, app->get_video_width());
   const int height = std::max(1, app->get_video_height());
-  if (width != textureWidth || height != textureHeight) {
+  const bool resized = width != textureWidth || height != textureHeight;
+  if (resized) {
     textureWidth = width;
     textureHeight = height;
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -717,7 +749,9 @@ void Window::renderFrame() {
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  if (mpv->wantRender()) {
+  // Reallocating the texture discards the last picture. mpv can redraw its
+  // previous frame even when paused and no new-frame update is pending.
+  if (mpv->wantRender() || resized) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // The borrowed GL texture is sampled with GL texture coordinates, unlike a
     // window backbuffer. Flipping here inverted the frame a second time.
@@ -834,11 +868,22 @@ LRESULT CALLBACK Window::nativeWindowProc(HWND hwnd, UINT message, WPARAM wParam
 }
 #endif
 
+void Window::toggleOscControls() {
+  if (!mpvInitialized) return;
+  const bool enabled = !app->get_osc_controls_active();
+  mpv->commandv("script-message-to", "osc", "osc-visibility", enabled ? "always" : "never", nullptr);
+  app->set_osc_controls_active(enabled);
+}
+
 void Window::execute(const std::string& command) {
   if (!mpvInitialized) return;
   if (command == "play-pause") {
-    if (mpv->property<int64_t, MPV_FORMAT_INT64>("playlist-count") > 0) {
-      mpv->command("cycle pause");
+    if (idleActive && !mpv->playlist.empty()) {
+      const auto pos = mpv->playlistPos >= 0 && mpv->playlistPos < static_cast<int64_t>(mpv->playlist.size())
+                           ? mpv->playlistPos : 0;
+      mpv->commandv("playlist-play-index", std::to_string(pos).c_str(), nullptr);
+    } else if (!idleActive) {
+      mpv->commandv("cycle", "pause", nullptr);
     } else if (config->Data.Recent.SpaceToPlayLast) {
       for (const auto& recent : config->getRecentFiles()) {
         if (fileExists(recent.path) || recent.path.find("://") != std::string::npos) {
@@ -852,9 +897,9 @@ void Window::execute(const std::string& command) {
   } else if (command == "fullscreen") {
     mpv->command("cycle fullscreen");
   } else if (command == "seek-backward") {
-    mpv->command("seek -10 relative exact");
+    mpv->command("osd-auto seek -10 relative exact");
   } else if (command == "seek-forward") {
-    mpv->command("seek 10 relative exact");
+    mpv->command("osd-auto seek 10 relative exact");
   } else if (command == "playlist-add-files") {
     openFiles(true);
   } else if (command == "playlist-clear") {
