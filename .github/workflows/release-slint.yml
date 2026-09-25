@@ -120,6 +120,27 @@ jobs:
           if ($actual -ne $expected) { throw "SHA256 mismatch for yt-dlp.exe: $actual" }
           Write-Host "Bundling yt-dlp $($release.tag_name)"
 
+          # yt-dlp needs a JavaScript runtime for full YouTube support. It finds deno.exe placed
+          # next to yt-dlp.exe even when Deno isn't on PATH, so bundle the newest release too.
+          $release = Invoke-RestMethod "https://api.github.com/repos/denoland/deno/releases/latest" `
+            -Headers @{ Authorization = "Bearer ${{ github.token }}" }
+          $asset = "deno-x86_64-pc-windows-msvc.zip"
+          $base = "https://github.com/denoland/deno/releases/download/$($release.tag_name)"
+          curl.exe -sSfL --retry 3 -o "extras/$asset" "$base/$asset"
+          if ($LASTEXITCODE -ne 0) { throw "Download failed: $base/$asset" }
+          # The .sha256sum file is Get-FileHash output: a "Hash : <HEX>" line among others
+          $sums = (curl.exe -sSfL --retry 3 "$base/$asset.sha256sum") -join "`n"
+          if ($LASTEXITCODE -ne 0) { throw "Download failed: $base/$asset.sha256sum" }
+          $expected = $sums -split "`n" |
+            ForEach-Object { if ($_ -match '^\s*Hash\s*:\s*([0-9A-Fa-f]{64})\s*$') { $Matches[1] } } |
+            Select-Object -First 1
+          if (-not $expected) { throw "No hash found in $asset.sha256sum" }
+          $actual = (Get-FileHash "extras/$asset" -Algorithm SHA256).Hash
+          if ($actual -ne $expected) { throw "SHA256 mismatch for ${asset}: $actual" }
+          7z e "extras/$asset" deno.exe -oextras -y
+          if ($LASTEXITCODE -ne 0) { throw "Extracting $asset failed" }
+          Write-Host "Bundling Deno $($release.tag_name)"
+
       - name: Package
         id: package
         shell: pwsh
@@ -134,7 +155,7 @@ jobs:
           Copy-Item "$buildDir/*.dll" $stage
           Copy-Item extras/mpv/mpv.com "$stage/ImPlay.com"
           Copy-Item extras/mpv/doc "$stage/doc" -Recurse
-          Copy-Item extras/yt-dlp.exe $stage
+          Copy-Item extras/yt-dlp.exe, extras/deno.exe $stage
           Copy-Item LICENSE.txt, CREDITS.md $stage
           Copy-Item ui/VAYOU-LICENSE $stage
 
