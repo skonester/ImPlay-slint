@@ -1,0 +1,153 @@
+name: Release ImPlay-Slint
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create (e.g. 1.6.0). Must be X.Y.Z so the app version is picked up."
+        required: true
+        type: string
+      prerelease:
+        description: "Mark the release as a pre-release"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-slint-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PRESET: x64-clang-release
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
+jobs:
+  build-windows:
+    name: Build (Windows x64, clang-cl, Slint)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # GetGitVersion.cmake runs `git describe --tags`, so full history and tags are needed
+          fetch-depth: 0
+
+      - name: Validate and create tag (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          if ("$env:RELEASE_TAG" -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
+            throw "Tag '$env:RELEASE_TAG' must look like X.Y.Z"
+          }
+          if (git tag --list "$env:RELEASE_TAG") {
+            throw "Tag '$env:RELEASE_TAG' already exists"
+          }
+          # Local tag so the build embeds the right version; the release step pushes it
+          git tag "$env:RELEASE_TAG"
+
+      - name: Set up MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Set up Rust (needed to build Slint)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Ensure LLVM and Ninja are available
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "C:/Program Files/LLVM/bin/clang-cl.exe")) {
+            choco install llvm -y --no-progress
+          }
+          if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
+            choco install ninja -y --no-progress
+          }
+          & "C:/Program Files/LLVM/bin/clang-cl.exe" --version
+          ninja --version
+          cmake --version
+
+      - name: Configure
+        run: cmake --preset ${{ env.PRESET }}
+
+      - name: Build
+        run: cmake --build --preset ${{ env.PRESET }}
+
+      - name: Fetch bundled extras
+        shell: pwsh
+        run: |
+          # Same extras the upstream CPack package shipped (see cmake/CreateCpackPackage.cmake).
+          # The mpv build only supplies mpv.com (console launcher, renamed ImPlay.com) and the
+          # manual, so it doesn't need to match the libmpv version in the dev archive.
+          $extras = @(
+            @{ File = "mpv.7z"
+               Url  = "https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20260924/mpv-x86_64-20260924-git-2a4eb8067c.7z"
+               Hash = "0d39c18086f9df02fbd087b18c8b30e7e328a79481bce83e57f86ab70d0e53bf" },
+            @{ File = "yt-dlp.exe"
+               Url  = "https://github.com/yt-dlp/yt-dlp/releases/download/2025.06.30/yt-dlp.exe"
+               Hash = "c070670e32cc7deaa5f3fcf51563b415ad9091323208f242fa6a3a3bab85bffd" },
+            @{ File = "electron.zip"
+               Url  = "https://github.com/electron/electron/releases/download/v22.3.27/electron-v22.3.27-win32-x64.zip"
+               Hash = "ad723ed7dad32f9459f7a9de1fd6d718cf713c4809c2431503bea62ce8f786e6" }
+          )
+          New-Item -ItemType Directory -Force extras | Out-Null
+          foreach ($e in $extras) {
+            $out = "extras/$($e.File)"
+            curl.exe -sSfL --retry 3 -o $out $e.Url
+            if ($LASTEXITCODE -ne 0) { throw "Download failed: $($e.Url)" }
+            $actual = (Get-FileHash $out -Algorithm SHA256).Hash
+            if ($actual -ne $e.Hash) { throw "SHA256 mismatch for $($e.File): $actual" }
+          }
+          7z x extras/mpv.7z mpv.com doc -oextras/mpv -y
+          if ($LASTEXITCODE -ne 0) { throw "Extracting mpv.7z failed" }
+          7z e extras/electron.zip libEGL.dll libGLESv2.dll -oextras/angle -y
+          if ($LASTEXITCODE -ne 0) { throw "Extracting electron.zip failed" }
+
+      - name: Package
+        id: package
+        shell: pwsh
+        run: |
+          $buildDir = "out/build/$env:PRESET"
+          $name = "ImPlay-Slint-$env:RELEASE_TAG-win64"
+          $stage = "dist/$name"
+          New-Item -ItemType Directory -Force $stage | Out-Null
+
+          Copy-Item "$buildDir/ImPlay.exe" $stage
+          # fmt.dll, slint_cpp.dll, libmpv-2.dll, ...
+          Copy-Item "$buildDir/*.dll" $stage
+          Copy-Item extras/mpv/mpv.com "$stage/ImPlay.com"
+          Copy-Item extras/mpv/doc "$stage/doc" -Recurse
+          Copy-Item extras/yt-dlp.exe $stage
+          # ANGLE GLES driver; window.cpp loads libGLESv2.dll first, then falls back to opengl32
+          Copy-Item extras/angle/libEGL.dll, extras/angle/libGLESv2.dll $stage
+          Copy-Item LICENSE.txt, CREDITS.md $stage
+          Copy-Item ui/VAYOU-LICENSE $stage
+
+          Get-ChildItem $stage | Format-Table Name, Length
+
+          $zip = "dist/$name.zip"
+          Compress-Archive -Path "$stage/*" -DestinationPath $zip
+          "zip=$zip" >> $env:GITHUB_OUTPUT
+          "name=$name" >> $env:GITHUB_OUTPUT
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package.outputs.name }}
+          path: ${{ steps.package.outputs.zip }}
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
+          name: ImPlay-Slint ${{ env.RELEASE_TAG }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease }}
+          generate_release_notes: true
+          files: ${{ steps.package.outputs.zip }}
