@@ -82,7 +82,9 @@ jobs:
       - name: Fetch bundled extras
         shell: pwsh
         run: |
-          # Same extras the upstream CPack package shipped (see cmake/CreateCpackPackage.cmake).
+          # Extras the upstream CPack package shipped (see cmake/CreateCpackPackage.cmake), minus
+          # ANGLE's libEGL/libGLESv2: Slint renders through WGL, and window.cpp prefers a bundled
+          # libGLESv2.dll, which then fails with "Unable to load the OpenGL ES functions".
           # The mpv build only supplies mpv.com (console launcher, renamed ImPlay.com) and the
           # manual, so it doesn't need to match the libmpv version in the dev archive.
           $extras = @(
@@ -91,10 +93,7 @@ jobs:
                Hash = "0d39c18086f9df02fbd087b18c8b30e7e328a79481bce83e57f86ab70d0e53bf" },
             @{ File = "yt-dlp.exe"
                Url  = "https://github.com/yt-dlp/yt-dlp/releases/download/2025.06.30/yt-dlp.exe"
-               Hash = "c070670e32cc7deaa5f3fcf51563b415ad9091323208f242fa6a3a3bab85bffd" },
-            @{ File = "electron.zip"
-               Url  = "https://github.com/electron/electron/releases/download/v22.3.27/electron-v22.3.27-win32-x64.zip"
-               Hash = "ad723ed7dad32f9459f7a9de1fd6d718cf713c4809c2431503bea62ce8f786e6" }
+               Hash = "c070670e32cc7deaa5f3fcf51563b415ad9091323208f242fa6a3a3bab85bffd" }
           )
           New-Item -ItemType Directory -Force extras | Out-Null
           foreach ($e in $extras) {
@@ -106,8 +105,6 @@ jobs:
           }
           7z x extras/mpv.7z mpv.com doc -oextras/mpv -y
           if ($LASTEXITCODE -ne 0) { throw "Extracting mpv.7z failed" }
-          7z e extras/electron.zip libEGL.dll libGLESv2.dll -oextras/angle -y
-          if ($LASTEXITCODE -ne 0) { throw "Extracting electron.zip failed" }
 
       - name: Package
         id: package
@@ -124,8 +121,6 @@ jobs:
           Copy-Item extras/mpv/mpv.com "$stage/ImPlay.com"
           Copy-Item extras/mpv/doc "$stage/doc" -Recurse
           Copy-Item extras/yt-dlp.exe $stage
-          # ANGLE GLES driver; window.cpp loads libGLESv2.dll first, then falls back to opengl32
-          Copy-Item extras/angle/libEGL.dll, extras/angle/libGLESv2.dll $stage
           Copy-Item LICENSE.txt, CREDITS.md $stage
           Copy-Item ui/VAYOU-LICENSE $stage
 
