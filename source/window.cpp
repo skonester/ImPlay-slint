@@ -120,7 +120,7 @@ Window::~Window() {
     originalWindowProc = nullptr;
   }
 #endif
-  if (mpvInitialized) mpv->command(config->Data.Mpv.WatchLater ? "quit-watch-later" : "quit");
+  if (mpvInitialized) mpv->commandSync(config->Data.Mpv.WatchLater ? "quit-watch-later" : "quit");
 }
 
 bool Window::init(OptionParser& parser) {
@@ -129,11 +129,14 @@ bool Window::init(OptionParser& parser) {
   configureMpv();
 
   mpv->wakeupCb() = [this](Mpv*) {
+    if (eventWakePending.exchange(true)) return;
     postToUi([this] {
+      eventWakePending = false;
       if (!shuttingDown && mpvInitialized) mpv->waitEvent();
     });
   };
   mpv->updateCb() = [this](Mpv*) {
+    if (renderWakePending.exchange(true)) return;
     postToUi([this] {
       if (!shuttingDown) app->window().request_redraw();
     });
@@ -147,6 +150,7 @@ bool Window::init(OptionParser& parser) {
               initMpv();
               break;
             case slint::RenderingState::BeforeRendering:
+              renderWakePending = false;
               renderFrame();
               break;
             case slint::RenderingState::RenderingTeardown:
@@ -234,6 +238,7 @@ void Window::initMpv() {
 #ifdef _WIN32
   installNativeWindowHooks();
 #endif
+  mpv->volume = config->Data.Mpv.Volume;
   mpv->property<int64_t, MPV_FORMAT_INT64>("volume", config->Data.Mpv.Volume);
   initObservers();
 
@@ -415,8 +420,9 @@ void Window::initCallbacks() {
   });
   app->on_adjust_volume([this](float delta) {
     if (!mpvInitialized) return;
-    const auto volume = mpv->property<int64_t, MPV_FORMAT_INT64>("volume");
-    mpv->property<int64_t, MPV_FORMAT_INT64>("volume", std::clamp<int64_t>(volume + std::lround(delta), 0, 200));
+    const auto volume = std::clamp<int64_t>(std::lround(app->get_volume()) + std::lround(delta), 0, 200);
+    app->set_volume(static_cast<float>(volume));
+    mpv->property<int64_t, MPV_FORMAT_INT64>("volume", volume);
   });
   app->on_set_volume([this](float value) {
     if (mpvInitialized)
@@ -475,7 +481,8 @@ void Window::initCallbacks() {
   });
   app->on_apply_profile([this](slint::SharedString profile) {
     if (!mpvInitialized || profile.empty()) return;
-    mpv->command(fmt::format("show-text {}; apply-profile {}", profile.data(), profile.data()));
+    mpv->commandv("show-text", profile.data(), nullptr);
+    mpv->commandv("apply-profile", profile.data(), nullptr);
   });
   app->on_seek_chapter([this](int index) {
     if (!mpvInitialized || index < 0 || static_cast<size_t>(index) >= mpv->chapters.size()) return;
@@ -559,11 +566,13 @@ void Window::initCallbacks() {
     } else if (value == "ArrowRight") {
       mpv->command(control ? "osd-auto seek 30 relative exact" : "osd-auto seek 10 relative exact");
     } else if (value == "ArrowUp") {
-      const auto volume = mpv->property<int64_t, MPV_FORMAT_INT64>("volume");
-      mpv->property<int64_t, MPV_FORMAT_INT64>("volume", std::clamp<int64_t>(volume + 5, 0, 150));
+      const auto volume = std::clamp<int64_t>(std::lround(app->get_volume()) + 5, 0, 150);
+      app->set_volume(static_cast<float>(volume));
+      mpv->property<int64_t, MPV_FORMAT_INT64>("volume", volume);
     } else if (value == "ArrowDown") {
-      const auto volume = mpv->property<int64_t, MPV_FORMAT_INT64>("volume");
-      mpv->property<int64_t, MPV_FORMAT_INT64>("volume", std::clamp<int64_t>(volume - 5, 0, 150));
+      const auto volume = std::clamp<int64_t>(std::lround(app->get_volume()) - 5, 0, 150);
+      app->set_volume(static_cast<float>(volume));
+      mpv->property<int64_t, MPV_FORMAT_INT64>("volume", volume);
     } else if (value == "." || value == ">") {
       mpv->command("frame-step");
     } else if (value == "," || value == "<") {
@@ -585,7 +594,7 @@ void Window::initCallbacks() {
       if (value.size() == 1 && value[0] == static_cast<char>(92)) {
         mpv->property<double, MPV_FORMAT_DOUBLE>("speed", 1.0);
       } else {
-        const double current = mpv->property<double, MPV_FORMAT_DOUBLE>("speed");
+        const double current = app->get_speed();
         const auto nearest = std::min_element(speeds.begin(), speeds.end(), [current](double left, double right) {
           return std::abs(left - current) < std::abs(right - current);
         });
@@ -1113,7 +1122,7 @@ void Window::load(const std::vector<std::filesystem::path>& files, bool append) 
     first = false;
   }
 
-  if (!media.empty() || mpv->property<int64_t, MPV_FORMAT_INT64>("playlist-count") > 0) {
+  if (!media.empty() || !mpv->playlist.empty()) {
     for (const auto& subtitle : subtitles)
       mpv->commandv("sub-add", subtitle.string().c_str(), "select", nullptr);
   }

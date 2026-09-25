@@ -30,7 +30,7 @@ env:
 jobs:
   build-windows:
     name: Build (Windows x64, clang-cl, Slint)
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       # The workflow never creates tags: GITHUB_TOKEN can't create a ref on a commit that
@@ -55,7 +55,7 @@ jobs:
           arch: x64
 
       - name: Set up Rust (needed to build Slint)
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.94.0
 
       - name: Ensure LLVM and Ninja are available
         shell: pwsh
@@ -155,6 +155,26 @@ jobs:
           Copy-Item extras/yt-dlp.exe, extras/deno.exe $stage
           Copy-Item LICENSE.txt, CREDITS.md $stage
           Copy-Item ui/VAYOU-LICENSE $stage
+
+          # Record the actual build inputs. The runner image and LLVM installation can change
+          # over time; this makes a release comparable with a working local build.
+          @(
+            "commit=$(git rev-parse HEAD)"
+            "clang=$((& 'C:/Program Files/LLVM/bin/clang-cl.exe' --version | Select-Object -First 1))"
+            "rust=$(rustc --version)"
+            "cmake=$((cmake --version | Select-Object -First 1))"
+          ) | Set-Content "$stage/build-info.txt"
+          Get-ChildItem $stage -File | Where-Object { $_.Extension -in '.exe', '.dll' } |
+            Sort-Object Name | ForEach-Object {
+              "sha256 $($_.Name) $((Get-FileHash $_.FullName -Algorithm SHA256).Hash)"
+            } | Add-Content "$stage/build-info.txt"
+
+          foreach ($dll in @('fmt.dll', 'slint_cpp.dll', 'libmpv-2.dll')) {
+            if (-not (Test-Path "$stage/$dll")) { throw "Missing runtime DLL: $dll" }
+          }
+          foreach ($dll in @('libEGL.dll', 'libGLESv2.dll')) {
+            if (Test-Path "$stage/$dll") { throw "Unexpected ANGLE DLL: $dll" }
+          }
 
           Get-ChildItem $stage | Format-Table Name, Length
 

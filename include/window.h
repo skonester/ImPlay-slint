@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <atomic>
 #include <filesystem>
 #include <map>
 #include <memory>
@@ -79,7 +80,9 @@ class Window {
   int textureWidth = 0;
   int textureHeight = 0;
   bool mpvInitialized = false;
-  bool shuttingDown = false;
+  std::atomic_bool shuttingDown = false;
+  std::atomic_bool eventWakePending = false;
+  std::atomic_bool renderWakePending = false;
   bool windowMaximized = false;
   bool windowFullscreen = false;
   bool idleActive = true;

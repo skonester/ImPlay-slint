@@ -6,6 +6,7 @@
 #include <thread>
 #include <cstdarg>
 #include <cstring>
+#include <sstream>
 #include <nlohmann/json.hpp>
 #include "mpv.h"
 
@@ -19,9 +20,35 @@ Mpv::Mpv() {
 
 Mpv::~Mpv() {
   if (renderCtx != nullptr) mpv_render_context_free(renderCtx);
+  if (eventThread.joinable()) {
+    const char *quit[]{"quit", nullptr};
+    mpv_command_async(mpv, 0, quit);
+    eventThread.join();
+  }
   mpv_unobserve_property(mpv, 0);
-  mpv_destroy(main);
   mpv_destroy(mpv);
+  mpv_terminate_destroy(main);
+}
+
+int Mpv::command(const std::string &args) {
+  // The application's menu and hotkey commands are simple whitespace-delimited mpv commands.
+  // Queue those without waiting for the core: this can also be called on Slint's render thread.
+  // Preserve mpv's own parser for quoted, escaped, or chained commands from the command box.
+  if (args.find_first_of("\"'\\;$") != std::string::npos)
+    return mpv_command_string(mpv, args.c_str());
+
+  std::istringstream stream(args);
+  std::vector<std::string> words;
+  for (std::string word; stream >> word;) words.push_back(std::move(word));
+  if (words.empty()) return MPV_ERROR_INVALID_PARAMETER;
+  std::vector<const char *> commandArgs;
+  commandArgs.reserve(words.size() + 2);
+  if (words.front() != "osd-auto" && words.front() != "no-osd" && words.front() != "osd-bar" &&
+      words.front() != "osd-msg")
+    commandArgs.push_back("osd-auto");
+  for (const auto &word : words) commandArgs.push_back(word.c_str());
+  commandArgs.push_back(nullptr);
+  return mpv_command_async(mpv, 0, commandArgs.data());
 }
 
 int Mpv::commandv(const char *arg, ...) {
@@ -99,11 +126,11 @@ void Mpv::init(GLAddrLoadFunc load, int64_t wid) {
   if (mpv_initialize(mpv) < 0) throw std::runtime_error("could not initialize mpv context");
   if (wid == 0) {
     mpv_opengl_init_params gl_init_params{get_proc_address, (void *)load};
-    int advanced = 1;
+    // Slint calls render on the UI thread. Advanced control would require that thread to
+    // never wait on the mpv core; otherwise libmpv can deadlock permanently.
     mpv_render_param params[]{
         {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
         {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
-        {MPV_RENDER_PARAM_ADVANCED_CONTROL, &advanced},
         {MPV_RENDER_PARAM_INVALID, nullptr},
     };
 
@@ -128,9 +155,8 @@ void Mpv::init(GLAddrLoadFunc load, int64_t wid) {
         if (mpv->wakeupCb_) mpv->wakeupCb_(mpv);
       },
       this);
-  std::thread(&Mpv::eventLoop, this).detach();
+  eventThread = std::thread(&Mpv::eventLoop, this);
 
-  forceWindow = property<int, MPV_FORMAT_FLAG>("force-window");
   observeProperties();
 }
 

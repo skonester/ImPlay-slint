@@ -3,6 +3,7 @@
 
 #pragma once
 #include <string>
+#include <thread>
 #include <vector>
 #include <functional>
 #include <filesystem>
@@ -34,8 +35,9 @@ class Mpv {
   Callback &wakeupCb() { return wakeupCb_; }
   Callback &updateCb() { return updateCb_; }
 
-  inline int command(std::string args) { return mpv_command_string(mpv, args.c_str()); }
-  inline int command(const char *args) { return mpv_command_string(mpv, args); }
+  int command(const std::string &args);
+  int command(const char *args) { return command(std::string(args)); }
+  int commandSync(const char *args) { return mpv_command_string(mpv, args); }
   inline int command(const char *args[]) { return mpv_command_async(mpv, 0, args); }
   int commandv(const char *arg, ...);
 
@@ -45,7 +47,9 @@ class Mpv {
     mpv_free(data);
     return ret;
   }
-  int property(const char *name, const char *data) { return mpv_set_property_string(mpv, name, data); }
+  int property(const char *name, const char *data) {
+    return mpv_set_property_async(mpv, 0, name, MPV_FORMAT_STRING, &data);
+  }
   template <typename T, mpv_format format>
   T property(const char *name) {
     T data{0};
@@ -54,7 +58,7 @@ class Mpv {
   }
   template <typename T, mpv_format format>
   int property(const char *name, T data) {
-    return mpv_set_property(mpv, name, format, static_cast<void *>(&data));
+    return mpv_set_property_async(mpv, 0, name, format, static_cast<void *>(&data));
   }
 
   int option(const char *name, const char *data) { return mpv_set_option_string(mpv, name, data); }
@@ -114,11 +118,11 @@ class Mpv {
   std::vector<BindingItem> bindings;
   std::vector<std::string> profiles;
   std::string aid, vid, sid, sid2, audioDevice, cursorAutohide;
-  int64_t chapter, volume, playlistPos, playlistPlayingPos, timePos;
-  int64_t brightness, contrast, saturation, gamma, hue;
-  double audioDelay, subDelay, subScale;
-  bool pause, mute, fullscreen, sidv, sidv2, forceWindow, ontop;
-  bool keepaspect, keepaspectWindow, windowDragging, autoResize;
+  int64_t chapter = -1, volume = 100, playlistPos = -1, playlistPlayingPos = -1, timePos = 0;
+  int64_t brightness = 0, contrast = 0, saturation = 0, gamma = 0, hue = 0;
+  double audioDelay = 0, subDelay = 0, subScale = 1;
+  bool pause = false, mute = false, fullscreen = false, sidv = true, sidv2 = true, ontop = false;
+  bool keepaspect = true, keepaspectWindow = true, windowDragging = true, autoResize = false;
 
  private:
   void eventLoop();
@@ -131,10 +135,10 @@ class Mpv {
   void initBindings(mpv_node &node);
   void initProfiles(const char *payload);
 
-  int64_t wid = 0;
   mpv_handle *main = nullptr;
   mpv_handle *mpv = nullptr;
   mpv_render_context *renderCtx = nullptr;
+  std::thread eventThread;
   LogHandler logHandler = nullptr;
   Callback wakeupCb_, updateCb_;
 
