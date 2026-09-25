@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to create (e.g. 1.6.0). Must be X.Y.Z so the app version is picked up."
+        description: "Existing tag to build and release (e.g. 1.6.1). Push the tag first; this run does not create it."
         required: true
         type: string
       prerelease:
@@ -33,24 +33,21 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          # GetGitVersion.cmake runs `git describe --tags`, so full history and tags are needed
-          fetch-depth: 0
-
-      - name: Validate and create tag (manual runs)
-        if: github.event_name == 'workflow_dispatch'
+      # The workflow never creates tags: GITHUB_TOKEN can't create a ref on a commit that
+      # changes .github/workflows (403 "Resource not accessible by integration").
+      - name: Validate tag
         shell: pwsh
         run: |
           if ("$env:RELEASE_TAG" -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
             throw "Tag '$env:RELEASE_TAG' must look like X.Y.Z"
           }
-          if (git tag --list "$env:RELEASE_TAG") {
-            throw "Tag '$env:RELEASE_TAG' already exists"
-          }
-          # Local tag so the build embeds the right version; the release step pushes it
-          git tag "$env:RELEASE_TAG"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          # GetGitVersion.cmake runs `git describe --tags`, so full history and tags are needed
+          fetch-depth: 0
 
       - name: Set up MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
@@ -194,7 +191,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
-          target_commitish: ${{ github.sha }}
           name: ImPlay-Slint ${{ env.RELEASE_TAG }}
           prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease }}
           generate_release_notes: true
