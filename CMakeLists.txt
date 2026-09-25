@@ -2,11 +2,14 @@ cmake_minimum_required(VERSION 3.24)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(GetGitVersion)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/package.json")
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/package.json" IMPLAY_PACKAGE_JSON)
+string(JSON IMPLAY_VERSION ERROR_VARIABLE IMPLAY_VERSION_ERROR GET "${IMPLAY_PACKAGE_JSON}" version)
+if(IMPLAY_VERSION_ERROR OR NOT IMPLAY_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+  message(FATAL_ERROR "package.json must contain a version like 1.6.2")
+endif()
 
-get_git_version(GIT_VERSION SEM_VER)
-
-project(ImPlay VERSION "${SEM_VER}")
+project(ImPlay VERSION "${IMPLAY_VERSION}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -103,7 +106,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PRIVATE ${MPV_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-  APP_VERSION="${GIT_VERSION}"
+  APP_VERSION="${PROJECT_VERSION}"
 )
 slint_target_sources(${PROJECT_NAME} ui/app-window.slint)
 if(WIN32)

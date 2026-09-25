@@ -7,14 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing tag to build and release (e.g. 1.6.1). Push the tag first; this run does not create it."
+        description: "Existing tag matching package.json (e.g. 1.6.2). Push the tag first."
         required: true
         type: string
-      prerelease:
-        description: "Mark the release as a pre-release"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -46,8 +41,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: refs/tags/${{ env.RELEASE_TAG }}
-          # GetGitVersion.cmake runs `git describe --tags`, so full history and tags are needed
           fetch-depth: 0
+
+      - name: Validate package version
+        shell: pwsh
+        run: |
+          $package = Get-Content package.json -Raw | ConvertFrom-Json
+          if ($package.version -ne $env:RELEASE_TAG) {
+            throw "package.json version '$($package.version)' does not match release tag '$env:RELEASE_TAG'"
+          }
+          if ($package.release.prerelease -isnot [bool]) {
+            throw "package.json release.prerelease must be true or false"
+          }
+          "RELEASE_PRERELEASE=$($package.release.prerelease.ToString().ToLowerInvariant())" >> $env:GITHUB_ENV
 
       - name: Set up MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
@@ -212,7 +218,7 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           name: ImPlay-Slint ${{ env.RELEASE_TAG }}
-          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease }}
+          prerelease: ${{ env.RELEASE_PRERELEASE == 'true' }}
           generate_release_notes: true
           files: |
             ${{ steps.installer.outputs.exe }}
