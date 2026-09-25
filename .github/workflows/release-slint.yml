@@ -90,10 +90,7 @@ jobs:
           $extras = @(
             @{ File = "mpv.7z"
                Url  = "https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20260924/mpv-x86_64-20260924-git-2a4eb8067c.7z"
-               Hash = "0d39c18086f9df02fbd087b18c8b30e7e328a79481bce83e57f86ab70d0e53bf" },
-            @{ File = "yt-dlp.exe"
-               Url  = "https://github.com/yt-dlp/yt-dlp/releases/download/2025.06.30/yt-dlp.exe"
-               Hash = "c070670e32cc7deaa5f3fcf51563b415ad9091323208f242fa6a3a3bab85bffd" }
+               Hash = "0d39c18086f9df02fbd087b18c8b30e7e328a79481bce83e57f86ab70d0e53bf" }
           )
           New-Item -ItemType Directory -Force extras | Out-Null
           foreach ($e in $extras) {
@@ -105,6 +102,23 @@ jobs:
           }
           7z x extras/mpv.7z mpv.com doc -oextras/mpv -y
           if ($LASTEXITCODE -ne 0) { throw "Extracting mpv.7z failed" }
+
+          # yt-dlp goes stale quickly as sites change, so always bundle the newest release and
+          # verify it against the SHA2-256SUMS file published with that same release.
+          $release = Invoke-RestMethod "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest" `
+            -Headers @{ Authorization = "Bearer ${{ github.token }}" }
+          $base = "https://github.com/yt-dlp/yt-dlp/releases/download/$($release.tag_name)"
+          curl.exe -sSfL --retry 3 -o extras/yt-dlp.exe "$base/yt-dlp.exe"
+          if ($LASTEXITCODE -ne 0) { throw "Download failed: $base/yt-dlp.exe" }
+          $sums = (curl.exe -sSfL --retry 3 "$base/SHA2-256SUMS") -join "`n"
+          if ($LASTEXITCODE -ne 0) { throw "Download failed: $base/SHA2-256SUMS" }
+          $expected = $sums -split "`n" |
+            ForEach-Object { if ($_ -match '^([0-9a-f]{64})\s+yt-dlp\.exe$') { $Matches[1] } } |
+            Select-Object -First 1
+          if (-not $expected) { throw "yt-dlp.exe not listed in SHA2-256SUMS" }
+          $actual = (Get-FileHash extras/yt-dlp.exe -Algorithm SHA256).Hash
+          if ($actual -ne $expected) { throw "SHA256 mismatch for yt-dlp.exe: $actual" }
+          Write-Host "Bundling yt-dlp $($release.tag_name)"
 
       - name: Package
         id: package
