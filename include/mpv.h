@@ -3,12 +3,10 @@
 
 #pragma once
 #include <string>
-#include <thread>
 #include <vector>
 #include <functional>
 #include <filesystem>
-#include <mpv/client.h>
-#include <mpv/render_gl.h>
+#include "mpv_core.h"
 
 namespace ImPlay {
 typedef void *(*GLAddrLoadFunc)(const char *name);
@@ -37,42 +35,44 @@ class Mpv {
 
   int command(const std::string &args);
   int command(const char *args) { return command(std::string(args)); }
-  int commandSync(const char *args) { return mpv_command_string(mpv, args); }
-  inline int command(const char *args[]) { return mpv_command_async(mpv, 0, args); }
+  int commandSync(const char *args) { return implay_mpv_command_string(core, args); }
+  inline int command(const char *args[]) { return implay_mpv_command_async(core, args); }
   int commandv(const char *arg, ...);
 
   std::string property(const char *name) {
-    char *data = mpv_get_property_string(mpv, name);
+    char *data = implay_mpv_get_property_string(core, name);
     std::string ret = data ? data : "";
-    mpv_free(data);
+    implay_mpv_free(data);
     return ret;
   }
   int property(const char *name, const char *data) {
-    return mpv_set_property_async(mpv, 0, name, MPV_FORMAT_STRING, &data);
+    return implay_mpv_set_property_async(core, name, MPV_FORMAT_STRING, &data);
   }
   template <typename T, mpv_format format>
   T property(const char *name) {
     T data{0};
-    mpv_get_property(mpv, name, format, &data);
+    implay_mpv_get_property(core, name, format, &data);
     return data;
   }
   template <typename T, mpv_format format>
   int property(const char *name, T data) {
-    return mpv_set_property_async(mpv, 0, name, format, static_cast<void *>(&data));
+    return implay_mpv_set_property_async(core, name, format, static_cast<void *>(&data));
   }
 
-  int option(const char *name, const char *data) { return mpv_set_option_string(mpv, name, data); }
+  int option(const char *name, const char *data) { return implay_mpv_set_option_string(core, name, data); }
   template <typename T, mpv_format format>
   int option(const char *name, T data) {
-    return mpv_set_option(mpv, name, format, static_cast<void *>(&data));
+    return implay_mpv_set_option(core, name, format, static_cast<void *>(&data));
   }
 
   void observeEvent(mpv_event_id event, const EventHandler &handler) { events.emplace_back(event, handler); }
   template <typename T, mpv_format format>
   void observeProperty(const std::string &name, const std::function<void(T data)> &handler) {
     propertyEvents.emplace_back(name, format, [=](void *data) { handler(*(T *)data); });
-    mpv_observe_property(mpv, 0, name.c_str(), format);
+    implay_mpv_observe_property(core, name.c_str(), format);
   }
+
+  static const char *errorString(int error) { return implay_mpv_error_string(error); }
 
   struct TrackItem {
     int64_t id = -1;
@@ -125,20 +125,20 @@ class Mpv {
   bool keepaspect = true, keepaspectWindow = true, windowDragging = true, autoResize = false;
 
  private:
-  void eventLoop();
-
   void observeProperties();
-  void initPlaylist(mpv_node &node);
-  void initChapters(mpv_node &node);
-  void initTracks(mpv_node &node);
-  void initAudioDevices(mpv_node &node);
-  void initBindings(mpv_node &node);
-  void initProfiles(const char *payload);
 
-  mpv_handle *main = nullptr;
-  mpv_handle *mpv = nullptr;
-  mpv_render_context *renderCtx = nullptr;
-  std::thread eventThread;
+  // Callbacks from the Zig core (include/mpv_core.h); userdata is this Mpv.
+  static void onEvent(void *userdata, mpv_event_id id, void *data);
+  static void onProperty(void *userdata, const char *name, mpv_format format, void *data);
+  static void onLog(void *userdata, const char *prefix, const char *level, const char *text);
+  static void onPlaylist(void *userdata, const implay_mpv_play_item *items, size_t count);
+  static void onChapters(void *userdata, const implay_mpv_chapter_item *items, size_t count);
+  static void onTracks(void *userdata, const implay_mpv_track_item *items, size_t count);
+  static void onAudioDevices(void *userdata, const implay_mpv_audio_device *items, size_t count);
+  static void onBindings(void *userdata, const implay_mpv_binding_item *items, size_t count);
+  static void onProfiles(void *userdata, const char *const *names, size_t count);
+
+  implay_mpv *core = nullptr;
   LogHandler logHandler = nullptr;
   Callback wakeupCb_, updateCb_;
 

@@ -29,29 +29,20 @@ static const char* usage =
     "Visit https://mpv.io/manual/stable to get full mpv options.\n";
 
 static int run_headless(ImPlay::OptionParser& parser) {
-  mpv_handle* ctx = mpv_create();
-  if (!ctx) throw std::runtime_error("could not create mpv handle");
+  std::vector<implay_mpv_option> options;
+  for (const auto& [key, value] : parser.options) options.push_back({key.c_str(), value.c_str()});
+  std::vector<const char*> paths;
+  for (const auto& path : parser.paths) paths.push_back(path.c_str());
 
-  for (const auto& [key, value] : parser.options) {
-    if (int err = mpv_set_option_string(ctx, key.c_str(), value.c_str()); err < 0) {
-      fmt::print(fg(fmt::color::red), "mpv: {} [{}={}]\n", mpv_error_string(err), key, value);
-      return 1;
-    }
+  size_t failed = 0;
+  int error = 0;
+  auto status = implay_mpv_run_headless(options.data(), options.size(), paths.data(), paths.size(), &failed, &error);
+  if (status == IMPLAY_MPV_OPTION_FAILED) {
+    fmt::print(fg(fmt::color::red), "mpv: {} [{}={}]\n", implay_mpv_error_string(error), options[failed].name,
+               options[failed].value);
+    return 1;
   }
-  if (mpv_initialize(ctx) < 0) throw std::runtime_error("could not initialize mpv context");
-
-  for (auto& path : parser.paths) {
-    const char* cmd[] = {"loadfile", path.c_str(), "append-play", NULL};
-    mpv_command(ctx, cmd);
-  }
-
-  while (ctx) {
-    mpv_event* event = mpv_wait_event(ctx, -1);
-    if (event->event_id == MPV_EVENT_SHUTDOWN) break;
-  }
-
-  mpv_terminate_destroy(ctx);
-
+  if (status != IMPLAY_MPV_OK) throw std::runtime_error(implay_mpv_status_string(status));
   return 0;
 }
 

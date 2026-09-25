@@ -49,3 +49,7 @@ build
 
 # VSCode files
 .vscode/
+
+# Zig files
+.zig-cache/
+zig-out/

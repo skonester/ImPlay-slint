@@ -63,6 +63,12 @@ jobs:
       - name: Set up Rust (needed to build Slint)
         uses: dtolnay/rust-toolchain@1.94.0
 
+      # Builds the mpv core in source/zig (build.zig is invoked by CMake)
+      - name: Set up Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+
       - name: Ensure LLVM and Ninja are available
         shell: pwsh
         run: |
@@ -81,6 +87,9 @@ jobs:
 
       - name: Build
         run: cmake --build --preset ${{ env.PRESET }}
+
+      - name: Test Zig mpv core
+        run: zig build test "-Dmpv-include=out/build/${{ env.PRESET }}/mpv_dev-prefix/src/mpv_dev-build/include" --cache-dir "out/build/${{ env.PRESET }}/.zig-cache"
 
       - name: Fetch bundled extras
         shell: pwsh
@@ -168,6 +177,7 @@ jobs:
             "commit=$(git rev-parse HEAD)"
             "clang=$((& 'C:/Program Files/LLVM/bin/clang-cl.exe' --version | Select-Object -First 1))"
             "rust=$(rustc --version)"
+            "zig=$(zig version)"
             "cmake=$((cmake --version | Select-Object -First 1))"
           ) | Set-Content "$stage/build-info.txt"
           Get-ChildItem $stage -File | Where-Object { $_.Extension -in '.exe', '.dll' } |

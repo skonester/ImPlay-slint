@@ -57,6 +57,37 @@ if(USE_MPV_WIN_BUILD)
   get_mpv_win_dev(mpv_dev)
 endif()
 
+# The Zig mpv core (source/zig, built by build.zig) makes every libmpv call.
+find_program(ZIG_EXECUTABLE zig REQUIRED)
+set(IMPLAY_ZIG_PREFIX ${CMAKE_BINARY_DIR}/zig-out)
+set(IMPLAY_ZIG_ARGS --prefix ${IMPLAY_ZIG_PREFIX} --cache-dir ${CMAKE_BINARY_DIR}/.zig-cache)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  list(APPEND IMPLAY_ZIG_ARGS -Doptimize=Debug)
+else()
+  list(APPEND IMPLAY_ZIG_ARGS -Doptimize=ReleaseSafe)
+endif()
+if(MPV_INCLUDE_DIRS)
+  list(APPEND IMPLAY_ZIG_ARGS -Dmpv-include=${MPV_INCLUDE_DIRS})
+endif()
+if(WIN32)
+  list(APPEND IMPLAY_ZIG_ARGS -Dtarget=x86_64-windows-msvc)
+  set(IMPLAY_MPV_CORE_LIB ${IMPLAY_ZIG_PREFIX}/lib/implay_mpv.lib)
+else()
+  set(IMPLAY_MPV_CORE_LIB ${IMPLAY_ZIG_PREFIX}/lib/libimplay_mpv.a)
+endif()
+file(GLOB IMPLAY_ZIG_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/source/zig/*)
+add_custom_command(
+  OUTPUT ${IMPLAY_MPV_CORE_LIB}
+  COMMAND ${ZIG_EXECUTABLE} build ${IMPLAY_ZIG_ARGS}
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  DEPENDS ${CMAKE_SOURCE_DIR}/build.zig ${IMPLAY_ZIG_SOURCES}
+  COMMENT "Building Zig mpv core"
+  VERBATIM)
+add_custom_target(implay_mpv_core DEPENDS ${IMPLAY_MPV_CORE_LIB})
+if(USE_MPV_WIN_BUILD)
+  add_dependencies(implay_mpv_core mpv_dev)
+endif()
+
 set(LIBROMFS_PROJECT_NAME ${PROJECT_NAME})
 set(LIBROMFS_RESOURCE_LOCATION "${CMAKE_SOURCE_DIR}/resources/romfs")
 set(OPENGL_LIBRARIES "glad")
@@ -90,7 +121,7 @@ set(SOURCE_FILES
   source/main.cpp
 )
 set(INCLUDE_DIRS include ${MPV_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
-set(LINK_LIBS Slint::Slint glad fmt::fmt natsort nlohmann_json::nlohmann_json inipp nfd ${CMAKE_THREAD_LIBS_INIT} ${MPV_LIBRARIES} ${LIBROMFS_LIBRARY})
+set(LINK_LIBS Slint::Slint glad fmt::fmt natsort nlohmann_json::nlohmann_json inipp nfd ${CMAKE_THREAD_LIBS_INIT} ${IMPLAY_MPV_CORE_LIB} ${MPV_LIBRARIES} ${LIBROMFS_LIBRARY})
 
 if(WIN32)
   configure_file(${PROJECT_SOURCE_DIR}/resources/win32/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
@@ -99,7 +130,8 @@ endif()
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCE_FILES})
 if(WIN32)
-  target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+  # ntdll: Zig's standard library calls the native API directly
+  target_link_libraries(${PROJECT_NAME} PRIVATE opengl32 ntdll)
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif()
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
@@ -114,6 +146,7 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
     COMMAND_EXPAND_LISTS)
 endif()
+add_dependencies(${PROJECT_NAME} implay_mpv_core)
 if(USE_MPV_WIN_BUILD)
   add_dependencies(${PROJECT_NAME} mpv_dev)
 endif()

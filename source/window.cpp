@@ -211,7 +211,7 @@ void Window::configureMpv() {
 
   for (const auto& [key, value] : options) {
     if (int result = mpv->option(key.c_str(), value.c_str()); result < 0) {
-      throw std::runtime_error(fmt::format("mpv: {} [{}={}]", mpv_error_string(result), key, value));
+      throw std::runtime_error(fmt::format("mpv: {} [{}={}]", Mpv::errorString(result), key, value));
     }
   }
 }
