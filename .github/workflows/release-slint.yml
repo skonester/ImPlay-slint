@@ -130,12 +130,30 @@ jobs:
           Compress-Archive -Path "$stage/*" -DestinationPath $zip
           "zip=$zip" >> $env:GITHUB_OUTPUT
           "name=$name" >> $env:GITHUB_OUTPUT
+          "stage=$stage" >> $env:GITHUB_OUTPUT
+
+      - name: Build installer
+        id: installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}/Inno Setup 6/ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+          }
+          $name = "${{ steps.package.outputs.name }}-setup"
+          $stage = (Resolve-Path "${{ steps.package.outputs.stage }}").Path
+          $outDir = (Resolve-Path dist).Path
+          & $iscc /Q "/DAppVersion=$env:RELEASE_TAG" "/DSourceDir=$stage" "/DOutputDir=$outDir" "/DOutputName=$name" resources/win32/installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed" }
+          "exe=dist/$name.exe" >> $env:GITHUB_OUTPUT
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.name }}
-          path: ${{ steps.package.outputs.zip }}
+          path: |
+            ${{ steps.package.outputs.zip }}
+            ${{ steps.installer.outputs.exe }}
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
@@ -145,4 +163,6 @@ jobs:
           name: ImPlay-Slint ${{ env.RELEASE_TAG }}
           prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease }}
           generate_release_notes: true
-          files: ${{ steps.package.outputs.zip }}
+          files: |
+            ${{ steps.installer.outputs.exe }}
+            ${{ steps.package.outputs.zip }}

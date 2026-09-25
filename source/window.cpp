@@ -32,14 +32,19 @@ namespace {
 
 void* loadGlSymbol(const char* name) {
 #ifdef _WIN32
-  static HMODULE gles = LoadLibraryW(L"libGLESv2.dll");
-  if (gles != nullptr) {
-    if (auto symbol = GetProcAddress(gles, name)) return reinterpret_cast<void*>(symbol);
+  // Slint's femtovg renderer normally draws through a WGL context. ANGLE's libGLESv2.dll only
+  // works with its own EGL context, so a stray copy next to the exe must not be preferred here.
+  if (wglGetCurrentContext() != nullptr) {
+    static HMODULE opengl = LoadLibraryW(L"opengl32.dll");
+    auto symbol = reinterpret_cast<void*>(wglGetProcAddress(name));
+    // Some drivers return small sentinel values instead of nullptr for unsupported names
+    auto value = reinterpret_cast<intptr_t>(symbol);
+    if (value != 0 && value != 1 && value != 2 && value != 3 && value != -1) return symbol;
+    return opengl != nullptr ? reinterpret_cast<void*>(GetProcAddress(opengl, name)) : nullptr;
   }
 
-  static HMODULE opengl = LoadLibraryW(L"opengl32.dll");
-  if (auto symbol = wglGetProcAddress(name)) return reinterpret_cast<void*>(symbol);
-  return opengl != nullptr ? reinterpret_cast<void*>(GetProcAddress(opengl, name)) : nullptr;
+  static HMODULE gles = LoadLibraryW(L"libGLESv2.dll");
+  return gles != nullptr ? reinterpret_cast<void*>(GetProcAddress(gles, name)) : nullptr;
 #else
   static void* gles = dlopen("libGLESv2.so.2", RTLD_LAZY | RTLD_LOCAL);
   if (gles != nullptr) {
