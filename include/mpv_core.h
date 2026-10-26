@@ -91,13 +91,13 @@ typedef void *(*implay_mpv_gl_load)(const char *name);
 
 implay_mpv *implay_mpv_create(const implay_mpv_callbacks *callbacks, implay_mpv_status *status);
 void implay_mpv_destroy(implay_mpv *core);
-// With wid == 0, creates an OpenGL render context that loads GL symbols through gl_load.
-implay_mpv_status implay_mpv_init(implay_mpv *core, implay_mpv_gl_load gl_load, int64_t wid);
+// Initializes mpv for the given window id (0 = render API; see implay_mpv_render_init).
+implay_mpv_status implay_mpv_init(implay_mpv *core, int64_t wid);
 // Drains queued client events, waiting up to timeout seconds for the first one.
 void implay_mpv_pump(implay_mpv *core, double timeout);
 
-// Queues simple whitespace-delimited commands (prefixed with osd-auto); quoted, escaped,
-// chained or expanded commands run synchronously through mpv's own parser.
+// Queues simple whitespace-delimited commands (prefixed with osd-auto) and `a; b` chains of
+// them; quoted, escaped or expanded commands run synchronously through mpv's own parser.
 int implay_mpv_command(implay_mpv *core, const char *args);
 int implay_mpv_command_string(implay_mpv *core, const char *args);
 int implay_mpv_command_async(implay_mpv *core, const char **args);
@@ -113,7 +113,13 @@ int implay_mpv_observe_property(implay_mpv *core, const char *name, mpv_format f
 int implay_mpv_request_log_messages(implay_mpv *core, const char *level);
 int implay_mpv_load_config_file(implay_mpv *core, const char *path);
 
-void implay_mpv_render(implay_mpv *core, int w, int h, int fbo, bool flip);
+// The render calls below must all run on the thread whose OpenGL context was current for
+// implay_mpv_render_init, and that thread must never wait on a blocking mpv call.
+// Creates the OpenGL render context; call after implay_mpv_init, before loading files.
+implay_mpv_status implay_mpv_render_init(implay_mpv *core, implay_mpv_gl_load gl_load);
+void implay_mpv_render_free(implay_mpv *core);
+// With block, waits for the frame's display time; only a dedicated render thread should.
+void implay_mpv_render(implay_mpv *core, int w, int h, int fbo, bool flip, bool block);
 bool implay_mpv_want_render(implay_mpv *core);
 void implay_mpv_report_swap(implay_mpv *core);
 

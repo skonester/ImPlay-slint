@@ -192,24 +192,11 @@ export fn implay_mpv_destroy(core: *Core) void {
     allocator.destroy(core);
 }
 
-/// With wid == 0, creates an OpenGL render context that loads GL symbols through gl_load.
-export fn implay_mpv_init(core: *Core, gl_load: ?GlLoadFn, wid: i64) Status {
+/// Initializes mpv for the given window id (0 = render API; see implay_mpv_render_init).
+export fn implay_mpv_init(core: *Core, wid: i64) Status {
     var window_id = wid;
     if (c.mpv_set_property(core.client, "wid", c.MPV_FORMAT_INT64, &window_id) < 0) return .set_wid_failed;
     if (c.mpv_initialize(core.client) < 0) return .init_failed;
-    if (wid == 0) {
-        core.gl_load = gl_load;
-        var gl_init: c.mpv_opengl_init_params = .{ .get_proc_address = getProcAddress, .get_proc_address_ctx = core };
-        // Slint calls render on the UI thread. Advanced control would require that thread to
-        // never wait on the mpv core; otherwise libmpv can deadlock permanently.
-        var params = [_]c.mpv_render_param{
-            .{ .type = c.MPV_RENDER_PARAM_API_TYPE, .data = @ptrCast(@constCast(c.MPV_RENDER_API_TYPE_OPENGL)) },
-            .{ .type = c.MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, .data = &gl_init },
-            .{ .type = c.MPV_RENDER_PARAM_INVALID, .data = null },
-        };
-        if (c.mpv_render_context_create(&core.render_ctx, core.client, &params) < 0) return .render_init_failed;
-        c.mpv_render_context_set_update_callback(core.render_ctx, onRenderUpdate, core);
-    }
 
     _ = c.mpv_request_log_messages(core.main, "no");
     c.mpv_set_wakeup_callback(core.client, onWakeup, core);
@@ -234,18 +221,26 @@ export fn implay_mpv_pump(core: *Core, timeout: f64) void {
 
 // Commands
 
-/// Queues simple whitespace-delimited commands without waiting for the core (this can be
-/// called on Slint's render thread). Quoted, escaped, chained or expanded commands are run
-/// synchronously through mpv's own parser.
+/// Queues simple whitespace-delimited commands, and `a; b` chains of them, without waiting
+/// for the core (this can be called on Slint's render thread). Quoted, escaped or expanded
+/// commands are run synchronously through mpv's own parser.
 export fn implay_mpv_command(core: *Core, args: [*:0]const u8) c_int {
+    const text = std.mem.span(args);
+    if (std.mem.indexOfAny(u8, text, "\"'\\$") != null) return c.mpv_command_string(core.client, args);
     var arena: std.heap.ArenaAllocator = .init(allocator);
     defer arena.deinit();
-    const split = parse.splitCommand(arena.allocator(), std.mem.span(args)) catch |err| return switch (err) {
-        error.Empty => c.MPV_ERROR_INVALID_PARAMETER,
-        error.OutOfMemory => c.MPV_ERROR_NOMEM,
-    };
-    const argv = split orelse return c.mpv_command_string(core.client, args);
-    return c.mpv_command_async(core.client, 0, @ptrCast(argv.ptr));
+    var queued = false;
+    var parts = std.mem.splitScalar(u8, text, ';');
+    while (parts.next()) |part| {
+        const argv = parse.splitCommand(arena.allocator(), part) catch |err| switch (err) {
+            error.Empty => continue,
+            error.OutOfMemory => return c.MPV_ERROR_NOMEM,
+        };
+        const result = c.mpv_command_async(core.client, 0, @ptrCast(argv.?.ptr));
+        if (result < 0) return result;
+        queued = true;
+    }
+    return if (queued) 0 else c.MPV_ERROR_INVALID_PARAMETER;
 }
 
 export fn implay_mpv_command_string(core: *Core, args: [*:0]const u8) c_int {
@@ -295,15 +290,41 @@ export fn implay_mpv_load_config_file(core: *Core, path: [*:0]const u8) c_int {
     return c.mpv_load_config_file(core.client, path);
 }
 
-// Rendering
+// Rendering. Every implay_mpv_render_* call, and render/want_render/report_swap, must run
+// on the thread whose OpenGL context was current for implay_mpv_render_init. That thread
+// must never wait on a blocking mpv call, or libmpv's render handshake stalls.
 
-export fn implay_mpv_render(core: *Core, w: c_int, h: c_int, fbo: c_int, flip: bool) void {
+/// Creates the OpenGL render context; GL symbols are loaded through gl_load. Must be
+/// called after implay_mpv_init and before any file is loaded.
+export fn implay_mpv_render_init(core: *Core, gl_load: GlLoadFn) Status {
+    core.gl_load = gl_load;
+    var gl_init: c.mpv_opengl_init_params = .{ .get_proc_address = getProcAddress, .get_proc_address_ctx = core };
+    var params = [_]c.mpv_render_param{
+        .{ .type = c.MPV_RENDER_PARAM_API_TYPE, .data = @ptrCast(@constCast(c.MPV_RENDER_API_TYPE_OPENGL)) },
+        .{ .type = c.MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, .data = &gl_init },
+        .{ .type = c.MPV_RENDER_PARAM_INVALID, .data = null },
+    };
+    if (c.mpv_render_context_create(&core.render_ctx, core.client, &params) < 0) return .render_init_failed;
+    c.mpv_render_context_set_update_callback(core.render_ctx, onRenderUpdate, core);
+    return .ok;
+}
+
+export fn implay_mpv_render_free(core: *Core) void {
+    if (core.render_ctx) |ctx| c.mpv_render_context_free(ctx);
+    core.render_ctx = null;
+}
+
+/// With `block`, waits until the frame's display time (up to video-timing-offset), which
+/// keeps A/V timing exact; only a dedicated render thread should do that.
+export fn implay_mpv_render(core: *Core, w: c_int, h: c_int, fbo: c_int, flip: bool, block: bool) void {
     const ctx = core.render_ctx orelse return;
     var flip_y: c_int = @intFromBool(flip);
+    var block_for_target: c_int = @intFromBool(block);
     var target: c.mpv_opengl_fbo = .{ .fbo = fbo, .w = w, .h = h, .internal_format = 0 };
     var params = [_]c.mpv_render_param{
         .{ .type = c.MPV_RENDER_PARAM_OPENGL_FBO, .data = &target },
         .{ .type = c.MPV_RENDER_PARAM_FLIP_Y, .data = &flip_y },
+        .{ .type = c.MPV_RENDER_PARAM_BLOCK_FOR_TARGET_TIME, .data = &block_for_target },
         .{ .type = c.MPV_RENDER_PARAM_INVALID, .data = null },
     };
     _ = c.mpv_render_context_render(ctx, &params);

@@ -22,6 +22,7 @@
 #include "helpers/nfd.h"
 #include "helpers/utils.h"
 #include "mpv.h"
+#include "video_renderer.h"
 
 namespace ImPlay {
 
@@ -37,8 +38,10 @@ class Window {
   void configureMpv();
   void initMpv();
   void initObservers();
+  void applyPendingTime();
   void recordRecentFile();
   void initCallbacks();
+  void scheduleCollectionsSync();
   void syncCollections();
   void renderFrame();
   void releaseRenderer();
@@ -68,17 +71,30 @@ class Window {
 
   Config* config = nullptr;
   std::unique_ptr<Mpv> mpv;
+  // Between mpv and app: destroying app runs Slint's RenderingTeardown, which still
+  // needs the renderer, and the renderer must stop before mpv is destroyed.
+  std::unique_ptr<VideoRenderer> renderer;
   slint::ComponentHandle<AppWindow> app;
   std::map<std::string, std::string> options;
   std::vector<std::string> initialPaths;
   std::string currentPath;
   std::string currentTitle;
   bool recentPending = false;
+  bool collectionsSyncPending = false;
+  // Latest time-pos and duration not yet shown, or -1.
+  double pendingTime = -1;
+  double pendingDuration = -1;
 
-  unsigned int texture = 0;
-  unsigned int framebuffer = 0;
-  int textureWidth = 0;
-  int textureHeight = 0;
+  // Bound to the UI once; syncCollections() patches them in place.
+  std::shared_ptr<slint::VectorModel<PlaylistRow>> playlistModel = std::make_shared<slint::VectorModel<PlaylistRow>>();
+  std::shared_ptr<slint::VectorModel<TrackRow>> audioTrackModel = std::make_shared<slint::VectorModel<TrackRow>>();
+  std::shared_ptr<slint::VectorModel<TrackRow>> subTrackModel = std::make_shared<slint::VectorModel<TrackRow>>();
+  std::shared_ptr<slint::VectorModel<TrackRow>> videoTrackModel = std::make_shared<slint::VectorModel<TrackRow>>();
+  std::shared_ptr<slint::VectorModel<ChapterRow>> chapterModel = std::make_shared<slint::VectorModel<ChapterRow>>();
+  std::shared_ptr<slint::VectorModel<ChoiceRow>> audioDeviceModel = std::make_shared<slint::VectorModel<ChoiceRow>>();
+  std::shared_ptr<slint::VectorModel<ChoiceRow>> profileModel = std::make_shared<slint::VectorModel<ChoiceRow>>();
+  std::shared_ptr<slint::VectorModel<ChoiceRow>> recentModel = std::make_shared<slint::VectorModel<ChoiceRow>>();
+
   bool mpvInitialized = false;
   std::atomic_bool shuttingDown = false;
   std::atomic_bool eventWakePending = false;

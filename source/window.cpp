@@ -60,6 +60,19 @@ std::string displayName(const ImPlay::Mpv::PlayItem& item) {
   return filename.empty() ? item.path.string() : filename;
 }
 
+// Patches rows in place when the row count is unchanged, so an open list keeps its
+// delegates instead of rebuilding every row on each mpv list update.
+template <typename T>
+void updateModel(slint::VectorModel<T>& model, std::vector<T> rows) {
+  if (model.row_count() != rows.size()) {
+    model.set_vector(std::move(rows));
+    return;
+  }
+  for (size_t index = 0; index < rows.size(); ++index) {
+    if (model.row_data(index) != rows[index]) model.set_row_data(index, rows[index]);
+  }
+}
+
 slint::ComponentHandle<AppWindow> createSlintApp() {
   if (std::getenv("SLINT_BACKEND") == nullptr) {
 #ifdef _WIN32
@@ -99,6 +112,16 @@ Window::Window(Config* config) : config(config), mpv(std::make_unique<Mpv>()), a
   app->set_cfg_glyph_range(config->Data.Font.GlyphRange);
   app->set_cfg_log_level(config->Data.Debug.LogLevel.c_str());
   app->set_cfg_log_limit(config->Data.Debug.LogLimit);
+  app->set_playlist_items(playlistModel);
+  app->set_panel_audio_tracks(audioTrackModel);
+  app->set_ctx_audio_tracks(audioTrackModel);
+  app->set_panel_sub_tracks(subTrackModel);
+  app->set_ctx_sub_tracks(subTrackModel);
+  app->set_ctx_video_tracks(videoTrackModel);
+  app->set_chapters(chapterModel);
+  app->set_audio_devices(audioDeviceModel);
+  app->set_profiles(profileModel);
+  app->set_recent_items(recentModel);
   nativeScaleFactor = app->window().scale_factor();
   if (config->Data.Interface.Scale > 0)
     app->window().window_handle().set_scale_factor(nativeScaleFactor * config->Data.Interface.Scale);
@@ -135,12 +158,8 @@ bool Window::init(OptionParser& parser) {
       if (!shuttingDown && mpvInitialized) mpv->waitEvent();
     });
   };
-  mpv->updateCb() = [this](Mpv*) {
-    if (renderWakePending.exchange(true)) return;
-    postToUi([this] {
-      if (!shuttingDown) app->window().request_redraw();
-    });
-  };
+  // The renderer exists before mpv's render context, the only source of these calls.
+  mpv->updateCb() = [this](Mpv*) { renderer->notifyUpdate(); };
 
   auto error = app->window().set_rendering_notifier(
       [this](slint::RenderingState state, slint::GraphicsAPI) {
@@ -221,19 +240,17 @@ void Window::initMpv() {
   if (!gladLoadGLES2(reinterpret_cast<GLADloadfunc>(loadGlSymbol)))
     throw std::runtime_error("Unable to load the OpenGL ES functions used by Slint");
 
-  glGenFramebuffers(1, &framebuffer);
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  mpv->init(reinterpret_cast<GLAddrLoadFunc>(loadGlSymbol));
+  renderer = std::make_unique<VideoRenderer>(*mpv, reinterpret_cast<GLAddrLoadFunc>(loadGlSymbol));
+  mpv->init();
+  // mpv needs its render context before the first file is loaded.
+  renderer->start([this] {
+    if (renderWakePending.exchange(true)) return;
+    postToUi([this] {
+      if (shuttingDown) return;
+      applyPendingTime();
+      app->window().request_redraw();
+    });
+  });
   mpvInitialized = true;
 #ifdef _WIN32
   installNativeWindowHooks();
@@ -264,7 +281,7 @@ void Window::initObservers() {
   mpv->observeEvent(MPV_EVENT_FILE_LOADED, [this](void*) {
     recentPending = true;
     recordRecentFile();
-    syncCollections();
+    scheduleCollectionsSync();
   });
   mpv->observeProperty<char*, MPV_FORMAT_STRING>("path", [this](char* path) {
     currentPath = path != nullptr ? path : "";
@@ -308,23 +325,29 @@ void Window::initObservers() {
     app->set_current_aspect(value != nullptr && *value != '\0' ? value : "-1");
   });
   mpv->observeProperty<double, MPV_FORMAT_DOUBLE>("time-pos", [this](double value) {
-    app->set_current_time(static_cast<float>(std::max(0.0, value)));
+    // time-pos changes once per video frame, a little before that frame is drawn. Show
+    // it together with the frame so both cost one UI redraw; without video frames (audio,
+    // or a stall), apply it directly once it has moved far enough to be visible.
+    pendingTime = std::max(0.0, value);
+    if (std::abs(pendingTime - app->get_current_time()) >= 0.1) applyPendingTime();
   });
   mpv->observeProperty<double, MPV_FORMAT_DOUBLE>("duration", [this](double value) {
-    app->set_duration(static_cast<float>(std::max(0.0, value)));
+    // Live streams grow their duration every frame; batch it like time-pos.
+    pendingDuration = std::max(0.0, value);
+    if (std::abs(pendingDuration - app->get_duration()) >= 1.0) applyPendingTime();
   });
   mpv->observeProperty<char*, MPV_FORMAT_STRING>("media-title", [this](char* title) {
     currentTitle = title != nullptr ? title : "";
     app->set_media_title(currentTitle.empty() ? "ImPlay" : currentTitle.c_str());
     recordRecentFile();
   });
-  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("playlist", [this](mpv_node) { syncCollections(); });
-  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("track-list", [this](mpv_node) { syncCollections(); });
-  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("chapter-list", [this](mpv_node) { syncCollections(); });
-  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("audio-device-list", [this](mpv_node) { syncCollections(); });
-  mpv->observeProperty<char*, MPV_FORMAT_STRING>("profile-list", [this](char*) { syncCollections(); });
-  mpv->observeProperty<char*, MPV_FORMAT_STRING>("audio-device", [this](char*) { syncCollections(); });
-  mpv->observeProperty<int64_t, MPV_FORMAT_INT64>("chapter", [this](int64_t) { syncCollections(); });
+  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("playlist", [this](mpv_node) { scheduleCollectionsSync(); });
+  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("track-list", [this](mpv_node) { scheduleCollectionsSync(); });
+  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("chapter-list", [this](mpv_node) { scheduleCollectionsSync(); });
+  mpv->observeProperty<mpv_node, MPV_FORMAT_NODE>("audio-device-list", [this](mpv_node) { scheduleCollectionsSync(); });
+  mpv->observeProperty<char*, MPV_FORMAT_STRING>("profile-list", [this](char*) { scheduleCollectionsSync(); });
+  mpv->observeProperty<char*, MPV_FORMAT_STRING>("audio-device", [this](char*) { scheduleCollectionsSync(); });
+  mpv->observeProperty<int64_t, MPV_FORMAT_INT64>("chapter", [this](int64_t) { scheduleCollectionsSync(); });
   mpv->observeProperty<int, MPV_FORMAT_FLAG>("sub-visibility", [this](int value) {
     app->set_sub_visible(value != 0);
   });
@@ -357,12 +380,18 @@ void Window::initObservers() {
   });
 }
 
+void Window::applyPendingTime() {
+  if (pendingTime >= 0) app->set_current_time(static_cast<float>(pendingTime));
+  if (pendingDuration >= 0) app->set_duration(static_cast<float>(pendingDuration));
+  pendingTime = pendingDuration = -1;
+}
+
 void Window::recordRecentFile() {
   if (!recentPending || currentPath.empty()) return;
   recentPending = false;
   if (currentPath == "bd://" || currentPath == "dvd://") return;
   config->addRecentFile(currentPath, currentTitle);
-  syncCollections();
+  scheduleCollectionsSync();
 }
 
 void Window::initCallbacks() {
@@ -379,7 +408,7 @@ void Window::initCallbacks() {
   app->on_clear_recent([this] {
     config->clearRecentFiles();
     config->save();
-    syncCollections();
+    scheduleCollectionsSync();
   });
   app->on_command([this](slint::SharedString command) {
     if (command == "implay-open-config") {
@@ -530,7 +559,7 @@ void Window::initCallbacks() {
     app->set_ctx_show(true);
   });
   app->on_panel_opened([this](slint::SharedString) {
-    if (mpvInitialized) syncCollections();
+    if (mpvInitialized) scheduleCollectionsSync();
   });
   app->on_win_minimize([this] { app->window().set_minimized(true); });
   app->on_win_maximize([this] {
@@ -663,6 +692,17 @@ void Window::initCallbacks() {
   });
 }
 
+void Window::scheduleCollectionsSync() {
+  // mpv reports list changes in bursts (a file load touches playlist, tracks,
+  // chapters and more); rebuild the UI rows once after the burst is drained.
+  if (collectionsSyncPending) return;
+  collectionsSyncPending = true;
+  postToUi([this] {
+    collectionsSyncPending = false;
+    if (!shuttingDown) syncCollections();
+  });
+}
+
 void Window::syncCollections() {
   std::vector<PlaylistRow> playlist;
   playlist.reserve(mpv->playlist.size());
@@ -674,7 +714,7 @@ void Window::syncCollections() {
     entry.current = item.id == mpv->playlistPlayingPos;
     playlist.emplace_back(std::move(entry));
   }
-  app->set_playlist_items(std::make_shared<slint::VectorModel<PlaylistRow>>(std::move(playlist)));
+  updateModel(*playlistModel, std::move(playlist));
 
   std::vector<TrackRow> audioTracks;
   std::vector<TrackRow> subtitleTracks;
@@ -694,14 +734,9 @@ void Window::syncCollections() {
     else
       videoTracks.emplace_back(std::move(entry));
   }
-  auto audioModel = std::make_shared<slint::VectorModel<TrackRow>>(std::move(audioTracks));
-  auto subtitleModel = std::make_shared<slint::VectorModel<TrackRow>>(std::move(subtitleTracks));
-  auto videoModel = std::make_shared<slint::VectorModel<TrackRow>>(std::move(videoTracks));
-  app->set_panel_audio_tracks(audioModel);
-  app->set_ctx_audio_tracks(audioModel);
-  app->set_panel_sub_tracks(subtitleModel);
-  app->set_ctx_sub_tracks(subtitleModel);
-  app->set_ctx_video_tracks(videoModel);
+  updateModel(*audioTrackModel, std::move(audioTracks));
+  updateModel(*subTrackModel, std::move(subtitleTracks));
+  updateModel(*videoTrackModel, std::move(videoTracks));
   app->set_sub_active(mpv->sid != "no" && !mpv->sid.empty());
 
   std::vector<ChapterRow> chapters;
@@ -713,7 +748,7 @@ void Window::syncCollections() {
     entry.current = item.id == mpv->chapter;
     chapters.emplace_back(std::move(entry));
   }
-  app->set_chapters(std::make_shared<slint::VectorModel<ChapterRow>>(std::move(chapters)));
+  updateModel(*chapterModel, std::move(chapters));
 
   std::vector<ChoiceRow> devices;
   devices.reserve(mpv->audioDevices.size());
@@ -724,7 +759,7 @@ void Window::syncCollections() {
     entry.selected = item.name == mpv->audioDevice;
     devices.emplace_back(std::move(entry));
   }
-  app->set_audio_devices(std::make_shared<slint::VectorModel<ChoiceRow>>(std::move(devices)));
+  updateModel(*audioDeviceModel, std::move(devices));
 
   std::vector<ChoiceRow> profiles;
   profiles.reserve(mpv->profiles.size());
@@ -735,7 +770,7 @@ void Window::syncCollections() {
     entry.selected = false;
     profiles.emplace_back(std::move(entry));
   }
-  app->set_profiles(std::make_shared<slint::VectorModel<ChoiceRow>>(std::move(profiles)));
+  updateModel(*profileModel, std::move(profiles));
 
   std::vector<ChoiceRow> recent;
   recent.reserve(config->getRecentFiles().size());
@@ -746,43 +781,22 @@ void Window::syncCollections() {
     entry.selected = false;
     recent.emplace_back(std::move(entry));
   }
-  app->set_recent_items(std::make_shared<slint::VectorModel<ChoiceRow>>(std::move(recent)));
+  updateModel(*recentModel, std::move(recent));
 }
 
 void Window::renderFrame() {
-  if (!mpvInitialized || texture == 0) return;
-
+  if (!renderer) return;
   const int width = std::max(1, app->get_video_width());
   const int height = std::max(1, app->get_video_height());
-  const bool resized = width != textureWidth || height != textureHeight;
-  if (resized) {
-    textureWidth = width;
-    textureHeight = height;
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glBindTexture(GL_TEXTURE_2D, 0);
+  if (renderer->beforeRendering(width, height)) {
+    app->set_video_frame(slint::Image::create_from_borrowed_gl_2d_rgba_texture(
+        renderer->texture(),
+        {static_cast<uint32_t>(renderer->width()), static_cast<uint32_t>(renderer->height())}));
   }
-
-  // Reallocating the texture discards the last picture. mpv can redraw its
-  // previous frame even when paused and no new-frame update is pending.
-  if (mpv->wantRender() || resized) {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // The borrowed GL texture is sampled with GL texture coordinates, unlike a
-    // window backbuffer. Flipping here inverted the frame a second time.
-    mpv->render(width, height, framebuffer, false);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    mpv->reportSwap();
-  }
-
-  app->set_video_frame(slint::Image::create_from_borrowed_gl_2d_rgba_texture(
-      texture, {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}));
 }
 
 void Window::releaseRenderer() {
-  if (texture != 0) glDeleteTextures(1, &texture);
-  if (framebuffer != 0) glDeleteFramebuffers(1, &framebuffer);
-  texture = 0;
-  framebuffer = 0;
+  if (renderer) renderer->release();
 }
 
 #ifdef _WIN32

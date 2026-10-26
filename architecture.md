@@ -54,11 +54,24 @@ frontend source files into the same `ImPlay` executable name.
 
 ### Playback and rendering
 
-The Slint window uses Slint's FemtoVG/OpenGL rendering notifier. During renderer
-setup it initializes libmpv's render context; before each frame it asks mpv to
-render into an OpenGL framebuffer/texture that is exposed to the Slint UI.
-mpv event wakeups are posted back to the UI thread, and render updates request
-another UI redraw.
+The Slint window uses Slint's FemtoVG/OpenGL rendering notifier, and
+`VideoRenderer` (`source/video_renderer.cpp`) owns the video GL work:
+
+- Threaded (when Slint renders through WGL, the normal Windows case): renderer
+  setup creates a second WGL context shared with Slint's (same pixel format,
+  same ES/desktop profile and version). A dedicated render thread owns that
+  context and libmpv's render context, and renders into a ring of three
+  textures with mpv's normal frame timing. In `BeforeRendering` the UI thread
+  only takes the newest finished texture, waits for its fence on the GPU and
+  blits it into the texture Slint displays. Fences in both directions keep the
+  two contexts from reading or overwriting a texture early.
+- Fallback (EGL/ANGLE, or if the shared context cannot be made): mpv renders
+  directly into the displayed texture inside `BeforeRendering`, without
+  waiting for the frame's display time (`video-timing-offset=0`).
+
+mpv event wakeups are posted back to the UI thread; a finished video frame
+posts one UI redraw, which also applies the pending `time-pos`/`duration` so a
+frame and its timestamp cost a single repaint.
 
 The ImGui frontend uses its own GLFW/OpenGL window and player/rendering
 integration under `imgui/source/`. Do not move Slint-specific assumptions into
@@ -74,6 +87,8 @@ the same lifecycle.
 - `source/window.cpp` / `include/window.h`: Slint window lifecycle, native
   window handling, OpenGL/libmpv rendering, UI callbacks, and media event
   coordination.
+- `source/video_renderer.cpp` / `include/video_renderer.h`: shared WGL context,
+  mpv render thread, texture ring and fences, plus the UI-thread fallback.
 - `source/mpv.cpp` / `include/mpv.h`: type-safe C++ adapter over the Zig C ABI;
   caches observable mpv properties and copies callback-owned list data.
 - `source/config.cpp` / `include/config.h`: INI configuration and recent-file
@@ -124,6 +139,17 @@ identical. ABI changes require rebuilding and testing both sides.
   `implay_mpv_pump()` on the caller's thread.
 - UI mutations must be marshalled to the UI thread through the existing
   `postToUi`/redraw scheduling path.
+- Every `implay_mpv_render_*` call, `render`, `want_render` and `report_swap`
+  runs on the thread whose GL context created the render context: the render
+  thread, or the UI thread in fallback mode. That thread must never wait on a
+  blocking mpv call (libmpv's render-thread rule); the render thread only makes
+  render calls and never waits on the UI thread. In fallback mode this means UI
+  callbacks should keep using the async command and property paths.
+- `Window::renderer` is declared between `mpv` and `app`: destroying `app` runs
+  Slint's `RenderingTeardown`, which stops the render thread, and the renderer
+  must be gone before mpv is destroyed.
+- List-property changes are coalesced by `scheduleCollectionsSync()` and applied
+  to persistent Slint models in place; do not replace those models.
 - Parsed Zig list data is temporary. `ImPlay::Mpv` copies it into C++ containers.
 - `Window` must stop scheduling work before its mpv object and UI handle are
   destroyed; `shuttingDown` and the pending-wakeup flags protect this

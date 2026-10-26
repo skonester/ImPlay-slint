@@ -64,17 +64,24 @@ void Mpv::requestLog(const char *level, LogHandler handler) {
 
 int Mpv::loadConfig(const char *path) { return implay_mpv_load_config_file(core, path); }
 
-void Mpv::render(int w, int h, int fbo, bool flip) { implay_mpv_render(core, w, h, fbo, flip); }
+void Mpv::render(int w, int h, int fbo, bool flip, bool block) { implay_mpv_render(core, w, h, fbo, flip, block); }
 
 bool Mpv::wantRender() { return implay_mpv_want_render(core); }
 
 void Mpv::reportSwap() { implay_mpv_report_swap(core); }
 
-void Mpv::init(GLAddrLoadFunc load, int64_t wid) {
-  if (auto status = implay_mpv_init(core, load, wid); status != IMPLAY_MPV_OK)
+void Mpv::init(int64_t wid) {
+  if (auto status = implay_mpv_init(core, wid); status != IMPLAY_MPV_OK)
     throw std::runtime_error(implay_mpv_status_string(status));
   observeProperties();
 }
+
+void Mpv::initRender(GLAddrLoadFunc load) {
+  if (auto status = implay_mpv_render_init(core, load); status != IMPLAY_MPV_OK)
+    throw std::runtime_error(implay_mpv_status_string(status));
+}
+
+void Mpv::freeRender() { implay_mpv_render_free(core); }
 
 void Mpv::onEvent(void *userdata, mpv_event_id id, void *data) {
   auto *self = static_cast<Mpv *>(userdata);

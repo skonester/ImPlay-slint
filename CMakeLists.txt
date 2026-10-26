@@ -117,6 +117,7 @@ set(SOURCE_FILES
   source/helpers/utils.cpp
   source/config.cpp
   source/mpv.cpp
+  source/video_renderer.cpp
   source/window.cpp
   source/main.cpp
 )
