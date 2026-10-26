@@ -9,7 +9,8 @@ The application provides a native desktop window, playlist and playback
 controls, subtitle and audio selection, configurable themes and languages,
 recent files, drag-and-drop/file dialogs, mpv option passthrough, and an
 optional single-instance mode. It can also run mpv headlessly when video is
-disabled or an output-only option is supplied.
+disabled or an output-only option is supplied. Video is rendered on its own
+thread, so the interface stays responsive during playback.
 
 ## Frontends
 
