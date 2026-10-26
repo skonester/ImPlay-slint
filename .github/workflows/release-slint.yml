@@ -1,26 +1,18 @@
 name: Release ImPlay-Slint
 
+# How to release:
+#   1. Set "version" in package.json (e.g. 1.6.3) and push to main.
+#   2. GitHub -> Actions -> Release ImPlay-Slint -> Run workflow.
+# It builds main and publishes release <version>, creating the tag itself.
+
 on:
-  push:
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Existing tag to rebuild (e.g. 1.6.3). Pushing a new X.Y.Z tag already starts a release."
-        required: true
-        type: string
 
 permissions:
   contents: write
 
-concurrency:
-  group: release-slint-${{ github.ref }}
-  cancel-in-progress: false
-
 env:
   PRESET: x64-clang-release
-  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
 
 jobs:
   build-windows:
@@ -28,41 +20,29 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      # The workflow never creates tags: GITHUB_TOKEN can't create a ref on a commit that
-      # changes .github/workflows (403 "Resource not accessible by integration").
-      - name: Validate tag
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if ("$env:RELEASE_TAG" -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
-            throw "Tag '$env:RELEASE_TAG' must look like X.Y.Z"
-          }
-          # A manual run names a tag that may not exist yet; checkout would then fail with
-          # an unhelpful "pathspec did not match" error.
-          gh api "repos/${{ github.repository }}/git/ref/tags/$env:RELEASE_TAG" --silent 2>$null
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "::error title=Tag $env:RELEASE_TAG not found::Push the tag first; that starts this workflow by itself: git tag $env:RELEASE_TAG <commit> && git push origin $env:RELEASE_TAG"
-            exit 1
-          }
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: refs/tags/${{ env.RELEASE_TAG }}
           fetch-depth: 0
 
-      - name: Validate package version
+      - name: Read version
         shell: pwsh
         run: |
           $package = Get-Content package.json -Raw | ConvertFrom-Json
-          if ($package.version -ne $env:RELEASE_TAG) {
-            throw "package.json version '$($package.version)' does not match release tag '$env:RELEASE_TAG'"
+          # GitHub doesn't let a workflow tag a commit that edits a workflow file. Those edits
+          # don't change the app, so build and tag the newest commit that doesn't.
+          $commit = git rev-list HEAD | Where-Object {
+            -not (git diff-tree --no-commit-id --name-only -r $_ | Select-String '^\.github/workflows/')
+          } | Select-Object -First 1
+          if (git diff --name-only $commit HEAD -- . ':(exclude).github/workflows') {
+            throw "The newest commit changes both the app and the workflow file. Push any other small commit, then run this again."
           }
-          if ($package.release.prerelease -isnot [bool]) {
-            throw "package.json release.prerelease must be true or false"
-          }
-          "RELEASE_PRERELEASE=$($package.release.prerelease.ToString().ToLowerInvariant())" >> $env:GITHUB_ENV
+          git checkout --quiet $commit
+          "RELEASE_TAG=$($package.version)" >> $env:GITHUB_ENV
+          "RELEASE_COMMIT=$commit" >> $env:GITHUB_ENV
+          $prerelease = if ($package.release.prerelease -eq $true) { 'true' } else { 'false' }
+          "RELEASE_PRERELEASE=$prerelease" >> $env:GITHUB_ENV
+          Write-Host "Releasing $($package.version) from $commit"
 
       - name: Set up MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
@@ -236,6 +216,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ env.RELEASE_COMMIT }}
           name: ImPlay-Slint ${{ env.RELEASE_TAG }}
           prerelease: ${{ env.RELEASE_PRERELEASE == 'true' }}
           generate_release_notes: true
