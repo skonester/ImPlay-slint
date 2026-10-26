@@ -23,6 +23,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
         "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
+        "CMAKE_RC_COMPILER": "C:/Program Files/LLVM/bin/llvm-rc.exe",
         "IMPLAY_UI": "slint",
         "USE_OPENGL_ES3": "ON",
         "BUILD_SHARED_LIBS": "ON"

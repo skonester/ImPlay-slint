@@ -288,7 +288,7 @@ void Quickview::drawVideoTabContent() {
   ImGui::TextUnformatted("views.quickview.video.rotate"_i18n);
   const char *rotates[] = {"0", "90", "180", "270"};
   for (auto rotate : rotates) {
-    if (ImGui::Button(fmt::format("{}Â°", rotate).c_str())) mpv->commandv("set", "video-rotate", rotate, nullptr);
+    if (ImGui::Button(fmt::format("{}°", rotate).c_str())) mpv->commandv("set", "video-rotate", rotate, nullptr);
     ImGui::SameLine();
   }
   iconButton(ICON_FA_UNDO, "add video-rotate -1", "views.quickview.video.rotate_left"_i18n, false);

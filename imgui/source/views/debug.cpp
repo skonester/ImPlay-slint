@@ -510,7 +510,8 @@ void Debug::Console::ExecCommand(const char* command_line) {
     int first = History.Size - 10;
     for (int i = first > 0 ? first : 0; i < History.Size; i++) AddLog("info", "%3d: %s\n", i, History[i]);
   } else {
-    int err = mpv->command(command_line);
+    // Typed by the user, who is shown whether it worked, so this one waits for mpv.
+    int err = mpv->commandSync(command_line);
     if (err < 0) {
       AddLog("error", "%s", mpv_error_string(err));
     } else {

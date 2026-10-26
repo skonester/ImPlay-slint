@@ -15,23 +15,67 @@ Mpv::Mpv() {
   if (!main) throw std::runtime_error("could not create mpv handle");
   mpv = mpv_create_client(main, "implay");
   if (!mpv) throw std::runtime_error("could not create mpv client");
+  queueThread = std::thread(&Mpv::runQueue, this);
 }
 
 Mpv::~Mpv() {
+  {
+    std::lock_guard<std::mutex> l(queueLock);
+    queueStop = true;
+  }
+  queueCond.notify_one();
+  queueThread.join();
   if (renderCtx != nullptr) mpv_render_context_free(renderCtx);
   mpv_unobserve_property(mpv, 0);
   mpv_destroy(main);
   mpv_destroy(mpv);
 }
 
-int Mpv::commandv(const char *arg, ...) {
+void Mpv::post(std::function<void()> task) {
+  {
+    std::lock_guard<std::mutex> l(queueLock);
+    queue.push_back(std::move(task));
+  }
+  queueCond.notify_one();
+}
+
+void Mpv::runQueue() {
+  while (true) {
+    std::function<void()> task;
+    {
+      std::unique_lock<std::mutex> l(queueLock);
+      queueCond.wait(l, [this] { return queueStop || !queue.empty(); });
+      if (queueStop) break;
+      task = std::move(queue.front());
+      queue.pop_front();
+    }
+    task();
+  }
+}
+
+void Mpv::command(std::string args) {
+  post([this, args = std::move(args)] { mpv_command_string(mpv, args.c_str()); });
+}
+
+void Mpv::command(const char *args[]) {
+  std::vector<std::string> copy;
+  for (const char **s = args; *s != nullptr; s++) copy.emplace_back(*s);
+  post([this, copy = std::move(copy)] {
+    std::vector<const char *> argv;
+    for (const auto &s : copy) argv.push_back(s.c_str());
+    argv.push_back(nullptr);
+    mpv_command(mpv, argv.data());
+  });
+}
+
+void Mpv::commandv(const char *arg, ...) {
   std::vector<const char *> args;
   va_list ap;
   va_start(ap, arg);
   for (const char *s = arg; s != nullptr; s = va_arg(ap, const char *)) args.push_back(s);
   va_end(ap);
   args.push_back(nullptr);
-  return mpv_command_async(mpv, 0, args.data());
+  command(args.data());
 }
 
 void Mpv::waitEvent(double timeout) {
@@ -62,7 +106,10 @@ void Mpv::requestLog(const char *level, LogHandler handler) {
   mpv_request_log_messages(mpv, level);
 }
 
-int Mpv::loadConfig(const char *path) { return mpv_load_config_file(mpv, path); }
+int Mpv::loadConfig(const char *path) {
+  post([this, path = std::string(path)] { mpv_load_config_file(mpv, path.c_str()); });
+  return 0;
+}
 
 void Mpv::eventLoop() {
   while (main) {
@@ -71,14 +118,18 @@ void Mpv::eventLoop() {
   }
 }
 
-void Mpv::render(int w, int h, int fbo, bool flip) {
+void Mpv::render(int w, int h, int fbo, bool flip, bool block) {
   if (renderCtx == nullptr) return;
 
   int flip_y{flip ? 1 : 0};
+  // With block, mpv waits here until the frame's display time; only a dedicated render
+  // thread should do that.
+  int block_for_target{block ? 1 : 0};
   mpv_opengl_fbo mpfbo{fbo, w, h};
   mpv_render_param params[]{
       {MPV_RENDER_PARAM_OPENGL_FBO, &mpfbo},
       {MPV_RENDER_PARAM_FLIP_Y, &flip_y},
+      {MPV_RENDER_PARAM_BLOCK_FOR_TARGET_TIME, &block_for_target},
       {MPV_RENDER_PARAM_INVALID, nullptr},
   };
   mpv_render_context_render(renderCtx, params);
@@ -94,30 +145,38 @@ void Mpv::reportSwap() {
 
 static void *get_proc_address(void *ctx, const char *name) { return ((GLAddrLoadFunc)ctx)(name); }
 
-void Mpv::init(GLAddrLoadFunc load, int64_t wid) {
+void Mpv::initRender(GLAddrLoadFunc load, bool advancedControl) {
+  mpv_opengl_init_params gl_init_params{get_proc_address, (void *)load};
+  // Advanced control promises that the render thread never waits on a blocking mpv call;
+  // breaking that promise freezes the mpv core for good instead of hitting a timeout.
+  int advanced = advancedControl ? 1 : 0;
+  mpv_render_param params[]{
+      {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
+      {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
+      {MPV_RENDER_PARAM_ADVANCED_CONTROL, &advanced},
+      {MPV_RENDER_PARAM_INVALID, nullptr},
+  };
+
+  if (mpv_render_context_create(&renderCtx, mpv, params) < 0)
+    throw std::runtime_error("failed to initialize mpv GL context");
+
+  mpv_render_context_set_update_callback(
+      renderCtx,
+      [](void *ctx) {
+        Mpv *mpv = static_cast<Mpv *>(ctx);
+        if (mpv->updateCb_) mpv->updateCb_(mpv);
+      },
+      this);
+}
+
+void Mpv::freeRender() {
+  if (renderCtx != nullptr) mpv_render_context_free(renderCtx);
+  renderCtx = nullptr;
+}
+
+void Mpv::init(int64_t wid) {
   if (mpv_set_property(mpv, "wid", MPV_FORMAT_INT64, &wid) < 0) throw std::runtime_error("could not set mpv wid");
   if (mpv_initialize(mpv) < 0) throw std::runtime_error("could not initialize mpv context");
-  if (wid == 0) {
-    mpv_opengl_init_params gl_init_params{get_proc_address, (void *)load};
-    int advanced = 1;
-    mpv_render_param params[]{
-        {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
-        {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
-        {MPV_RENDER_PARAM_ADVANCED_CONTROL, &advanced},
-        {MPV_RENDER_PARAM_INVALID, nullptr},
-    };
-
-    if (mpv_render_context_create(&renderCtx, mpv, params) < 0)
-      throw std::runtime_error("failed to initialize mpv GL context");
-
-    mpv_render_context_set_update_callback(
-        renderCtx,
-        [](void *ctx) {
-          Mpv *mpv = static_cast<Mpv *>(ctx);
-          if (mpv->updateCb_) mpv->updateCb_(mpv);
-        },
-        this);
-  }
 
   mpv_request_log_messages(main, "no");
 

@@ -2,10 +2,15 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #pragma once
+#include <condition_variable>
+#include <deque>
 #include <string>
+#include <thread>
+#include <type_traits>
 #include <vector>
 #include <functional>
 #include <filesystem>
+#include <mutex>
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
 
@@ -20,8 +25,12 @@ class Mpv {
   using LogHandler = std::function<void(const char *, const char *, const char *)>;
   using Callback = std::function<void(Mpv *)>;
 
-  void init(GLAddrLoadFunc load, int64_t wid = 0);
-  void render(int w, int h, int fbo = 0, bool flip = true);
+  void init(int64_t wid = 0);
+  // The render calls below must all run on the thread whose GL context was current for
+  // initRender, and that thread must never wait on a blocking mpv call.
+  void initRender(GLAddrLoadFunc load, bool advancedControl);
+  void freeRender();
+  void render(int w, int h, int fbo = 0, bool flip = true, bool block = true);
   bool wantRender();
   void reportSwap();
   void waitEvent(double timeout = 0);
@@ -34,10 +43,13 @@ class Mpv {
   Callback &wakeupCb() { return wakeupCb_; }
   Callback &updateCb() { return updateCb_; }
 
-  inline int command(std::string args) { return mpv_command_string(mpv, args.c_str()); }
-  inline int command(const char *args) { return mpv_command_string(mpv, args); }
-  inline int command(const char *args[]) { return mpv_command_async(mpv, 0, args); }
-  int commandv(const char *arg, ...);
+  // Commands and property changes are queued in order and run on a worker thread, so the
+  // UI never waits for the mpv core. commandSync waits, for callers that need the result.
+  void command(std::string args);
+  void command(const char *args) { command(std::string(args)); }
+  void command(const char *args[]);
+  void commandv(const char *arg, ...);
+  int commandSync(const char *args) { return mpv_command_string(mpv, args); }
 
   std::string property(const char *name) {
     char *data = mpv_get_property_string(mpv, name);
@@ -45,7 +57,11 @@ class Mpv {
     mpv_free(data);
     return ret;
   }
-  int property(const char *name, const char *data) { return mpv_set_property_string(mpv, name, data); }
+  void property(const char *name, const char *data) {
+    post([this, name = std::string(name), value = std::string(data)] {
+      mpv_set_property_string(mpv, name.c_str(), value.c_str());
+    });
+  }
   template <typename T, mpv_format format>
   T property(const char *name) {
     T data{0};
@@ -53,8 +69,11 @@ class Mpv {
     return data;
   }
   template <typename T, mpv_format format>
-  int property(const char *name, T data) {
-    return mpv_set_property(mpv, name, format, static_cast<void *>(&data));
+  void property(const char *name, T data) {
+    static_assert(!std::is_pointer_v<T>, "pass strings through property(name, const char *)");
+    post([this, name = std::string(name), data]() mutable {
+      mpv_set_property(mpv, name.c_str(), format, static_cast<void *>(&data));
+    });
   }
 
   int option(const char *name, const char *data) { return mpv_set_option_string(mpv, name, data); }
@@ -122,6 +141,8 @@ class Mpv {
 
  private:
   void eventLoop();
+  void post(std::function<void()> task);
+  void runQueue();
 
   void observeProperties();
   void initPlaylist(mpv_node &node);
@@ -140,5 +161,11 @@ class Mpv {
 
   std::vector<std::tuple<mpv_event_id, EventHandler>> events;
   std::vector<std::tuple<std::string, mpv_format, EventHandler>> propertyEvents;
+
+  std::thread queueThread;
+  std::mutex queueLock;
+  std::condition_variable queueCond;
+  std::deque<std::function<void()>> queue;
+  bool queueStop = false;
 };
 }  // namespace ImPlay

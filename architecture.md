@@ -74,7 +74,14 @@ posts one UI redraw, which also applies the pending `time-pos`/`duration` so a
 frame and its timestamp cost a single repaint.
 
 The ImGui frontend uses its own GLFW/OpenGL window and player/rendering
-integration under `imgui/source/`. Do not move Slint-specific assumptions into
+integration under `imgui/source/`. It follows the same pattern as the Slint
+build: a hidden GLFW window gives the video thread an OpenGL 3.2 context shared
+with the main one, mpv renders into a three-texture ring there (with advanced
+control), and `Player::presentVideo()` copies the newest frame into the texture
+ImGui draws. Without a shared context it renders on the UI thread instead. Its
+`Mpv` wrapper runs commands and property changes in order on a worker thread,
+so UI code never waits for the mpv core; only the debug console's
+`commandSync` and a few one-time reads still block. Do not move Slint-specific assumptions into
 the ImGui implementation or assume that the two frontend `Window` classes have
 the same lifecycle.
 

@@ -72,8 +72,10 @@ bool Player::init(std::map<std::string, std::string> &options) {
   {
     ContextGuard guard(this);
     logoTexture = ImGui::LoadTexture("icon.png");
-    mpv->init(GetGLAddrFunc(), GetWid());
   }
+  mpv->init(GetWid());
+  // mpv needs its render context before the first file is loaded.
+  if (GetWid() == 0) startVideo();
 
   SetWindowDecorated(mpv->property<int, MPV_FORMAT_FLAG>("border"));
   mpv->property<int64_t, MPV_FORMAT_INT64>("volume", config->Data.Mpv.Volume);
@@ -117,6 +119,7 @@ void Player::render() {
   {
     ContextGuard guard(this);
 
+    presentVideo();
     if (idle) {
       glBindFramebuffer(GL_FRAMEBUFFER, fbo);
       glClearColor(0, 0, 0, 1);
@@ -168,7 +171,7 @@ void Player::render() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SetSwapInterval(config->Data.Interface.Fps > 60 ? 0 : 1);
     SwapBuffers();
-    mpv->reportSwap();
+    if (!videoThreaded) mpv->reportSwap();
 
 #ifdef IMGUI_HAS_VIEWPORT
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -179,21 +182,220 @@ void Player::render() {
   }
 }
 
-void Player::renderVideo() {
-  ContextGuard guard(this);
-
-  static int lastWidth = 0, lastHeight = 0;
-  if (width != lastWidth || height != lastHeight) {
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    lastWidth = width;
-    lastHeight = height;
+void Player::startVideo() {
+  {
+    std::lock_guard<std::mutex> l(videoLock);
+    videoWidth = width;
+    videoHeight = height;
+  }
+  if (HasVideoContext() && glFenceSync != nullptr && glWaitSync != nullptr && glDeleteSync != nullptr &&
+      glBlitFramebuffer != nullptr) {
+    // Set before mpv's render context exists, so no update callback goes to the wrong path.
+    videoThreaded = true;
+    std::promise<void> startup;
+    auto started = startup.get_future();
+    videoThread = std::thread(&Player::videoLoop, this, &startup);
+    try {
+      started.get();
+      return;
+    } catch (const std::exception &e) {
+      videoThread.join();
+      videoThreaded = false;
+      fmt::print(fg(fmt::color::yellow), "Video render thread unavailable ({}); rendering on the UI thread\n",
+                 e.what());
+    }
   }
 
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-  mpv->render(width, height, fbo, false);
+  // The UI thread can't wait for each frame's display time, so have mpv not render early.
+  mpv->property("video-timing-offset", "0");
+  ContextGuard guard(this);
+  mpv->initRender(GetGLAddrFunc(), false);
+}
+
+void Player::stopVideo() {
+  if (!videoThread.joinable()) {
+    ContextGuard guard(this);
+    mpv->freeRender();
+    return;
+  }
+  {
+    std::lock_guard<std::mutex> l(videoLock);
+    videoStop = true;
+  }
+  videoCond.notify_all();
+  videoThread.join();
+}
+
+void Player::notifyVideoUpdate() {
+  if (!videoThreaded) {
+    Wakeup();
+    return;
+  }
+  {
+    std::lock_guard<std::mutex> l(videoLock);
+    videoUpdate = true;
+  }
+  videoCond.notify_one();
+}
+
+void Player::videoLoop(std::promise<void> *startup) {
+  MakeVideoContextCurrent();
+  try {
+    mpv->initRender(GetGLAddrFunc(), true);
+  } catch (...) {
+    ReleaseVideoContext();
+    startup->set_exception(std::current_exception());
+    return;
+  }
+  startup->set_value();
+
+  while (true) {
+    bool update = false, resized = false;
+    int w = 0, h = 0;
+    {
+      std::unique_lock<std::mutex> l(videoLock);
+      videoCond.wait(l, [this] { return videoStop || videoUpdate || videoResized; });
+      if (videoStop) break;
+      update = std::exchange(videoUpdate, false);
+      resized = std::exchange(videoResized, false);
+      w = videoWidth;
+      h = videoHeight;
+    }
+    // mpv expects an update() after each update callback, even if nothing gets drawn.
+    const bool frame = update && mpv->wantRender();
+    if (!frame && !resized) continue;
+
+    // With one slot ready and one being copied by the UI, a third is always free.
+    int index = 0;
+    {
+      std::lock_guard<std::mutex> l(videoLock);
+      while (index == videoReady || index == videoCopying) index++;
+    }
+    renderVideoSlot(videoSlots[index], w, h);
+
+    GLsync dropped = nullptr;
+    {
+      std::lock_guard<std::mutex> l(videoLock);
+      // A frame the UI never picked up is simply replaced by the newer one.
+      if (videoReady >= 0) dropped = std::exchange(videoSlots[videoReady].ready, nullptr);
+      videoReady = index;
+    }
+    if (dropped != nullptr) glDeleteSync(dropped);
+    mpv->reportSwap();
+    Wakeup();
+  }
+
+  for (auto &slot : videoSlots) {
+    if (slot.ready != nullptr) glDeleteSync(slot.ready);
+    if (slot.release != nullptr) glDeleteSync(slot.release);
+    if (slot.framebuffer != 0) glDeleteFramebuffers(1, &slot.framebuffer);
+    if (slot.texture != 0) glDeleteTextures(1, &slot.texture);
+    slot = {};
+  }
+  mpv->freeRender();
+  ReleaseVideoContext();
+}
+
+void Player::renderVideoSlot(VideoSlot &slot, int w, int h) {
+  if (slot.release != nullptr) {
+    // The UI's copy of this texture must finish before mpv draws over it.
+    glWaitSync(slot.release, 0, GL_TIMEOUT_IGNORED);
+    glDeleteSync(slot.release);
+    slot.release = nullptr;
+  }
+  if (slot.texture == 0) {
+    glGenTextures(1, &slot.texture);
+    glGenFramebuffers(1, &slot.framebuffer);
+  }
+  if (slot.width != w || slot.height != h) {
+    glBindTexture(GL_TEXTURE_2D, slot.texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, slot.framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, slot.texture, 0);
+    slot.width = w;
+    slot.height = h;
+  }
+  // Off the UI thread, mpv may wait here for the frame's display time.
+  mpv->render(w, h, slot.framebuffer, false, true);
+  slot.ready = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+  // The UI context waits on this fence, so it must reach the GPU.
+  glFlush();
+}
+
+void Player::presentVideo() {
+  int w = 0, h = 0;
+  GetFramebufferSize(&w, &h);
+
+  if (!videoThreaded) {
+    bool resized = false;
+    if (w > 0 && h > 0 && (w != texWidth || h != texHeight)) {
+      glBindTexture(GL_TEXTURE_2D, tex);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      texWidth = w;
+      texHeight = h;
+      resized = true;
+    }
+    if (mpv->wantRender() || resized) {
+      glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+      mpv->render(texWidth, texHeight, fbo, false, false);
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    return;
+  }
+
+  VideoSlot *slot = nullptr;
+  bool resize = false;
+  {
+    std::lock_guard<std::mutex> l(videoLock);
+    // A minimized window reports 0x0. Keep rendering at the last real size so mpv's
+    // frames are still consumed.
+    if (w > 0 && h > 0 && (w != videoWidth || h != videoHeight)) {
+      videoWidth = w;
+      videoHeight = h;
+      videoResized = resize = true;
+    }
+    if (videoReady >= 0) {
+      videoCopying = std::exchange(videoReady, -1);
+      slot = &videoSlots[videoCopying];
+    }
+  }
+  if (resize) videoCond.notify_one();
+  if (slot == nullptr) return;
+
+  // Until the video thread catches up with a resize, frames keep their own size and
+  // are stretched into place.
+  if (slot->width != texWidth || slot->height != texHeight) {
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, slot->width, slot->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    texWidth = slot->width;
+    texHeight = slot->height;
+  }
+  if (readFbo == 0) glGenFramebuffers(1, &readFbo);
+
+  glWaitSync(slot->ready, 0, GL_TIMEOUT_IGNORED);
+  glDeleteSync(slot->ready);
+  slot->ready = nullptr;
+
+  glDisable(GL_SCISSOR_TEST);
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, readFbo);
+  glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, slot->texture, 0);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+  glBlitFramebuffer(0, 0, slot->width, slot->height, 0, 0, texWidth, texHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  GLsync release = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+  // The video context waits on this fence, so it must reach the GPU.
+  glFlush();
+  {
+    std::lock_guard<std::mutex> l(videoLock);
+    slot->release = release;
+    videoCopying = -1;
+  }
 }
 
 void Player::initGui() {
@@ -238,10 +440,8 @@ void Player::initGui() {
 
 #ifdef IMGUI_IMPL_OPENGL_ES3
   ImGui_ImplOpenGL3_Init("#version 300 es");
-#elif defined(__APPLE__)
-  ImGui_ImplOpenGL3_Init("#version 150");
 #else
-  ImGui_ImplOpenGL3_Init("#version 130");
+  ImGui_ImplOpenGL3_Init("#version 150");
 #endif
 }
 
@@ -251,6 +451,7 @@ void Player::exitGui() {
   ImGui_ImplOpenGL3_Shutdown();
   glDeleteTextures(1, &tex);
   glDeleteFramebuffers(1, &fbo);
+  if (readFbo != 0) glDeleteFramebuffers(1, &readFbo);
 
   ImGui::DestroyContext();
 }
@@ -478,8 +679,7 @@ void Player::execute(int n_args, const char **args_) {
       {"playlist-sort", [&](int n, const char **args) { playlistSort(n > 0 && strcmp(args[0], "true") == 0); }},
       {"play-pause",
        [&](int n, const char **args) {
-         auto count = mpv->property<int64_t, MPV_FORMAT_INT64>("playlist-count");
-         if (count > 0)
+         if (!mpv->playlist.empty())
            mpv->command("cycle pause");
          else if (config->getRecentFiles().size() > 0) {
            for (auto &file : config->getRecentFiles()) {

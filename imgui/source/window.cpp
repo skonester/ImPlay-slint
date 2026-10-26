@@ -21,6 +21,8 @@ Window::Window(Config* config) : Player(config) {
   initGLFW();
   window = glfwCreateWindow(1280, 720, PLAYER_NAME, nullptr, nullptr);
   if (window == nullptr) throw std::runtime_error("Failed to create window!");
+  // Same hints as the main window (still hidden); without it, video renders on the UI thread.
+  videoWindow = glfwCreateWindow(1, 1, PLAYER_NAME, nullptr, window);
 #ifdef _WIN32
   hwnd = glfwGetWin32Window(window);
   if (SUCCEEDED(OleInitialize(nullptr))) oleOk = true;
@@ -32,6 +34,7 @@ Window::Window(Config* config) : Player(config) {
 }
 
 Window::~Window() {
+  stopVideo();
   ImGui_ImplGlfw_Shutdown();
   exitGui();
 #ifdef _WIN32
@@ -39,6 +42,7 @@ Window::~Window() {
   if (oleOk) OleUninitialize();
 #endif
 
+  if (videoWindow != nullptr) glfwDestroyWindow(videoWindow);
   glfwDestroyWindow(window);
   glfwTerminate();
 }
@@ -56,14 +60,11 @@ void Window::initGLFW() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-#elif defined(__APPLE__)
+#else
+  // 3.2 is the first version with fences, which the video thread needs.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#else
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
   glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
@@ -72,7 +73,7 @@ void Window::initGLFW() {
 
 bool Window::init(OptionParser& parser) {
   mpv->wakeupCb() = [this](Mpv* ctx) { wakeup(); };
-  mpv->updateCb() = [this](Mpv* ctx) { videoWaiter.notify(); };
+  mpv->updateCb() = [this](Mpv* ctx) { notifyVideoUpdate(); };
   if (!Player::init(parser.options)) return false;
 
   for (auto& path : parser.paths) {
@@ -107,19 +108,6 @@ bool Window::init(OptionParser& parser) {
 }
 
 void Window::run() {
-  bool shutdown = false;
-  std::thread videoRenderer([&]() {
-    while (!shutdown) {
-      videoWaiter.wait();
-      if (shutdown) break;
-
-      if (mpv->wantRender()) {
-        renderVideo();
-        wakeup();
-      }
-    }
-  });
-
   restoreState();
   glfwShowWindow(window);
 
@@ -144,9 +132,7 @@ void Window::run() {
     lastTime += targetDelta;
   }
 
-  shutdown = true;
-  videoWaiter.notify();
-  videoRenderer.join();
+  stopVideo();
 
   saveState();
 }
@@ -462,24 +448,4 @@ LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
   return ::CallWindowProc(win->wndProcOld, hWnd, uMsg, wParam, lParam);
 }
 #endif
-
-void Window::Waiter::wait() {
-  std::unique_lock<std::mutex> l(lock);
-  cond.wait(l, [this] { return notified; });
-  notified = false;
-}
-
-void Window::Waiter::wait_until(std::chrono::steady_clock::time_point time) {
-  std::unique_lock<std::mutex> l(lock);
-  cond.wait_until(l, time, [this] { return notified; });
-  notified = false;
-}
-
-void Window::Waiter::notify() {
-  {
-    std::lock_guard<std::mutex> l(lock);
-    notified = true;
-  }
-  cond.notify_one();
-}
 }  // namespace ImPlay

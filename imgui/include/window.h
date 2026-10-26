@@ -49,6 +49,10 @@ class Window : Player {
   void GetFramebufferSize(int *w, int *h) override;
   void MakeContextCurrent() override;
   void DeleteContext() override;
+  bool HasVideoContext() override { return videoWindow != nullptr; }
+  void MakeVideoContextCurrent() override { glfwMakeContextCurrent(videoWindow); }
+  void ReleaseVideoContext() override { glfwMakeContextCurrent(nullptr); }
+  void Wakeup() override { wakeup(); }
   void SwapBuffers() override;
   void SetSwapInterval(int interval) override;
   void BackendNewFrame() override;
@@ -67,6 +71,8 @@ class Window : Player {
   void SetWindowShouldClose(bool c) override;
 
   GLFWwindow *window = nullptr;
+  // Hidden; its context shares objects with window's and belongs to the video thread.
+  GLFWwindow *videoWindow = nullptr;
   bool ownCursor = true;
   double lastInputAt = 0;
 #ifdef _WIN32
@@ -79,20 +85,6 @@ class Window : Player {
   void setupWin32Taskbar();
   static LRESULT CALLBACK wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
-
-  struct Waiter {
-   public:
-    void wait();
-    void wait_until(std::chrono::steady_clock::time_point time);
-    void notify();
-
-   private:
-    std::mutex lock;
-    std::condition_variable cond;
-    bool notified = false;
-  };
-
-  struct Waiter videoWaiter;
 
   // clang-format off
   const std::map<int, std::string> keyMappings = {

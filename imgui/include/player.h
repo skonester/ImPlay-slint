@@ -2,8 +2,13 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #pragma once
+#include <array>
+#include <atomic>
+#include <condition_variable>
+#include <future>
 #include <map>
 #include <string>
+#include <thread>
 #include <vector>
 #include <mutex>
 #ifdef IMGUI_IMPL_OPENGL_ES3
@@ -43,7 +48,12 @@ class Player {
 
   void loadFonts();
   void render();
-  void renderVideo();
+  // Video runs on its own thread with a GL context shared with the window's: mpv renders
+  // into a ring of textures there, and render() only copies the newest one into `tex`.
+  // Without a shared context, mpv renders on the UI thread instead.
+  void startVideo();
+  void stopVideo();
+  void notifyVideoUpdate();  // mpv's render-update callback; any thread
 
   void onCursorEvent(double x, double y);
   void onScrollEvent(double x, double y);
@@ -60,6 +70,17 @@ class Player {
   void updateWindowState();
   void initObservers();
   void writeMpvConf();
+
+  struct VideoSlot {
+    GLuint texture = 0, framebuffer = 0;
+    int width = 0, height = 0;
+    GLsync ready = nullptr;    // signalled when mpv finished drawing this frame
+    GLsync release = nullptr;  // signalled when the UI finished copying it
+  };
+
+  void videoLoop(std::promise<void> *startup);
+  void renderVideoSlot(VideoSlot &slot, int w, int h);
+  void presentVideo();
 
   void draw();
   void drawVideo();
@@ -91,6 +112,10 @@ class Player {
   virtual void GetFramebufferSize(int *w, int *h) = 0;
   virtual void MakeContextCurrent() = 0;
   virtual void DeleteContext() = 0;
+  virtual bool HasVideoContext() = 0;
+  virtual void MakeVideoContextCurrent() = 0;
+  virtual void ReleaseVideoContext() = 0;
+  virtual void Wakeup() = 0;
   virtual void SwapBuffers() = 0;
   virtual void SetSwapInterval(int interval) = 0;
   virtual void BackendNewFrame() = 0;
@@ -110,8 +135,20 @@ class Player {
 
   bool idle = true;
   GLuint fbo = 0, tex = 0;
+  int texWidth = 0, texHeight = 0;
   ImTextureID logoTexture = 0;
   std::mutex contextLock;
+
+  // Video thread state; slot indices, sizes and flags are guarded by videoLock.
+  std::thread videoThread;
+  std::atomic<bool> videoThreaded = false;
+  std::mutex videoLock;
+  std::condition_variable videoCond;
+  std::array<VideoSlot, 3> videoSlots{};
+  int videoReady = -1, videoCopying = -1;
+  int videoWidth = 0, videoHeight = 0;
+  bool videoUpdate = false, videoResized = false, videoStop = false;
+  GLuint readFbo = 0;
 
   bool m_openURL = false;
   bool m_dialog = false;
@@ -154,6 +191,7 @@ class Player {
       {"ISO Image Files", "iso"},
   };
 
+  // Makes the window's context current for the UI thread's GL work.
   struct ContextGuard {
    public:
     inline ContextGuard(Player *p) : p(p) {
