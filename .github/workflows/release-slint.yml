@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing tag matching package.json (e.g. 1.6.2). Push the tag first."
+        description: "Existing tag to rebuild (e.g. 1.6.3). Pushing a new X.Y.Z tag already starts a release."
         required: true
         type: string
 
@@ -32,9 +32,18 @@ jobs:
       # changes .github/workflows (403 "Resource not accessible by integration").
       - name: Validate tag
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if ("$env:RELEASE_TAG" -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
             throw "Tag '$env:RELEASE_TAG' must look like X.Y.Z"
+          }
+          # A manual run names a tag that may not exist yet; checkout would then fail with
+          # an unhelpful "pathspec did not match" error.
+          gh api "repos/${{ github.repository }}/git/ref/tags/$env:RELEASE_TAG" --silent 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "::error title=Tag $env:RELEASE_TAG not found::Push the tag first; that starts this workflow by itself: git tag $env:RELEASE_TAG <commit> && git push origin $env:RELEASE_TAG"
+            exit 1
           }
 
       - name: Checkout
