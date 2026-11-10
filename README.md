@@ -1,201 +1,169 @@
-# ImPlay
+<p align="center">
+  <img src="resources/icon.png" alt="ImPlay icon" width="96">
+</p>
 
-ImPlay is a cross-platform desktop media player built around
-[libmpv](https://mpv.io/). This repository contains the current Slint frontend
-(`ImPlay-Slint`) and a maintained ImGui frontend for comparison and
-compatibility.
+<h1 align="center">ImPlay-Slint</h1>
 
-The application provides a native desktop window, playlist and playback
-controls, subtitle and audio selection, configurable themes and languages,
-recent files, drag-and-drop/file dialogs, mpv option passthrough, and an
-optional single-instance mode. It can also run mpv headlessly when video is
-disabled or an output-only option is supplied. Video is rendered on its own
-thread, so the interface stays responsive during playback.
+<p align="center">
+  A fast, modern desktop video player built on <a href="https://mpv.io/">mpv</a>, with an interface made in <a href="https://slint.dev/">Slint</a>.
+</p>
 
-## Frontends
+<p align="center">
+  <a href="https://github.com/skonester/ImPlay-slint/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/skonester/ImPlay-slint?include_prereleases&label=release"></a>
+  <a href="https://github.com/skonester/ImPlay-slint/actions/workflows/release-slint.yml"><img alt="Release build" src="https://github.com/skonester/ImPlay-slint/actions/workflows/release-slint.yml/badge.svg"></a>
+  <a href="LICENSE.txt"><img alt="License: GPL-2.0-only" src="https://img.shields.io/badge/license-GPL--2.0--only-blue"></a>
+  <img alt="Platform: Windows x64" src="https://img.shields.io/badge/platform-Windows%20x64-0078D6?logo=windows">
+  <br>
+  <img alt="C++20" src="https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus">
+  <img alt="Zig 0.16" src="https://img.shields.io/badge/Zig-0.16-F7A41D?logo=zig&logoColor=white">
+  <img alt="Slint 1.12" src="https://img.shields.io/badge/Slint-1.12-2379F4">
+  <img alt="Powered by libmpv" src="https://img.shields.io/badge/powered%20by-libmpv-691F69">
+  <img alt="OpenGL" src="https://img.shields.io/badge/rendering-OpenGL-5586A4?logo=opengl&logoColor=white">
+</p>
 
-The top-level CMake project selects the frontend with `IMPLAY_UI`:
+---
 
-- **Slint (default)**: `source/`, `include/`, and `ui/`. Slint owns the
-  declarative interface, while C++ owns the window integration, playback
-  orchestration, configuration, and native helpers.
-- **ImGui**: `imgui/`. This is a separate frontend with its own window,
-  player, views, theme, and helper implementation. It is useful when changing
-  shared behavior or comparing the two UI implementations.
+ImPlay-Slint is a Slint rewrite of the [ImPlay](https://github.com/tsl0922/ImPlay)
+media player. mpv does the playback work: it plays almost any video or audio
+file, stream or disc. ImPlay puts a clean desktop interface on top: menus,
+panels and controls that float over the video and stay responsive while it
+plays.
 
-Both frontends produce an executable named `ImPlay`.
+## Download
 
-## Requirements
+Get the latest build from the
+**[Releases page](https://github.com/skonester/ImPlay-slint/releases)**. Builds
+are marked as pre-releases for now.
 
-The normal native build requires:
+| File | What it is |
+| --- | --- |
+| `ImPlay-Slint-<version>-win64-setup.exe` | Installer |
+| `ImPlay-Slint-<version>-win64.zip` | Portable: unzip anywhere and run `ImPlay.exe` |
 
-- CMake 3.24 or newer
-- Ninja
-- A C++20 compiler (the checked-in presets target Windows x64 Clang or MSVC)
-- Zig 0.16 or newer for the mpv core
-- Rust and a working C++ toolchain when configuring Slint from source
-- A libmpv development package
+Both include everything needed to run, plus `yt-dlp` and `deno` so that
+YouTube and other web links play directly.
 
-On Windows, the repository includes the pinned `mpv-dev-*.7z` archive used by
-the default presets. CMake verifies its SHA-256 hash and extracts the headers
-and import library during configuration. On other platforms, provide libmpv
-through the system and make its headers/libraries discoverable to CMake.
+## Features
 
-Configuration also downloads several dependencies with CMake `FetchContent`
-(including Slint, fmt, and nlohmann/json), so the first configure needs network
-access unless those dependencies are already available in the build cache.
+**Playback**
+- Plays anything mpv plays: local files, folders, URLs, DVD/Blu-ray discs and ISOs
+- Playlist with shuffle, reordering, loop file / loop playlist and A-B loop
+- Chapters, frame stepping, speed control and quick seeking
+- Resume where you left off (optional)
 
-## Configure and build
+**Picture and sound**
+- Video, audio and subtitle track selection, with subtitle and audio delay
+- Brightness, contrast, gamma, hue and saturation
+- Aspect ratio, rotation, zoom, pan and scan
+- 10-band audio equalizer with presets, and audio output device selection
+- Hardware decoding, on by default (see [below](#how-it-works))
+- Deinterlacing and screenshots
 
-The repository includes presets for Windows x64:
+**Interface**
+- Right-click menu, command palette and quick-view panels for playlist, video, audio and subtitles
+- Light and dark themes, UI scaling, and custom fonts
+- English, Italian, Ukrainian and Simplified Chinese
+- Drag and drop, recent files, and open from clipboard
+- Always on top, borderless window, window scale presets
+- Single-instance mode: opening a file sends it to the window that's already open
+- Debug console with the live mpv log and a command line
+
+**For mpv users**
+- Takes mpv command-line options (`ImPlay --fs --sub-file=subs.srt movie.mkv`)
+- Can use your own `mpv.conf`, `input.conf` and mpv profiles
+- Runs without a window for audio-only or output-only jobs (`--no-video`, `--o=`)
+
+## How it works
+
+### Drawing the picture: OpenGL
+
+All drawing goes through **OpenGL**. Slint draws the interface with OpenGL,
+and mpv draws each video frame into an OpenGL texture that Slint displays
+underneath the controls. OpenGL is the only GPU method mpv offers to programs
+that embed it and draw their own interface over the video, so ImPlay doesn't
+use Direct3D or Vulkan for drawing.
+
+mpv draws on a thread of its own, separate from the interface. Clicking menus
+or dragging the seek bar never waits on the video, and the video never waits
+on the interface. The [1.6.3 changelog](CHANGELOG.md) explains how.
+
+### Decoding the video: your GPU's video chip
+
+Decoding is a separate step that happens before drawing. A video file stores
+compressed data (H.264, HEVC, AV1 and so on) that has to be unpacked into
+plain pictures before anything can be shown.
+
+- **Software decoding:** the CPU unpacks every frame. It works everywhere,
+  but 4K or HDR video can use a lot of CPU time.
+- **Hardware decoding:** the GPU's built-in video decoder does the work. On
+  NVIDIA cards that chip is called **NVDEC**; Intel has Quick Sync and AMD has
+  VCN. It is separate from the part of the GPU that runs games, so it barely
+  loads the CPU or the rest of the GPU.
+
+ImPlay starts with `hwdec=auto-safe`. mpv tries the hardware methods it knows
+to be reliable on your system, such as `d3d11va`, `dxva2` or NVIDIA's `nvdec`,
+and quietly falls back to the CPU when a file or GPU isn't supported. The
+decoded frames are then handed to OpenGL for drawing, either straight from GPU
+memory or through a copy (the `-copy` methods).
+
+To see which method a video is using, open **Tools > Debug console** and look
+for the line `Using hardware decoding (...)`, or turn on **Show statistics**.
+To switch hardware decoding on or off, press `Ctrl+H` or use **Toggle hardware
+decoding** in the right-click menu. To force a method, add it to the
+`mpv.conf` in the configuration folder (**Settings > Open configuration
+folder**), for example:
+
+```ini
+hwdec=nvdec
+```
+
+### Under the hood
+
+| Part | Job |
+| --- | --- |
+| **Slint** (`ui/`) | The interface: windows, menus, panels and controls |
+| **C++** (`source/`, `include/`) | Connects the interface to the player; settings, recent files, file dialogs |
+| **Zig** (`source/zig/`) | The only code that talks to libmpv directly: events, commands and the render context |
+| **libmpv** | Opening files, decoding, audio, subtitles and drawing video |
+
+[architecture.md](architecture.md) has the full map and the threading rules.
+
+## Building from source
+
+You'll need:
+
+- Windows x64
+- CMake 3.24 or newer, and Ninja
+- Clang (clang-cl) or MSVC, with C++20
+- Zig 0.16 or newer
+- Rust, to build Slint
+
+The libmpv development files come with the repository (`mpv-dev-*.7z`) and are
+unpacked automatically. The first configure also downloads Slint, {fmt} and
+nlohmann/json, so it needs an internet connection.
 
 ```powershell
 cmake --preset x64-clang-release
 cmake --build --preset x64-clang-release
 ```
 
-For MSVC:
+Use `x64-msvc-release` for MSVC. The program is written to
+`out/build/<preset>/ImPlay.exe`.
+
+The original ImGui interface is still kept for comparison. Build it with the
+`x64-clang-imgui-release` or `x64-msvc-imgui-release` preset.
+
+To run the Zig core's tests on their own:
 
 ```powershell
-cmake --preset x64-msvc-release
-cmake --build --preset x64-msvc-release
+zig build test -Dmpv-include=<folder containing mpv/client.h>
 ```
 
-The ImGui variants are:
+## Credits and license
 
-```powershell
-cmake --preset x64-clang-imgui-release
-cmake --build --preset x64-clang-imgui-release
-```
+ImPlay-Slint is based on [ImPlay](https://github.com/tsl0922/ImPlay) by tsl0922,
+and its Slint interface is based on Vayou (MIT). The project is licensed under
+the **GNU GPL v2 only**. Bundled libraries keep their own licenses; see
+[CREDITS.md](CREDITS.md) and [LICENSE.txt](LICENSE.txt).
 
-Replace `clang` with `msvc` for the MSVC ImGui preset. Build output is placed
-under `out/build/<preset>/`.
-
-The Slint build invokes `zig build` automatically to create the static
-`implay_mpv` core library. The Zig parser/core tests can be run independently:
-
-```powershell
-zig build test -Dmpv-include=<directory-containing-mpv-client.h>
-```
-
-## Running
-
-The executable accepts paths or URLs and forwards mpv-style options. Examples:
-
-```text
-ImPlay movie.mkv
-ImPlay https://example.invalid/video
-ImPlay --fs movie.mkv
-ImPlay --sub-file=subtitles.srt movie.mkv
-ImPlay --playlist=playlist.m3u
-ImPlay --no-video --o=audio-only-option song.mp3
-```
-
-Run `ImPlay --help` for the short built-in option list. The complete set of
-playback options is documented by the installed mpv manual.
-
-When single-instance mode is enabled, a second invocation sends its paths to
-the first process through a named pipe on Windows or a Unix domain socket on
-Unix-like systems.
-
-## Repository layout
-
-| Path | Purpose |
-| --- | --- |
-| `source/` | Slint application entry point, window integration, configuration, helpers, and C++ mpv wrapper |
-| `include/` | Public headers for the Slint-side application and the Zig C ABI |
-| `ui/` | Slint components, state, theme, widgets, and generated application UI inputs |
-| `source/zig/` | Zig libmpv owner, event/render lifecycle, C ABI implementation, and parsers/tests |
-| `imgui/` | Alternate ImGui frontend and its frontend-specific third-party sources |
-| `resources/` | Embedded translations, mpv scripts/configuration, icons, and packaging assets |
-| `third_party/` | Vendored or locally built dependencies shared by the frontends |
-| `cmake/` | mpv development package integration and CPack helpers |
-| `CMakePresets.json` | Supported local configure/build presets |
-| `CREDITS.md` | Project, frontend, dependency, and license attribution |
-
-For implementation details and guidance for maintainers or AI coding agents,
-see [architecture.md](architecture.md).
-
-## Licensing
-
-The project is distributed under the GNU GPL v2 only unless a component is
-covered by its own license. See [LICENSE.txt](LICENSE.txt),
-[CREDITS.md](CREDITS.md), and the license files in `third_party/` and `ui/`.
-
-## Changelog
-
-### Milestone 10/26/26 (1.6.3): smooth UI during playback
-
-**The problem.** Clicking around the app while a video played could make the
-interface lag or freeze for a moment, and it was hard to pin down why.
-
-**The cause.** mpv drew each video frame on Slint's UI thread, the same thread
-that handles clicks and key presses. That caused two problems:
-
-- By default, mpv's render call sleeps until the frame is due on screen, up to
-  50 ms per frame. Every click waited behind that sleep.
-- libmpv requires that the thread doing its rendering never waits on other mpv
-  calls. When the UI thread did, libmpv could deadlock until an internal
-  timeout, which showed up as random freezes.
-
-We compared against [fluent-player](https://github.com/masum-9t9/fluent-player),
-a GPL-3 Rust + Slint + mpv player that feels smooth. It avoids the problem by
-giving mpv its own native child window, so video never goes through Slint.
-That approach hides anything Slint draws over the video, and ImPlay's controls,
-panels and menus all float over it, so we kept our design and moved the video
-work off the UI thread instead.
-
-**What changed.**
-
-- **Video renders on its own thread** (`source/video_renderer.cpp`). At startup
-  ImPlay creates a second OpenGL context that shares textures with Slint's. A
-  dedicated thread owns it and lets mpv draw into a ring of three textures with
-  its normal frame timing. On each repaint, the UI thread only copies the newest
-  finished frame into the texture Slint shows. GPU fences make sure neither side
-  reads or overwrites a texture too early. If the shared context can't be made
-  (for example Slint running on EGL/ANGLE), ImPlay falls back to rendering on
-  the UI thread without the 50 ms sleep.
-- **One repaint per video frame.** mpv reports the playback time slightly
-  before the matching frame is ready, which caused two repaints per frame. The
-  time and duration labels now update together with the frame.
-- **Lists update in place.** Playlist, tracks, chapters, audio devices,
-  profiles and recent files used to be rebuilt from scratch on every mpv change
-  (several times per file load, and on every chapter change). Changes are now
-  batched, and only rows that actually changed are updated.
-- **Fewer blocking mpv calls.** Commands like `set video-zoom 0; set
-  video-pan-x 0` are now sent one by one without waiting, instead of through
-  mpv's blocking command parser.
-- **Clean shutdown.** The renderer is destroyed in the right order relative to
-  the Slint window and mpv, so the render thread stops and frees its GL
-  resources before mpv goes away.
-- **Release workflow.** Releases now come from one **Run workflow** button that
-  reads the version from `package.json`.
-
-**Results** (measured on an NVIDIA GPU, where Slint's context is OpenGL ES 3.2
-over WGL):
-
-| | Before | After |
-| --- | --- | --- |
-| UI-thread time per video frame | 3–8 ms, plus up to 50 ms of sleep | about 0.3 ms |
-| UI repaints | up to 2 per video frame | 1 per video frame |
-| Dropped frames | 0 | 0 |
-
-**Tips for other Slint + mpv developers.**
-
-- Pick where video renders first. If nothing in your UI draws over the video,
-  giving mpv its own child window (`wid`) is simplest and fastest. If your UI
-  overlays the video, use mpv's render API on a dedicated thread with a GL
-  context shared with Slint's, as described above.
-- Never call blocking mpv functions (`mpv_command`, `mpv_get_property`, and so
-  on) from the thread that renders video. Use the async versions.
-- If you render on the UI thread, pass `MPV_RENDER_PARAM_BLOCK_FOR_TARGET_TIME
-  = 0` and set `video-timing-offset=0`, otherwise mpv sleeps on your UI thread.
-- Fast-changing mpv properties like `time-pos` each trigger a Slint repaint.
-  Batch them with the video frame instead of setting them as they arrive.
-- Keep Slint models alive and update rows in place rather than replacing whole
-  models; replacing a model rebuilds every row in an open list.
-- GitHub Actions can't create a tag on a commit that only changes a workflow
-  file. If a release run fails at the tag step, push any small commit (a README
-  edit is fine) and run it again.
-
-See [architecture.md](architecture.md) for the threading rules in detail.
+Release history is in [CHANGELOG.md](CHANGELOG.md).
