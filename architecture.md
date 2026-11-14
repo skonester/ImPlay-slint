@@ -37,6 +37,11 @@ The default build is the Slint path. The ImGui path is selected at CMake
 configure time and is not a runtime plugin: it compiles a different set of
 frontend source files into the same `ImPlay` executable name.
 
+The default Slint path uses OpenGL for both the interface and video. Slint
+draws the controls, while mpv draws video into a texture that appears beneath
+them. Video decoding is separate from drawing: hardware decoding uses the
+GPU's video decoder when supported and falls back to the CPU when necessary.
+
 ## Runtime flow
 
 ### Startup
@@ -177,6 +182,45 @@ the direct libmpv integration.
 The checked-in presets currently target Windows x64 Clang/MSVC release builds.
 Do not assume a build directory is clean: generated files under `out/build/`
 are configuration artifacts, not source inputs.
+
+## Building from source
+
+The supported desktop target is Windows x64. A source build requires:
+
+- CMake 3.24 or newer and Ninja;
+- Clang (`clang-cl`) or MSVC with C++20 support;
+- Zig 0.16 or newer;
+- Rust, which is needed by Slint.
+
+The repository includes the libmpv development archive
+`mpv-dev-x86_64-20261111-git-bcde6b93cc.7z`. CMake verifies its SHA-256 and
+unpacks it automatically. The first configure downloads Slint, `{fmt}`, and
+`nlohmann/json`, so configuration requires an internet connection.
+
+For the normal Slint build:
+
+```powershell
+cmake --preset x64-clang-release
+cmake --build --preset x64-clang-release
+```
+
+Use `x64-msvc-release` for MSVC. The ImGui comparison frontend is built with
+`x64-clang-imgui-release` or `x64-msvc-imgui-release`.
+
+The Zig core has its own tests:
+
+```powershell
+zig build test -Dmpv-include=<folder containing mpv/client.h>
+```
+
+On Windows, the ImGui frontend can also use mpv's native GPU-next output:
+
+```powershell
+& .\out\build\x64-clang-imgui-release\ImPlay.exe --vo=gpu-next --gpu-api=d3d11 "movie.mkv"
+```
+
+This mode uses mpv's native video window and separate ImGui panels. It is a
+comparison/build option; the normal OpenGL mode remains the default.
 
 ## Change guide for agents
 
