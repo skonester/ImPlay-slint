@@ -25,6 +25,7 @@ static const char* usage =
     " --fs              fullscreen playback\n"
     " --sub-file=<file> specify subtitle file to use\n"
     " --playlist=<file> specify playlist file\n"
+    " --vo=gpu-next    use native GPU-next video output (Windows)\n"
     "\n"
     "Visit https://mpv.io/manual/stable to get full mpv options.\n";
 
@@ -127,7 +128,17 @@ int main(int argc, char* argv[]) {
     ImPlay::Config config;
     config.load();
 
-    if (config.Data.Window.Single && send_ipc(config.ipcSocket(), parser.paths)) return 0;
+    const bool nativeRequested = parser.check("vo", "gpu-next") || parser.check("vo", "gpu");
+    if (nativeRequested) {
+#ifdef _WIN32
+      config.NativeVideo = true;
+#else
+      throw std::runtime_error("Native gpu/gpu-next output is currently supported by the Windows ImGui frontend");
+#endif
+    }
+    // A requested renderer must start a new player rather than enqueueing the
+    // file in an existing process that may use the OpenGL render API.
+    if (!nativeRequested && config.Data.Window.Single && send_ipc(config.ipcSocket(), parser.paths)) return 0;
 
     ImPlay::Window window(&config);
     if (!window.init(parser)) return 1;

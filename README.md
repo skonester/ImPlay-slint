@@ -155,6 +155,16 @@ Use `x64-msvc-release` for MSVC. The program is written to
 The original ImGui interface is still kept for comparison. Build it with the
 `x64-clang-imgui-release` or `x64-msvc-imgui-release` preset.
 
+On Windows, the ImGui frontend can use mpv's native GPU-next output:
+
+```powershell
+& .\out\build\x64-clang-imgui-release\ImPlay.exe --vo=gpu-next --gpu-api=d3d11 "movie.mkv"
+```
+
+This uses mpv's native video window and bypasses the OpenGL texture queue.
+ImGui panels use separate windows in this mode. The command-line selection
+applies to that run; the normal OpenGL mode remains the default.
+
 To run the Zig core's tests on their own:
 
 ```powershell

@@ -2,6 +2,10 @@
 
 ## Unreleased: direct Slint video rendering
 
+- Update the ImGui frontend to Dear ImGui 1.93.0 docking, including matching
+  GLFW, OpenGL3, and FreeType integration files.
+- Support `--vo=gpu-next` in the Windows ImGui frontend through its native
+  video-window path, with D3D11 as the default API for that mode.
 - Render into Slint's displayed texture in `BeforeRendering`, using one GL
   context and one framebuffer. This replaces the three-frame texture queue,
   cross-context fence waits, and extra GPU blit with the direct approach used

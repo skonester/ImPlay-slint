@@ -1,23 +1,16 @@
-# imgui
+# Dear ImGui
 
-This is imgui [docking](https://github.com/ocornut/imgui/tree/docking) branch merged with [features/shadows](https://github.com/ocornut/imgui/tree/features/shadows) branch.
+Vendored from [v1.93.0-docking](https://github.com/ocornut/imgui/tree/v1.93.0-docking),
+commit `4e02e84cbb85d48881388e7090c2dfa1708c02a1`.
 
-#### Included patches
+The core, GLFW/OpenGL3 backends, FreeType integration, and ImGui's stb headers
+all come from that tag. Headers live in `include/` and sources in `source/`.
 
-- windows cursor patch (https://github.com/tsl0922/ImPlay/issues/55):
-    ```patch
-    diff --git a/third_party/imgui/source/imgui_impl_glfw.cpp b/third_party/imgui/source/imgui_impl_glfw.cpp
-    index d5d3769..bee3630 100644
-    --- a/third_party/imgui/source/imgui_impl_glfw.cpp
-    +++ b/third_party/imgui/source/imgui_impl_glfw.cpp
-    @@ -790,7 +790,9 @@ static void ImGui_ImplGlfw_UpdateMouseCursor()
-            {
-                // Show OS mouse cursor
-                // FIXME-PLATFORM: Unfocused windows seems to fail changing the mouse cursor with GLFW 3.2, but 3.3 works here.
-    +#ifndef _WIN32
-                glfwSetCursor(window, bd->MouseCursors[imgui_cursor] ? bd->MouseCursors[imgui_cursor] : bd->MouseCursors[ImGuiMouseCursor_Arrow]);
-    +#endif
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            }
-        }
-    ```
+Local changes:
+
+- `imconfig.h` enables `IMGUI_ENABLE_FREETYPE` and `IMGUI_DEFINE_MATH_OPERATORS`.
+- `imgui_draw.cpp` includes `imgui_freetype.h` from the flattened include directory.
+
+The CMake file, embedded fonts, and standalone `stb_image.h` are maintained by
+ImPlay. When updating ImGui, update its core and backends together and preserve
+the local configuration above.

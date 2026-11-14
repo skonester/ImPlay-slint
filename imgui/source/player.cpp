@@ -46,7 +46,10 @@ bool Player::init(std::map<std::string, std::string> &options) {
   mpv->option("load-osd-console", "no");
   mpv->option("osd-playing-msg", "${media-title}");
   mpv->option("screenshot-directory", "~~desktop/");
-  mpv->option("vo", "libmpv");
+  mpv->option("vo", config->nativeVideo() ? "gpu-next" : "libmpv");
+#ifdef _WIN32
+  if (config->nativeVideo()) mpv->option("gpu-api", "d3d11");
+#endif
 
   // override-display-fps is renamed to display-fps-override in mpv 0.37.0
   mpv->option<int64_t, MPV_FORMAT_INT64>("override-display-fps", GetMonitorRefreshRate());
@@ -54,6 +57,7 @@ bool Player::init(std::map<std::string, std::string> &options) {
 
   if (!config->Data.Mpv.UseConfig) {
     writeMpvConf();
+    // ImPlay installs its own OSC script; enabling mpv's built-in OSC loads both.
     mpv->option("osc", "no");
     mpv->option("config-dir", config->dir().c_str());
   }
@@ -100,6 +104,8 @@ void Player::draw() {
 }
 
 void Player::drawVideo() {
+  // Native mpv output presents its own child window instead of an ImGui texture.
+  if (config->nativeVideo()) return;
   auto vp = ImGui::GetMainViewport();
   auto drawList = ImGui::GetBackgroundDrawList(vp);
 
@@ -138,7 +144,7 @@ void Player::render() {
   ImGui::NewFrame();
 
 #if defined(_WIN32) && defined(IMGUI_HAS_VIEWPORT)
-  if (config->Data.Mpv.UseWid) {
+  if (config->nativeVideo()) {
     ImGuiViewport *vp = ImGui::GetMainViewport();
     vp->Flags &= ~ImGuiViewportFlags_CanHostOtherWindows;  // HACK: disable main viewport merge
   }
@@ -147,7 +153,7 @@ void Player::render() {
   draw();
 
 #if defined(_WIN32) && defined(IMGUI_HAS_VIEWPORT)
-  if (config->Data.Mpv.UseWid && mpv->ontop) {
+  if (config->nativeVideo() && mpv->ontop) {
     ImGuiContext *ctx = ImGui::GetCurrentContext();
     for (int i = 1; i < ctx->Windows.Size; i++) {
       ImGuiWindow *w = ctx->Windows[i];
@@ -162,16 +168,20 @@ void Player::render() {
 
   {
     ContextGuard guard(this);
-    GetFramebufferSize(&width, &height);
-    glViewport(0, 0, width, height);
+    // Native mpv owns video presentation. Only detached ImGui panels use GL in
+    // this mode; never clear or swap the main video window from OpenGL as well.
+    if (!config->nativeVideo()) {
+      GetFramebufferSize(&width, &height);
+      glViewport(0, 0, width, height);
 
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+      glClearColor(0, 0, 0, 1);
+      glClear(GL_COLOR_BUFFER_BIT);
 
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SetSwapInterval(config->Data.Interface.Fps > 60 ? 0 : 1);
-    SwapBuffers();
-    if (!videoThreaded) mpv->reportSwap();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+      SetSwapInterval(config->Data.Interface.Fps > 60 ? 0 : 1);
+      SwapBuffers();
+      if (!videoThreaded) mpv->reportSwap();
+    }
 
 #ifdef IMGUI_HAS_VIEWPORT
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -326,6 +336,7 @@ void Player::renderVideoSlot(VideoSlot &slot, int w, int h) {
 }
 
 void Player::presentVideo() {
+  if (config->nativeVideo()) return;
   int w = 0, h = 0;
   GetFramebufferSize(&w, &h);
 
@@ -419,7 +430,7 @@ void Player::initGui() {
   if (config->Data.Interface.Docking) io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 #endif
 #ifdef IMGUI_HAS_VIEWPORT
-  if (config->Data.Interface.Viewports || config->Data.Mpv.UseWid) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+  if (config->Data.Interface.Viewports || config->nativeVideo()) io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 #endif
 
   loadFonts();
@@ -501,7 +512,7 @@ void Player::loadFonts() {
 
   ImGuiIO &io = ImGui::GetIO();
 #if defined(_WIN32) && defined(IMGUI_HAS_VIEWPORT)
-  if (config->Data.Mpv.UseWid) io.ConfigViewportsNoAutoMerge = true;
+  if (config->nativeVideo()) io.ConfigViewportsNoAutoMerge = true;
 #endif
 
   style.ScaleAllSizes(scale);

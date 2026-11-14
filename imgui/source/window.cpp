@@ -22,7 +22,7 @@ Window::Window(Config* config) : Player(config) {
   window = glfwCreateWindow(1280, 720, PLAYER_NAME, nullptr, nullptr);
   if (window == nullptr) throw std::runtime_error("Failed to create window!");
   // Same hints as the main window (still hidden); without it, video renders on the UI thread.
-  videoWindow = glfwCreateWindow(1, 1, PLAYER_NAME, nullptr, window);
+  if (!config->nativeVideo()) videoWindow = glfwCreateWindow(1, 1, PLAYER_NAME, nullptr, window);
 #ifdef _WIN32
   hwnd = glfwGetWin32Window(window);
   if (SUCCEEDED(OleInitialize(nullptr))) oleOk = true;
@@ -259,7 +259,7 @@ void Window::translateMod(std::vector<std::string>& keys, int mods) {
 }
 
 #ifdef _WIN32
-int64_t Window::GetWid() { return config->Data.Mpv.UseWid ? static_cast<uint32_t>((intptr_t)hwnd) : 0; }
+int64_t Window::GetWid() { return config->nativeVideo() ? static_cast<uint32_t>((intptr_t)hwnd) : 0; }
 #endif
 
 GLAddrLoadFunc Window::GetGLAddrFunc() { return (GLAddrLoadFunc)glfwGetProcAddress; }
@@ -387,7 +387,7 @@ LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_NCRBUTTONDOWN:
     case WM_NCMBUTTONDOWN:
     case WM_NCXBUTTONDOWN:
-      if (win->config->Data.Mpv.UseWid && ImGui::IsPopupOpen(ImGuiID(0), ImGuiPopupFlags_AnyPopup)) {
+      if (win->config->nativeVideo() && ImGui::IsPopupOpen(ImGuiID(0), ImGuiPopupFlags_AnyPopup)) {
         ImGuiIO& io = ImGui::GetIO();
         io.AddFocusEvent(false); // may close popup
       }

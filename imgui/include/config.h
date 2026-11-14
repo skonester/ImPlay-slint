@@ -88,6 +88,9 @@ class Config {
 
   ConfigData Data;
   bool FontReload = false;
+  // Command-line renderer selection applies to this run, not saved preferences.
+  bool NativeVideo = false;
+  bool nativeVideo() const { return Data.Mpv.UseWid || NativeVideo; }
 
  private:
   inipp::Ini<char> ini;
