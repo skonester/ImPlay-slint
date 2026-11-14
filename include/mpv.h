@@ -23,9 +23,8 @@ class Mpv {
   // The render calls below must run on the thread that owns the GL context passed to initRender.
   void initRender(GLAddrLoadFunc load);
   void freeRender();
-  void render(int w, int h, int fbo = 0, bool flip = true, bool block = false);
+  int render(int w, int h, int fbo = 0, bool flip = true, bool block = false);
   bool wantRender();
-  void reportSwap();
   void waitEvent(double timeout = 0);
   void requestLog(const char *level, LogHandler handler);
   int loadConfig(const char *path);

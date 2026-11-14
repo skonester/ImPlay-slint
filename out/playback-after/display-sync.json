@@ -1,0 +1,1286 @@
+[
+  {
+    "time-pos": 1.185,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 79,
+    "vo-delayed-frame-count": 146,
+    "avsync": -0.765862,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 1.172
+  },
+  {
+    "time-pos": 3.07,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 192,
+    "vo-delayed-frame-count": 422,
+    "avsync": -2.127175,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 2.328
+  },
+  {
+    "time-pos": 4.955,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 305,
+    "vo-delayed-frame-count": 698,
+    "avsync": -3.416772,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 3.484
+  },
+  {
+    "time-pos": 6.857,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 419,
+    "vo-delayed-frame-count": 977,
+    "avsync": -4.689448,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 4.641
+  },
+  {
+    "time-pos": 8.759,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 533,
+    "vo-delayed-frame-count": 1256,
+    "avsync": -6.034308,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 5.797
+  },
+  {
+    "time-pos": 10.66,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 647,
+    "vo-delayed-frame-count": 1534,
+    "avsync": -7.375667,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 6.969
+  },
+  {
+    "time-pos": 12.562,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 761,
+    "vo-delayed-frame-count": 1813,
+    "avsync": -8.644979,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 8.125
+  },
+  {
+    "time-pos": 14.447,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 874,
+    "vo-delayed-frame-count": 2089,
+    "avsync": -10.00963,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 9.281
+  },
+  {
+    "time-pos": 16.35,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 988,
+    "vo-delayed-frame-count": 2368,
+    "avsync": -11.279521,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 10.453
+  },
+  {
+    "time-pos": 18.252,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 1102,
+    "vo-delayed-frame-count": 2647,
+    "avsync": -12.623871,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 11.609
+  },
+  {
+    "time-pos": 20.137,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 1215,
+    "vo-delayed-frame-count": 2923,
+    "avsync": -13.914257,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 12.766
+  },
+  {
+    "time-pos": 22.055,
+    "hwdec-current": "nvdec",
+    "video-codec": "Google VP9",
+    "video-params": {
+      "pixelformat": "cuda",
+      "hw-pixelformat": "nv12",
+      "average-bpp": 12,
+      "w": 7680,
+      "h": 4320,
+      "dw": 7680,
+      "dh": 4320,
+      "crop-x": 0,
+      "crop-y": 0,
+      "crop-w": 7680,
+      "crop-h": 4320,
+      "aspect": 1.777778,
+      "aspect-name": "16:9",
+      "par": 1.0,
+      "sar": 1.777778,
+      "sar-name": "16:9",
+      "colormatrix": "bt.709",
+      "colorlevels": "limited",
+      "primaries": "bt.709",
+      "gamma": "bt.1886",
+      "sig-peak": 0.0,
+      "light": "display",
+      "chroma-location": "mpeg2/4/h264",
+      "stereo-in": "mono",
+      "rotate": 0,
+      "alpha": "none"
+    },
+    "estimated-vf-fps": 59.940065,
+    "container-fps": 59.940063,
+    "current-vo": "libmpv",
+    "video-sync": "display-resample",
+    "frame-drop-count": 0,
+    "decoder-frame-drop-count": 0,
+    "mistimed-frame-count": 1330,
+    "vo-delayed-frame-count": 3204,
+    "avsync": -15.244494,
+    "display-fps": 60.0,
+    "vo-passes": {
+      "fresh": [
+        {
+          "desc": "map frame (hwdec)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "cscale=ewa_lanczossharp (chroma)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "combining planes + color conversion",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "dscale=hermite (rgb)",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "hermite second pass + output to screen",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ],
+      "redraw": [
+        {
+          "desc": "redraw cached frame",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        },
+        {
+          "desc": "drawing osd",
+          "last": 0,
+          "avg": 0,
+          "peak": 0,
+          "count": 0,
+          "samples": []
+        }
+      ]
+    },
+    "vo-performance": null,
+    "elapsed": 13.922
+  }
+]

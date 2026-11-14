@@ -119,9 +119,8 @@ int implay_mpv_load_config_file(implay_mpv *core, const char *path);
 implay_mpv_status implay_mpv_render_init(implay_mpv *core, implay_mpv_gl_load gl_load);
 void implay_mpv_render_free(implay_mpv *core);
 // With block, waits for the frame's display time; only a dedicated render thread should.
-void implay_mpv_render(implay_mpv *core, int w, int h, int fbo, bool flip, bool block);
+int implay_mpv_render(implay_mpv *core, int w, int h, int fbo, bool flip, bool block);
 bool implay_mpv_want_render(implay_mpv *core);
-void implay_mpv_report_swap(implay_mpv *core);
 
 const char *implay_mpv_error_string(int error);
 const char *implay_mpv_status_string(implay_mpv_status status);

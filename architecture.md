@@ -57,25 +57,22 @@ frontend source files into the same `ImPlay` executable name.
 The Slint window uses Slint's FemtoVG/OpenGL rendering notifier, and
 `VideoRenderer` (`source/video_renderer.cpp`) owns the video GL work:
 
-- Threaded (when Slint renders through WGL, the normal Windows case): renderer
-  setup creates a second WGL context shared with Slint's (same pixel format,
-  same ES/desktop profile and version). A dedicated render thread owns that
-  context and libmpv's render context, and renders into a ring of three
-  textures with mpv's normal frame timing. In `BeforeRendering` the UI thread
-  only takes the newest finished texture, waits for its fence on the GPU and
-  blits it into the texture Slint displays. Fences in both directions keep the
-  two contexts from reading or overwriting a texture early.
-- Fallback (EGL/ANGLE, or if the shared context cannot be made): mpv renders
-  directly into the displayed texture inside `BeforeRendering`, without
-  waiting for the frame's display time (`video-timing-offset=0`).
+- The UI thread owns libmpv's render context and one RGBA8 texture/FBO. mpv
+  renders directly into that texture in `BeforeRendering`, after the GL state
+  is reset for mpv. Slint samples it in the same context, with no texture ring,
+  second context, fences, or blit. The physical render dimensions include the
+  window scale factor and are rounded up to even values.
+- `video-timing-offset=0` and `BLOCK_FOR_TARGET_TIME=0` keep render calls from
+  sleeping on the UI thread. mpv requests frames when due; Slint presents them.
+  Advanced control is disabled, and frames are not reported as presented ahead
+  of Slint. A resize redraws even a paused picture into the new target.
 
-mpv event wakeups are posted back to the UI thread; a finished video frame
-posts one UI redraw, which also applies the pending `time-pos`/`duration` so a
+mpv event wakeups are posted back to the UI thread; a render-update callback
+posts a UI redraw, which also applies the pending `time-pos`/`duration` so a
 frame and its timestamp cost a single repaint.
 
 The ImGui frontend uses its own GLFW/OpenGL window and player/rendering
-integration under `imgui/source/`. It follows the same pattern as the Slint
-build: a hidden GLFW window gives the video thread an OpenGL 3.2 context shared
+integration under `imgui/source/`. A hidden GLFW window gives its video thread an OpenGL 3.2 context shared
 with the main one, mpv renders into a three-texture ring there (with advanced
 control), and `Player::presentVideo()` copies the newest frame into the texture
 ImGui draws. Without a shared context it renders on the UI thread instead. Its
@@ -146,14 +143,12 @@ identical. ABI changes require rebuilding and testing both sides.
   `implay_mpv_pump()` on the caller's thread.
 - UI mutations must be marshalled to the UI thread through the existing
   `postToUi`/redraw scheduling path.
-- Every `implay_mpv_render_*` call, `render`, `want_render` and `report_swap`
-  runs on the thread whose GL context created the render context: the render
-  thread, or the UI thread in fallback mode. That thread must never wait on a
-  blocking mpv call (libmpv's render-thread rule); the render thread only makes
-  render calls and never waits on the UI thread. In fallback mode this means UI
-  callbacks should keep using the async command and property paths.
+- Every `implay_mpv_render_*` call, `render` and `want_render` runs on Slint's
+  UI thread with the same GL context that created the render context. UI
+  callbacks should use the async command and property paths so they do not
+  wait on mpv while the core waits for a video frame to be rendered.
 - `Window::renderer` is declared between `mpv` and `app`: destroying `app` runs
-  Slint's `RenderingTeardown`, which stops the render thread, and the renderer
+  Slint's `RenderingTeardown`, which frees the render context, and the renderer
   must be gone before mpv is destroyed.
 - List-property changes are coalesced by `scheduleCollectionsSync()` and applied
   to persistent Slint models in place; do not replace those models.

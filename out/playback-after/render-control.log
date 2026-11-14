@@ -1,0 +1,1485 @@
+[   0.228][v][cplayer] mpv v0.41.0-602-g948c86d24 Copyright © 2000-2026 mpv/MPlayer/mplayer2 projects
+[   0.229][v][cplayer]  built on May  3 2026 16:06:26
+[   0.229][v][cplayer] libplacebo version: v7.364.0 (v7.360.0-34-gd5ef02c-dirty)
+[   0.229][v][cplayer] FFmpeg version: N-124347-g2e3227687
+[   0.229][v][cplayer] FFmpeg library versions:
+[   0.229][v][cplayer]    libavcodec      62.30.100
+[   0.229][v][cplayer]    libavdevice     62.4.100
+[   0.229][v][cplayer]    libavfilter     11.17.100
+[   0.229][v][cplayer]    libavformat     62.13.102
+[   0.229][v][cplayer]    libavutil       60.30.100
+[   0.262][v][cplayer]    libswresample   6.4.100
+[   0.262][v][cplayer]    libswscale      9.7.100
+[   0.262][v][cplayer] Configuration: -Dprefix=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/install/x86_64-w64-mingw32 -Dlibdir=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/install/x86_64-w64-mingw32/lib -Ddefault_library=shared -Dprefer_static=true -Ddebug=true -Db_ndebug=true -Doptimization=3 -Db_lto=true -Db_lto_mode=thin -Dlibmpv=true -Dpdf-build=enabled -Dlua=enabled -Djavascript=enabled -Dsdl2-gamepad=enabled -Dlibarchive=enabled -Dlibbluray=enabled -Ddvdnav=enabled -Duchardet=enabled -Drubberband=enabled -Dlcms2=enabled -Dopenal=enabled -Dspirv-cross=enabled -Dvulkan=enabled -Dvapoursynth=enabled -Dsubrandr=enabled -Dsixel=enabled -Dgl=enabled -Degl-angle=enabled -Dc_args=-Wno-error=int-conversion --cross-file=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/meson_cross.txt
+[   0.262][v][cplayer] List of enabled features: amf build-date cplugins cuda-hwaccel cuda-interop d3d-hwaccel d3d11 d3d9-hwaccel debug direct3d dos-paths dvdnav dxgi-debug-d3d11 egl-angle egl-angle-win32 ffmpeg ffnvcodec gl gl-dxinterop gl-dxinterop-d3d9 gl-win32 glob glob-win32 gpl iconv javascript jpeg lcms2 libarchive libass libavdevice libbluray libplacebo luajit openal rubberband rubberband-3 sdl2-gamepad shaderc sixel spirv-cross subrandr uchardet vaapi vaapi-win32 vapoursynth vector vulkan wasapi win32 win32-desktop win32-executable win32-smtc win32-threads zimg zimg-st428 zlib
+[   0.262][v][cplayer] Built with NDEBUG.
+[   0.262][v][cplayer] mpv v0.41.0-602-g948c86d24 Copyright © 2000-2026 mpv/MPlayer/mplayer2 projects
+[   0.262][v][cplayer]  built on May  3 2026 16:06:26
+[   0.262][v][cplayer] libplacebo version: v7.364.0 (v7.360.0-34-gd5ef02c-dirty)
+[   0.262][v][cplayer] FFmpeg version: N-124347-g2e3227687
+[   0.262][v][cplayer] FFmpeg library versions:
+[   0.262][v][cplayer]    libavcodec      62.30.100
+[   0.262][v][cplayer]    libavdevice     62.4.100
+[   0.262][v][cplayer]    libavfilter     11.17.100
+[   0.262][v][cplayer]    libavformat     62.13.102
+[   0.262][v][cplayer]    libavutil       60.30.100
+[   0.262][v][cplayer]    libswresample   6.4.100
+[   0.262][v][cplayer]    libswscale      9.7.100
+[   0.262][v][cplayer] Configuration: -Dprefix=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/install/x86_64-w64-mingw32 -Dlibdir=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/install/x86_64-w64-mingw32/lib -Ddefault_library=shared -Dprefer_static=true -Ddebug=true -Db_ndebug=true -Doptimization=3 -Db_lto=true -Db_lto_mode=thin -Dlibmpv=true -Dpdf-build=enabled -Dlua=enabled -Djavascript=enabled -Dsdl2-gamepad=enabled -Dlibarchive=enabled -Dlibbluray=enabled -Ddvdnav=enabled -Duchardet=enabled -Drubberband=enabled -Dlcms2=enabled -Dopenal=enabled -Dspirv-cross=enabled -Dvulkan=enabled -Dvapoursynth=enabled -Dsubrandr=enabled -Dsixel=enabled -Dgl=enabled -Degl-angle=enabled -Dc_args=-Wno-error=int-conversion --cross-file=/__w/mpv-winbuild/mpv-winbuild/mpv-winbuild-cmake/build64/meson_cross.txt
+[   0.262][v][cplayer] List of enabled features: amf build-date cplugins cuda-hwaccel cuda-interop d3d-hwaccel d3d11 d3d9-hwaccel debug direct3d dos-paths dvdnav dxgi-debug-d3d11 egl-angle egl-angle-win32 ffmpeg ffnvcodec gl gl-dxinterop gl-dxinterop-d3d9 gl-win32 glob glob-win32 gpl iconv javascript jpeg lcms2 libarchive libass libavdevice libbluray libplacebo luajit openal rubberband rubberband-3 sdl2-gamepad shaderc sixel spirv-cross subrandr uchardet vaapi vaapi-win32 vapoursynth vector vulkan wasapi win32 win32-desktop win32-executable win32-smtc win32-threads zimg zimg-st428 zlib
+[   0.262][v][cplayer] Built with NDEBUG.
+[   0.262][d][global] home path: '' -> '-'
+[   0.262][d][global] user path: '~~home/' -> ''
+[   0.262][d][global] user path: '~~old_home/' -> ''
+[   0.262][d][ytdl_hook] Loading lua script @ytdl_hook.lua...
+[   0.262][d][stats] Loading lua script @stats.lua...
+[   0.262][d][auto_profiles] Loading lua script @auto_profiles.lua...
+[   0.262][d][select] Loading lua script @select.lua...
+[   0.262][d][positioning] Loading lua script @positioning.lua...
+[   0.262][d][commands] Loading lua script @commands.lua...
+[   0.262][v][clipboard] Initialized win32 clipboard backend.
+[   0.262][v][ipc] Starting IPC master
+[   0.262][v][cplayer] Waiting for scripts...
+[   0.262][d][ao/wasapi] Hotplug init
+[   0.262][v][ipc] Listening to IPC pipe.
+[   0.262][d][auto_profiles] loading mp.defaults
+[   0.262][d][ytdl_hook] loading mp.defaults
+[   0.262][d][ytdl_hook] loading @ytdl_hook.lua
+[   0.262][d][auto_profiles] loading @auto_profiles.lua
+[   0.262][d][stats] loading mp.defaults
+[   0.262][d][ytdl_hook] reading options for ytdl_hook
+[   0.262][d][ytdl_hook] script-opts/ytdl_hook.conf not found.
+[   0.262][d][stats] loading @stats.lua
+[   0.262][d][select] loading mp.defaults
+[   0.262][d][select] loading @select.lua
+[   0.262][d][select] reading options for select
+[   0.262][d][select] script-opts/select.conf not found.
+[   0.262][d][stats] reading options for stats
+[   0.262][d][stats] script-opts/stats.conf not found.
+[   0.262][d][positioning] loading mp.defaults
+[   0.262][d][commands] loading mp.defaults
+[   0.262][d][positioning] loading @positioning.lua
+[   0.262][d][commands] loading @commands.lua
+[   0.262][d][positioning] reading options for positioning
+[   0.262][d][positioning] script-opts/positioning.conf not found.
+[   0.262][d][ao/wasapi] Monitoring for hotplug events
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_positioning", contents="", flags="default"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_positioning", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_forced_positioning", contents="", flags="force"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_forced_positioning", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][commands] reading options for commands
+[   0.262][d][commands] script-opts/commands.conf not found.
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_commands", contents="", flags="default"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_commands", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_forced_commands", contents="", flags="force"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_forced_commands", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_select", contents="", flags="default"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_select", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_forced_select", contents="", flags="force"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_forced_select", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_stats", contents="", flags="default"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_stats", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][d][cplayer] Run command: define-section, flags=64, args=[name="input_forced_stats", contents="", flags="force"]
+[   0.262][d][cplayer] Run command: enable-section, flags=64, args=[name="input_forced_stats", flags="allow-hide-cursor+allow-vo-dragging"]
+[   0.262][v][cplayer] Done loading scripts.
+[   0.262][d][auto_profiles] Destroying client handle...
+[   0.264][v][libmpv_render] GL_VERSION='OpenGL ES 3.2 NVIDIA 610.88'
+[   0.264][v][libmpv_render] Detected GLES 3.2.
+[   0.264][v][libmpv_render] GL_VENDOR='NVIDIA Corporation'
+[   0.264][v][libmpv_render] GL_RENDERER='NVIDIA GeForce RTX 3060/PCIe/SSE2'
+[   0.264][v][libmpv_render] GL_SHADING_LANGUAGE_VERSION='OpenGL ES GLSL ES 3.20'
+[   0.264][d][libmpv_render] Combined OpenGL extensions string:
+[   0.264][d][libmpv_render]  GL_EXT_shader_clock GL_EXT_shader_realtime_clock GL_EXT_base_instance GL_EXT_blend_func_extended GL_EXT_blend_minmax GL_EXT_buffer_storage GL_EXT_clear_texture GL_EXT_clip_control GL_EXT_clip_cull_distance GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_depth GL_EXT_copy_image GL_EXT_depth_clamp GL_EXT_debug_label GL_EXT_discard_framebuffer GL_EXT_disjoint_timer_query GL_EXT_draw_buffers_indexed GL_EXT_draw_elements_base_vertex GL_EXT_EGL_image_external_wrap_modes GL_EXT_float_blend GL_EXT_frag_depth GL_EXT_geometry_point_size GL_EXT_geometry_shader GL_EXT_gpu_shader5 GL_EXT_map_buffer_range GL_EXT_multi_draw_indirect GL_EXT_multisample_compatibility GL_EXT_multisampled_render_to_texture GL_EXT_multisampled_render_to_texture2 GL_EXT_multiview_texture_multisample GL_EXT_multiview_timer_query GL_EXT_occlusion_query_boolean GL_EXT_polygon_offset_clamp GL_EXT_post_depth_coverage GL_EXT_primitive_bounding_box GL_EXT_raster_multisample GL_EXT_render_snorm GL_EXT_robustness GL_EXT_separate_shader_objects GL_EXT_shader_group_vote GL_EXT_shader_implicit_conversions GL_EXT_shader_integer_mix GL_EXT_shader_io_blocks GL_EXT_shader_non_constant_global_initializers GL_EXT_shader_texture_lod GL_EXT_shader_texture_samples GL_EXT_shadow_samplers GL_EXT_sparse_texture GL_EXT_sparse_texture2 GL_EXT_sRGB GL_EXT_sRGB_write_control GL_EXT_tessellation_point_size GL_EXT_tessellation_shader GL_EXT_texture_border_clamp GL_EXT_texture_buffer GL_EXT_texture_compression_bptc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc GL_EXT_texture_cube_map_array GL_EXT_texture_filter_anisotropic GL_EXT_texture_filter_minmax GL_EXT_texture_format_BGRA8888 GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_norm16 GL_EXT_texture_query_lod GL_EXT_texture_rg GL_EXT_texture_shadow_lod GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_decode GL_EXT_texture_storage GL_EXT_texture_view GL_EXT_draw_transform_feedback GL_EXT_unpack_subimage GL_EXT_window_rectangles GL_KHR_context_flush_control GL_KHR_debug GL_EXT_memory_object GL_EXT_memory_object_win32 GL_NV_memory_object_sparse GL_EXT_win32_keyed_mutex GL_KHR_parallel_shader_compile GL_KHR_no_error GL_KHR_robust_buffer_access_behavior GL_KHR_robustness GL_EXT_semaphore GL_EXT_semaphore_win32 GL_NV_timeline_semaphore GL_KHR_shader_subgroup GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_KHR_texture_compression_astc_hdr GL_NV_bgr GL_NV_bindless_texture GL_NV_blend_equation_advanced GL_NV_blend_equation_advanced_coherent GL_NVX_blend_equation_advanced_multi_draw_buffers GL_NV_blend_minmax_factor GL_NV_clip_space_w_scaling GL_NV_compute_shader_derivatives GL_NV_conditional_render GL_NV_conservative_raster GL_NV_conservative_raster_pre_snap_triangles GL_NV_copy_buffer GL_NV_copy_image GL_NV_draw_buffers GL_NV_draw_instanced GL_NV_draw_texture GL_NV_draw_vulkan_image GL_NV_explicit_attrib_location GL_NV_fbo_color_attachments GL_NV_fill_rectangle GL_NV_fragment_coverage_to_color GL_NV_fragment_shader_barycentric GL_NV_fragment_shader_interlock GL_NV_framebuffer_blit GL_NV_framebuffer_mixed_samples GL_NV_framebuffer_multisample GL_NV_generate_mipmap_sRGB GL_NV_geometry_shader_passthrough GL_NV_instanced_arrays GL_NV_internalformat_sample_query GL_NV_gpu_shader5 GL_NV_image_formats GL_NV_memory_attachment GL_NV_mesh_shader GL_NV_occlusion_query_samples GL_NV_non_square_matrices GL_NV_pack_subimage GL_NV_packed_float GL_NV_packed_float_linear GL_NV_path_rendering GL_NV_path_rendering_shared_edge GL_NV_pixel_buffer_object GL_NV_polygon_mode GL_NV_primitive_shading_rate GL_NV_read_buffer GL_NV_read_depth GL_NV_read_depth_stencil GL_NV_read_stencil GL_NV_representative_fragment_test GL_NV_sample_locations GL_NV_sample_mask_override_coverage GL_NV_scissor_exclusive GL_NV_shader_atomic_fp16_vector GL_NV_shader_noperspective_interpolation GL_NV_shader_subgroup_partitioned GL_NV_shader_texture_footprint GL_NV_shading_rate_image GL_NV_shadow_samplers_array GL_NV_shadow_samplers_cube GL_NV_sRGB_formats GL_NV_stereo_view_rendering GL_NV_texture_array GL_NV_texture_barrier GL_NV_texture_border_clamp GL_NV_texture_compression_latc GL_NV_texture_compression_s3tc GL_NV_texture_compression_s3tc_update GL_NV_texture_dirty_tile_map GL_NV_timer_query GL_NV_viewport_array GL_NV_viewport_array2 GL_NV_viewport_swizzle GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_OES_compressed_ETC1_RGB8_texture GL_EXT_compressed_ETC1_RGB8_sub_texture GL_OES_depth24 GL_OES_depth32 GL_OES_depth_texture GL_OES_depth_texture_cube_map GL_OES_copy_image GL_OES_draw_buffers_indexed GL_OES_draw_elements_base_vertex GL_OES_texture_border_clamp GL_OES_tessellation_point_size GL_OES_tessellation_shader GL_OES_texture_buffer GL_OES_geometry_point_size GL_OES_geometry_shader GL_OES_gpu_shader5 GL_OES_shader_io_blocks GL_OES_texture_view GL_OES_primitive_bounding_box GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_get_program_binary GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_rgb8_rgba8 GL_EXT_read_format_bgra GL_OES_sample_shading GL_OES_sample_variables GL_OES_shader_image_atomic GL_OES_shader_multisample_interpolation GL_OES_standard_derivatives GL_OES_texture_cube_map_array GL_OES_texture_npot GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_stencil8 GL_OES_texture_storage_multisample_2d_array GL_OES_vertex_array_object GL_OES_vertex_half_float GL_OES_viewport_array GL_OVR_multiview GL_OVR_multiview2 GL_OVR_multiview_multisampled_render_to_texture GL_ANDROID_extension_pack_es31a 
+[   0.264][v][libmpv_render] Loaded extension GL_EXT_texture_norm16.
+[   0.264][w][libmpv_render] Function glGetQueryObjectivEXT from extension GL_EXT_disjoint_timer_query not found.
+[   0.264][v][libmpv_render] Loaded extension GL_EXT_buffer_storage.
+[   0.264][v][libmpv_render] GL_*_swap_control extension missing.
+[   0.265][d][libmpv_render] Texture formats:
+[   0.265][d][libmpv_render]   NAME       COMP*TYPE SIZE           DEPTH PER COMP.
+[   0.265][d][libmpv_render]   r8         1*unorm   1B    LF CR ST {8}
+[   0.265][d][libmpv_render]   rg8        2*unorm   2B    LF CR ST {8 8}
+[   0.265][d][libmpv_render]   rgb8       3*unorm   3B    LF CR ST {8 8 8}
+[   0.265][d][libmpv_render]   rgba8      4*unorm   4B    LF CR ST {8 8 8 8}
+[   0.265][d][libmpv_render]   r16        1*unorm   2B    LF CR ST {16}
+[   0.265][d][libmpv_render]   rg16       2*unorm   4B    LF CR ST {16 16}
+[   0.265][d][libmpv_render]   rgba16     4*unorm   8B    LF CR ST {16 16 16 16}
+[   0.265][d][libmpv_render]   rgb16      3*unorm   6B    LF    ST {16 16 16}
+[   0.265][d][libmpv_render]   l          1*unorm   1B    LF CR ST {8}
+[   0.265][d][libmpv_render]   la         2*unorm   2B LA LF CR ST {8 8}
+[   0.265][d][libmpv_render]   r8ui       1*uint    1B       CR ST {8}
+[   0.265][d][libmpv_render]   rg8ui      2*uint    2B       CR ST {8 8}
+[   0.265][d][libmpv_render]   rgb8ui     3*uint    3B          ST {8 8 8}
+[   0.265][d][libmpv_render]   rgba8ui    4*uint    4B       CR ST {8 8 8 8}
+[   0.265][d][libmpv_render]   r16ui      1*uint    2B       CR ST {16}
+[   0.265][d][libmpv_render]   rg16ui     2*uint    4B       CR ST {16 16}
+[   0.265][d][libmpv_render]   rgb16ui    3*uint    6B          ST {16 16 16}
+[   0.265][d][libmpv_render]   rgba16ui   4*uint    8B       CR ST {16 16 16 16}
+[   0.265][d][libmpv_render]   r16f       1*float   4B    LF CR ST {32/16}
+[   0.265][d][libmpv_render]   rg16f      2*float   8B    LF CR ST {32/16 32/16}
+[   0.265][d][libmpv_render]   rgb16f     3*float  12B    LF    ST {32/16 32/16 32/16}
+[   0.265][d][libmpv_render]   rgba16f    4*float  16B    LF CR ST {32/16 32/16 32/16 32/16}
+[   0.265][d][libmpv_render]   r16f       1*float   4B    LF    ST {32/16}
+[   0.265][d][libmpv_render]   rg16f      2*float   8B    LF    ST {32/16 32/16}
+[   0.265][d][libmpv_render]   rgb16f     3*float  12B    LF    ST {32/16 32/16 32/16}
+[   0.265][d][libmpv_render]   rgba16f    4*float  16B    LF    ST {32/16 32/16 32/16 32/16}
+[   0.265][d][libmpv_render]   rgb10_a2   4*unorm   4B    LF CR ST {0/10 0/10 0/10 0/2}
+[   0.265][d][libmpv_render]  LA = LUMINANCE_ALPHA hack format
+[   0.265][d][libmpv_render]  LF = linear filterable
+[   0.265][d][libmpv_render]  CR = can be used for render targets
+[   0.265][d][libmpv_render]  ST = can be used for storable images
+[   0.265][d][libmpv_render] Image formats:
+[   0.265][d][libmpv_render]   yuv444p => 3 planes 1x1 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv420p => 3 planes 2x2 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   gray => 1 planes 1x1 8/0 [r8] (r) [unorm]
+[   0.265][d][libmpv_render]   gray16 => 1 planes 1x1 16/0 [r16] (r) [unorm]
+[   0.265][d][libmpv_render]   uyvy422
+[   0.265][d][libmpv_render]   nv12 => 2 planes 2x2 8/0 [r8/rg8] (r/gb) [unorm]
+[   0.265][d][libmpv_render]   p010 => 2 planes 2x2 16/6 [r16/rg16] (r/gb) [unorm]
+[   0.265][d][libmpv_render]   argb => 1 planes 1x1 8/0 [rgba8] (argb) [unorm]
+[   0.265][d][libmpv_render]   bgra => 1 planes 1x1 8/0 [rgba8] (bgra) [unorm]
+[   0.265][d][libmpv_render]   abgr => 1 planes 1x1 8/0 [rgba8] (abgr) [unorm]
+[   0.265][d][libmpv_render]   rgba => 1 planes 1x1 8/0 [rgba8] (rgba) [unorm]
+[   0.265][d][libmpv_render]   bgr24 => 1 planes 1x1 8/0 [rgb8] (bgr) [unorm]
+[   0.265][d][libmpv_render]   rgb24 => 1 planes 1x1 8/0 [rgb8] (rgb) [unorm]
+[   0.265][d][libmpv_render]   x2rgb10 => 1 planes 1x1 10/0 [rgb10_a2] (bgr) [unknown]
+[   0.265][d][libmpv_render]   x2bgr10
+[   0.265][d][libmpv_render]   rgbaf16
+[   0.265][d][libmpv_render]   0rgb => 1 planes 1x1 8/0 [rgba8] (_rgb) [unorm]
+[   0.265][d][libmpv_render]   bgr0 => 1 planes 1x1 8/0 [rgba8] (bgr) [unorm]
+[   0.265][d][libmpv_render]   0bgr => 1 planes 1x1 8/0 [rgba8] (_bgr) [unorm]
+[   0.265][d][libmpv_render]   rgb0 => 1 planes 1x1 8/0 [rgba8] (rgb) [unorm]
+[   0.265][d][libmpv_render]   rgba64 => 1 planes 1x1 16/0 [rgba16] (rgba) [unorm]
+[   0.265][d][libmpv_render]   rgb565
+[   0.265][d][libmpv_render]   pal8
+[   0.265][d][libmpv_render]   vdpau
+[   0.265][d][libmpv_render]   d3d11
+[   0.265][d][libmpv_render]   dxva2_vld
+[   0.265][d][libmpv_render]   mmal
+[   0.265][d][libmpv_render]   mediacodec
+[   0.265][d][libmpv_render]   cuda
+[   0.265][d][libmpv_render]   yap8 => 2 planes 1x1 8/0 [r8/r8] (r/a) [unorm]
+[   0.265][d][libmpv_render]   yap16 => 2 planes 1x1 16/0 [r16/r16] (r/a) [unorm]
+[   0.265][d][libmpv_render]   grayaf32 => 2 planes 1x1 32/0 [r16f/r16f] (r/a) [float]
+[   0.265][d][libmpv_render]   yuv444pf => 3 planes 1x1 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva444pf => 4 planes 1x1 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   yuv420pf => 3 planes 2x2 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva420pf => 4 planes 2x2 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   yuv422pf => 3 planes 2x1 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva422pf => 4 planes 2x1 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   yuv440pf => 3 planes 1x2 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva440pf => 4 planes 1x2 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   yuv410pf => 3 planes 4x4 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva410pf => 4 planes 4x4 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   yuv411pf => 3 planes 4x1 32/0 [r16f/r16f/r16f] (r/g/b) [float]
+[   0.265][d][libmpv_render]   yuva411pf => 4 planes 4x1 32/0 [r16f/r16f/r16f/r16f] (r/g/b/a) [float]
+[   0.265][d][libmpv_render]   y1 => 1 planes 1x1 8/-7 [r8] (r) [unorm]
+[   0.265][d][libmpv_render]   gbrp1 => 3 planes 1x1 8/-7 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp2 => 3 planes 1x1 8/-6 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp3 => 3 planes 1x1 8/-5 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp4 => 3 planes 1x1 8/-4 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp5 => 3 planes 1x1 8/-3 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp6 => 3 planes 1x1 8/-2 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   vdpau_output
+[   0.265][d][libmpv_render]   vaapi
+[   0.265][d][libmpv_render]   videotoolbox
+[   0.265][d][libmpv_render]   vulkan
+[   0.265][d][libmpv_render]   drm_prime
+[   0.265][d][libmpv_render]   yuyv422
+[   0.265][d][libmpv_render]   yuv422p => 3 planes 2x1 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv410p => 3 planes 4x4 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv411p => 3 planes 4x1 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   monow
+[   0.265][d][libmpv_render]   monob
+[   0.265][d][libmpv_render]   yuvj422p => 3 planes 2x1 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   uyyvyy411
+[   0.265][d][libmpv_render]   bgr8
+[   0.265][d][libmpv_render]   bgr4
+[   0.265][d][libmpv_render]   bgr4_byte
+[   0.265][d][libmpv_render]   rgb8
+[   0.265][d][libmpv_render]   rgb4
+[   0.265][d][libmpv_render]   rgb4_byte
+[   0.265][d][libmpv_render]   nv21 => 2 planes 2x2 8/0 [r8/rg8] (r/bg) [unorm]
+[   0.265][d][libmpv_render]   gray16be
+[   0.265][d][libmpv_render]   yuv440p => 3 planes 1x2 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuvj440p => 3 planes 1x2 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuva420p => 4 planes 2x2 8/0 [r8/r8/r8/r8] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   rgb48be
+[   0.265][d][libmpv_render]   rgb48 => 1 planes 1x1 16/0 [rgb16] (rgb) [unorm]
+[   0.265][d][libmpv_render]   rgb565be
+[   0.265][d][libmpv_render]   rgb555be
+[   0.265][d][libmpv_render]   rgb555
+[   0.265][d][libmpv_render]   bgr565be
+[   0.265][d][libmpv_render]   bgr565
+[   0.265][d][libmpv_render]   bgr555be
+[   0.265][d][libmpv_render]   bgr555
+[   0.265][d][libmpv_render]   yuv420p16 => 3 planes 2x2 16/0 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv420p16be
+[   0.265][d][libmpv_render]   yuv422p16 => 3 planes 2x1 16/0 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv422p16be
+[   0.265][d][libmpv_render]   yuv444p16 => 3 planes 1x1 16/0 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv444p16be
+[   0.265][d][libmpv_render]   rgb444
+[   0.265][d][libmpv_render]   rgb444be
+[   0.265][d][libmpv_render]   bgr444
+[   0.265][d][libmpv_render]   bgr444be
+[   0.265][d][libmpv_render]   ya8 => 1 planes 1x1 8/0 [rg8] (ra) [unorm]
+[   0.265][d][libmpv_render]   bgr48be
+[   0.265][d][libmpv_render]   bgr48 => 1 planes 1x1 16/0 [rgb16] (bgr) [unorm]
+[   0.265][d][libmpv_render]   yuv420p9be
+[   0.265][d][libmpv_render]   yuv420p9 => 3 planes 2x2 16/-7 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv420p10be
+[   0.265][d][libmpv_render]   yuv420p10 => 3 planes 2x2 16/-6 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv422p10be
+[   0.265][d][libmpv_render]   yuv422p10 => 3 planes 2x1 16/-6 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv444p9be
+[   0.265][d][libmpv_render]   yuv444p9 => 3 planes 1x1 16/-7 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv444p10be
+[   0.265][d][libmpv_render]   yuv444p10 => 3 planes 1x1 16/-6 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   yuv422p9be
+[   0.265][d][libmpv_render]   yuv422p9 => 3 planes 2x1 16/-7 [r16/r16/r16] (r/g/b) [unorm]
+[   0.265][d][libmpv_render]   gbrp => 3 planes 1x1 8/0 [r8/r8/r8] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp9be
+[   0.265][d][libmpv_render]   gbrp9 => 3 planes 1x1 16/-7 [r16/r16/r16] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp10be
+[   0.265][d][libmpv_render]   gbrp10 => 3 planes 1x1 16/-6 [r16/r16/r16] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   gbrp16be
+[   0.265][d][libmpv_render]   gbrp16 => 3 planes 1x1 16/0 [r16/r16/r16] (g/b/r) [unorm]
+[   0.265][d][libmpv_render]   yuva422p => 4 planes 2x1 8/0 [r8/r8/r8/r8] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva444p => 4 planes 1x1 8/0 [r8/r8/r8/r8] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva420p9be
+[   0.265][d][libmpv_render]   yuva420p9 => 4 planes 2x2 16/-7 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva422p9be
+[   0.265][d][libmpv_render]   yuva422p9 => 4 planes 2x1 16/-7 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva444p9be
+[   0.265][d][libmpv_render]   yuva444p9 => 4 planes 1x1 16/-7 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva420p10be
+[   0.265][d][libmpv_render]   yuva420p10 => 4 planes 2x2 16/-6 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva422p10be
+[   0.265][d][libmpv_render]   yuva422p10 => 4 planes 2x1 16/-6 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva444p10be
+[   0.265][d][libmpv_render]   yuva444p10 => 4 planes 1x1 16/-6 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva420p16be
+[   0.265][d][libmpv_render]   yuva420p16 => 4 planes 2x2 16/0 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva422p16be
+[   0.265][d][libmpv_render]   yuva422p16 => 4 planes 2x1 16/0 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   yuva444p16be
+[   0.265][d][libmpv_render]   yuva444p16 => 4 planes 1x1 16/0 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.265][d][libmpv_render]   xyz12 => 1 planes 1x1 16/4 [rgb16] (rgb) [unorm]
+[   0.265][d][libmpv_render]   xyz12be
+[   0.265][d][libmpv_render]   nv16 => 2 planes 2x1 8/0 [r8/rg8] (r/gb) [unorm]
+[   0.265][d][libmpv_render]   nv20 => 2 planes 2x1 16/-6 [r16/rg16] (r/gb) [unorm]
+[   0.265][d][libmpv_render]   nv20be
+[   0.265][d][libmpv_render]   rgba64be
+[   0.265][d][libmpv_render]   bgra64be
+[   0.265][d][libmpv_render]   bgra64 => 1 planes 1x1 16/0 [rgba16] (bgra) [unorm]
+[   0.265][d][libmpv_render]   yvyu422
+[   0.265][d][libmpv_render]   ya16be
+[   0.266][d][libmpv_render]   ya16 => 1 planes 1x1 16/0 [rg16] (ra) [unorm]
+[   0.266][d][libmpv_render]   gbrap => 4 planes 1x1 8/0 [r8/r8/r8/r8] (g/b/r/a) [unorm]
+[   0.266][d][libmpv_render]   gbrap16be
+[   0.266][d][libmpv_render]   gbrap16 => 4 planes 1x1 16/0 [r16/r16/r16/r16] (g/b/r/a) [unorm]
+[   0.266][d][libmpv_render]   qsv
+[   0.266][d][libmpv_render]   d3d11va_vld
+[   0.266][d][libmpv_render]   yuv420p12be
+[   0.266][d][libmpv_render]   yuv420p12 => 3 planes 2x2 16/-4 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv420p14be
+[   0.266][d][libmpv_render]   yuv420p14 => 3 planes 2x2 16/-2 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv422p12be
+[   0.266][d][libmpv_render]   yuv422p12 => 3 planes 2x1 16/-4 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv422p14be
+[   0.266][d][libmpv_render]   yuv422p14 => 3 planes 2x1 16/-2 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv444p12be
+[   0.266][d][libmpv_render]   yuv444p12 => 3 planes 1x1 16/-4 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv444p14be
+[   0.266][d][libmpv_render]   yuv444p14 => 3 planes 1x1 16/-2 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   gbrp12be
+[   0.266][d][libmpv_render]   gbrp12 => 3 planes 1x1 16/-4 [r16/r16/r16] (g/b/r) [unorm]
+[   0.266][d][libmpv_render]   gbrp14be
+[   0.266][d][libmpv_render]   gbrp14 => 3 planes 1x1 16/-2 [r16/r16/r16] (g/b/r) [unorm]
+[   0.266][d][libmpv_render]   yuvj411p => 3 planes 4x1 8/0 [r8/r8/r8] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   bayer_bggr8
+[   0.266][d][libmpv_render]   bayer_rggb8
+[   0.266][d][libmpv_render]   bayer_gbrg8
+[   0.266][d][libmpv_render]   bayer_grbg8
+[   0.266][d][libmpv_render]   bayer_bggr16
+[   0.266][d][libmpv_render]   bayer_bggr16be
+[   0.266][d][libmpv_render]   bayer_rggb16
+[   0.266][d][libmpv_render]   bayer_rggb16be
+[   0.266][d][libmpv_render]   bayer_gbrg16
+[   0.266][d][libmpv_render]   bayer_gbrg16be
+[   0.266][d][libmpv_render]   bayer_grbg16
+[   0.266][d][libmpv_render]   bayer_grbg16be
+[   0.266][d][libmpv_render]   yuv440p10 => 3 planes 1x2 16/-6 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv440p10be
+[   0.266][d][libmpv_render]   yuv440p12 => 3 planes 1x2 16/-4 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv440p12be
+[   0.266][d][libmpv_render]   ayuv64 => 1 planes 1x1 16/0 [rgba16] (argb) [unorm]
+[   0.266][d][libmpv_render]   ayuv64be
+[   0.266][d][libmpv_render]   p010be
+[   0.266][d][libmpv_render]   gbrap12be
+[   0.266][d][libmpv_render]   gbrap12 => 4 planes 1x1 16/-4 [r16/r16/r16/r16] (g/b/r/a) [unorm]
+[   0.266][d][libmpv_render]   gbrap10be
+[   0.266][d][libmpv_render]   gbrap10 => 4 planes 1x1 16/-6 [r16/r16/r16/r16] (g/b/r/a) [unorm]
+[   0.266][d][libmpv_render]   gray12be
+[   0.266][d][libmpv_render]   gray12 => 1 planes 1x1 16/-4 [r16] (r) [unorm]
+[   0.266][d][libmpv_render]   gray10be
+[   0.266][d][libmpv_render]   gray10 => 1 planes 1x1 16/-6 [r16] (r) [unorm]
+[   0.266][d][libmpv_render]   p016 => 2 planes 2x2 16/0 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p016be
+[   0.266][d][libmpv_render]   gray9be
+[   0.266][d][libmpv_render]   gray9 => 1 planes 1x1 16/-7 [r16] (r) [unorm]
+[   0.266][d][libmpv_render]   gbrpf32be
+[   0.266][d][libmpv_render]   gbrpf32 => 3 planes 1x1 32/0 [r16f/r16f/r16f] (g/b/r) [float]
+[   0.266][d][libmpv_render]   gbrapf32be
+[   0.266][d][libmpv_render]   gbrapf32 => 4 planes 1x1 32/0 [r16f/r16f/r16f/r16f] (g/b/r/a) [float]
+[   0.266][d][libmpv_render]   opencl
+[   0.266][d][libmpv_render]   gray14be
+[   0.266][d][libmpv_render]   gray14 => 1 planes 1x1 16/-2 [r16] (r) [unorm]
+[   0.266][d][libmpv_render]   grayf32be
+[   0.266][d][libmpv_render]   grayf32 => 1 planes 1x1 32/0 [r16f] (r) [float]
+[   0.266][d][libmpv_render]   yuva422p12be
+[   0.266][d][libmpv_render]   yuva422p12 => 4 planes 2x1 16/-4 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.266][d][libmpv_render]   yuva444p12be
+[   0.266][d][libmpv_render]   yuva444p12 => 4 planes 1x1 16/-4 [r16/r16/r16/r16] (r/g/b/a) [unorm]
+[   0.266][d][libmpv_render]   nv24 => 2 planes 1x1 8/0 [r8/rg8] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   nv42 => 2 planes 1x1 8/0 [r8/rg8] (r/bg) [unorm]
+[   0.266][d][libmpv_render]   y210be
+[   0.266][d][libmpv_render]   y210
+[   0.266][d][libmpv_render]   x2rgb10be
+[   0.266][d][libmpv_render]   x2bgr10be
+[   0.266][d][libmpv_render]   p210be
+[   0.266][d][libmpv_render]   p210 => 2 planes 2x1 16/6 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p410be
+[   0.266][d][libmpv_render]   p410 => 2 planes 1x1 16/6 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p216be
+[   0.266][d][libmpv_render]   p216 => 2 planes 2x1 16/0 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p416be
+[   0.266][d][libmpv_render]   p416 => 2 planes 1x1 16/0 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   vuya => 1 planes 1x1 8/0 [rgba8] (bgra) [unorm]
+[   0.266][d][libmpv_render]   rgbaf16be
+[   0.266][d][libmpv_render]   vuyx => 1 planes 1x1 8/0 [rgba8] (bgr) [unorm]
+[   0.266][d][libmpv_render]   p012 => 2 planes 2x2 16/4 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p012be
+[   0.266][d][libmpv_render]   y212be
+[   0.266][d][libmpv_render]   y212
+[   0.266][d][libmpv_render]   xv30be
+[   0.266][d][libmpv_render]   xv30
+[   0.266][d][libmpv_render]   xv36be
+[   0.266][d][libmpv_render]   xv36 => 1 planes 1x1 16/4 [rgba16] (grb) [unorm]
+[   0.266][d][libmpv_render]   rgbf32be
+[   0.266][d][libmpv_render]   rgbf32
+[   0.266][d][libmpv_render]   rgbaf32be
+[   0.266][d][libmpv_render]   rgbaf32
+[   0.266][d][libmpv_render]   p212be
+[   0.266][d][libmpv_render]   p212 => 2 planes 2x1 16/4 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   p412be
+[   0.266][d][libmpv_render]   p412 => 2 planes 1x1 16/4 [r16/rg16] (r/gb) [unorm]
+[   0.266][d][libmpv_render]   gbrap14be
+[   0.266][d][libmpv_render]   gbrap14 => 4 planes 1x1 16/-2 [r16/r16/r16/r16] (g/b/r/a) [unorm]
+[   0.266][d][libmpv_render]   d3d12
+[   0.266][d][libmpv_render]   ayuv => 1 planes 1x1 8/0 [rgba8] (argb) [unorm]
+[   0.266][d][libmpv_render]   uyva => 1 planes 1x1 8/0 [rgba8] (grba) [unorm]
+[   0.266][d][libmpv_render]   vyu444 => 1 planes 1x1 8/0 [rgb8] (brg) [unorm]
+[   0.266][d][libmpv_render]   v30xbe
+[   0.266][d][libmpv_render]   v30x
+[   0.266][d][libmpv_render]   rgbf16be
+[   0.266][d][libmpv_render]   rgbf16
+[   0.266][d][libmpv_render]   rgba128be
+[   0.266][d][libmpv_render]   rgba128
+[   0.266][d][libmpv_render]   rgb96be
+[   0.266][d][libmpv_render]   rgb96
+[   0.266][d][libmpv_render]   y216be
+[   0.266][d][libmpv_render]   y216
+[   0.266][d][libmpv_render]   xv48be
+[   0.266][d][libmpv_render]   xv48 => 1 planes 1x1 16/0 [rgba16] (grb) [unorm]
+[   0.266][d][libmpv_render]   gbrpf16be
+[   0.266][d][libmpv_render]   gbrpf16
+[   0.266][d][libmpv_render]   gbrapf16be
+[   0.266][d][libmpv_render]   gbrapf16
+[   0.266][d][libmpv_render]   grayf16be
+[   0.266][d][libmpv_render]   grayf16
+[   0.266][d][libmpv_render]   amf
+[   0.266][d][libmpv_render]   gray32be
+[   0.266][d][libmpv_render]   gray32
+[   0.266][d][libmpv_render]   yaf32be
+[   0.266][d][libmpv_render]   yaf32 => 1 planes 1x1 32/0 [rg16f] (ra) [float]
+[   0.266][d][libmpv_render]   yaf16be
+[   0.266][d][libmpv_render]   yaf16
+[   0.266][d][libmpv_render]   gbrap32be
+[   0.266][d][libmpv_render]   gbrap32
+[   0.266][d][libmpv_render]   yuv444p10msbbe
+[   0.266][d][libmpv_render]   yuv444p10msb => 3 planes 1x1 16/6 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   yuv444p12msbbe
+[   0.266][d][libmpv_render]   yuv444p12msb => 3 planes 1x1 16/4 [r16/r16/r16] (r/g/b) [unorm]
+[   0.266][d][libmpv_render]   gbrp10msbbe
+[   0.266][d][libmpv_render]   gbrp10msb => 3 planes 1x1 16/6 [r16/r16/r16] (g/b/r) [unorm]
+[   0.266][d][libmpv_render]   gbrp12msbbe
+[   0.266][d][libmpv_render]   gbrp12msb => 3 planes 1x1 16/4 [r16/r16/r16] (g/b/r) [unorm]
+[   0.266][d][libmpv_render]   ohcodec
+[   0.266][v][libmpv_render] Testing FBO format rgba16f
+[   0.266][d][libmpv_render] Resizing texture: 16x16
+[   0.267][v][libmpv_render] Using FBO format rgba16f.
+[   0.267][v][libmpv_render] Disabling HDR peak computation (one or more of the following is not supported: compute shaders=0, SSBO=1).
+[   0.267][d][global] cache path: '' -> '-'
+[   0.267][v][libmpv_render] Loading hwdec driver 'd3d11va'
+[   0.267][v][libmpv_render] Loading failed.
+[   0.267][v][libmpv_render] Loading hwdec driver 'dxva2-dxgi'
+[   0.267][v][libmpv_render] Loading failed.
+[   0.267][v][libmpv_render] Loading hwdec driver 'd3d11-egl'
+[   0.268][v][libmpv_render] Loading failed.
+[   0.268][v][libmpv_render] Loading hwdec driver 'dxva2-egl'
+[   0.268][v][libmpv_render] Loading failed.
+[   0.268][v][libmpv_render] Loading hwdec driver 'vaapi'
+[   0.268][v][libmpv_render/vaapi] VAAPI hwdec only works with OpenGL or Vulkan backends.
+[   0.268][v][libmpv_render] Loading failed.
+[   0.268][v][libmpv_render] Loading hwdec driver 'dxva2-dxinterop'
+[   0.268][v][libmpv_render] Loading failed.
+[   0.268][v][libmpv_render] Loading hwdec driver 'cuda'
+[   0.284][v][ipc_0] Client connected
+[   0.339][v][libmpv_render] Loading hwdec driver 'vulkan'
+[   0.339][v][libmpv_render/vulkan] This is not a libplacebo vulkan gpu api context.
+[   0.339][v][cplayer] Set property: volume=100 -> 1
+[   0.340][d][cplayer] Run command: loadfile, flags=64, args=[url="C:\\Users\\admin\\Desktop\\I cant take this shit\\Yellowstone National Park in 8K 60P (FUHD).mkv", flags="append-play", index="-1", options=""]
+[   0.340][v][cplayer] Running hook: auto_profiles/on_before_start_file
+[   0.340][v][cplayer] Failed sending hook command auto_profiles/on_before_start_file. Removing hook.
+[   0.340][d][global] state path: 'watch_later' -> '-'
+[   0.340][v][cplayer] Running hook: auto_profiles/on_load
+[   0.340][v][cplayer] Failed sending hook command auto_profiles/on_load. Removing hook.
+[   0.340][v][cplayer] Running hook: ytdl_hook/on_load
+[   0.343][v][cplayer] Running hook: ytdl_hook/on_load
+[   0.343][v][ytdl_hook] playlist hook
+[   0.343][v][ifo_dvdnav] Opening C:\Users\admin\Desktop\I cant take this shit\Yellowstone National Park in 8K 60P (FUHD).mkv
+[   0.343][v][bdmv/bluray] Opening C:\Users\admin\Desktop\I cant take this shit\Yellowstone National Park in 8K 60P (FUHD).mkv
+[   0.344][v][file] Opening C:\Users\admin\Desktop\I cant take this shit\Yellowstone National Park in 8K 60P (FUHD).mkv
+[   0.344][d][file] resize stream to 131072 bytes, drop 0 bytes
+[   0.344][d][file] Stream opened successfully.
+[   0.344][v][demux] Trying demuxers for level=normal.
+[   0.344][d][demux] Trying demuxer: directory (force-level: normal)
+[   0.344][d][demux] Trying demuxer: disc (force-level: normal)
+[   0.344][d][demux] Trying demuxer: edl (force-level: normal)
+[   0.344][d][demux] Trying demuxer: cue (force-level: normal)
+[   0.344][d][demux] Trying demuxer: rawaudio (force-level: normal)
+[   0.344][d][demux] Trying demuxer: rawvideo (force-level: normal)
+[   0.344][d][demux] Trying demuxer: mkv (force-level: normal)
+[   0.344][d][mkv] Found the head...
+[   0.344][d][mkv] + a segment...
+[   0.344][d][mkv] Parsing seek head...
+[   0.344][d][mkv] |+ segment information...
+[   0.344][d][mkv] float 244808.000000
+[   0.344][d][mkv] | + muxing app: Lavf58.20.100
+[   0.344][d][mkv] | + writing app: Lavf58.20.100
+[   0.344][d][mkv] | + timecode scale: 1000000
+[   0.344][d][mkv] | + duration: 244.808s
+[   0.344][d][mkv] | + segment uid 6d 17 28 39 6d 04 b7 cd b0 bf 72 af 6b f4 56 0b
+[   0.344][d][mkv] |+ segment tracks...
+[   0.344][d][mkv] float 44100.000000
+[   0.344][d][mkv] | + a track...
+[   0.344][d][mkv] |  + Track number: 1
+[   0.344][d][mkv] |  + Track type: Video
+[   0.344][d][mkv] |  + Video track
+[   0.344][d][mkv] |   + Pixel width: 7680
+[   0.344][d][mkv] |   + Pixel height: 4320
+[   0.344][d][mkv] |  + Codec ID: V_VP9
+[   0.344][d][mkv] |  + Language: und
+[   0.344][d][mkv] |  + Default duration: 16.683ms ( = 59.940 fps)
+[   0.344][d][mkv] | + a track...
+[   0.344][d][mkv] |  + Track number: 2
+[   0.344][d][mkv] |  + Track type: Audio
+[   0.344][d][mkv] |  + Audio track
+[   0.344][d][mkv] |   + Sampling frequency: 44100.000000
+[   0.344][d][mkv] |   + Bit depth: 16
+[   0.344][d][mkv] |   + Channels: 2
+[   0.344][d][mkv] |  + Codec ID: A_AAC
+[   0.344][d][mkv] |  + CodecPrivate, length 16
+[   0.344][d][mkv] |  + Language: und
+[   0.344][d][mkv] |+ found cluster
+[   0.344][v][mkv] Deferring reading cues.
+[   0.344][v][mkv] All headers are parsed!
+[   0.344][v][demux] Detected file format: Matroska
+[   0.344][v][cplayer] Opening done: C:\Users\admin\Desktop\I cant take this shit\Yellowstone National Park in 8K 60P (FUHD).mkv
+[   0.345][v][find_files] Loading external files in C:\Users\admin\Desktop\I cant take this shit\
+[   0.345][v][cplayer] Running hook: auto_profiles/on_preloaded
+[   0.345][v][cplayer] Failed sending hook command auto_profiles/on_preloaded. Removing hook.
+[   0.345][v][cplayer] Running hook: ytdl_hook/on_preloaded
+[   0.345][v][cplayer] Running hook: auto_profiles/on_loaded
+[   0.345][v][cplayer] Failed sending hook command auto_profiles/on_loaded. Removing hook.
+[   0.345][v][mkv] select track 0
+[   0.345][v][mkv] select track 1
+[   0.345][i][cplayer] ● Video  --vid=1  (vp9 7680x4320 59.9401 fps) [default]
+[   0.345][i][cplayer] ● Audio  --aid=1  (aac 2ch 44100 Hz) [default]
+[   0.346][v][vo/libmpv] Assuming 60.000000 FPS for display sync.
+[   0.346][v][vd] Container reported FPS: 59.940065
+[   0.347][v][vd] Codec list:
+[   0.347][v][vd]     vp9 - Google VP9
+[   0.347][v][vd]     libvpx-vp9 (vp9) - libvpx VP9
+[   0.347][v][vd]     vp9_amf (vp9) - VP9 AMD AMF video decoder
+[   0.347][v][vd]     vp9_cuvid (vp9) - Nvidia CUVID VP9 decoder
+[   0.347][v][vd]     vp9_qsv (vp9) - VP9 video (Intel Quick Sync Video acceleration)
+[   0.347][v][vd] Opening decoder vp9
+[   0.347][v][vd] Looking at hwdec vp9-d3d11va...
+[   0.348][v][vd] Could not create device.
+[   0.348][v][vd] Looking at hwdec vp9-nvdec...
+[   0.348][v][vd] Trying hardware decoding via vp9-nvdec.
+[   0.348][v][vd] Requesting 4 threads for decoding.
+[   0.348][v][vd] Selected decoder: vp9 - Google VP9
+[   0.348][v][vf] User filter list:
+[   0.348][v][vf]   (empty)
+[   0.348][v][ad] Codec list:
+[   0.348][v][ad]     aac - AAC (Advanced Audio Coding)
+[   0.348][v][ad]     aac_fixed (aac) - AAC (Advanced Audio Coding)
+[   0.348][v][ad] Opening decoder aac
+[   0.348][v][ad] Requesting 1 threads for decoding.
+[   0.349][v][ad] Selected decoder: aac - AAC (Advanced Audio Coding)
+[   0.349][v][af] User filter list:
+[   0.349][v][af]   (empty)
+[   0.349][v][cplayer] Starting playback...
+[   0.352][v][af] [in] 44100Hz stereo 2ch floatp
+[   0.352][v][af] [userspeed] 44100Hz stereo 2ch floatp
+[   0.352][v][af] [userspeed] (disabled)
+[   0.352][v][af] [convert] 44100Hz stereo 2ch floatp
+[   0.352][v][vd] Pixel formats supported by decoder: dxva2_vld d3d11va_vld d3d11 d3d12 cuda vaapi vulkan yuv420p
+[   0.352][v][vd] Codec profile: Profile 0 (0x0)
+[   0.358][v][vd] Requesting pixfmt 'cuda' from decoder.
+[   0.377][d][ffmpeg/video] vp9: NVDEC capabilities:
+[   0.377][d][ffmpeg/video] vp9: format supported: yes, max_mb_count: 262144
+[   0.377][d][ffmpeg/video] vp9: min_width: 128, max_width: 8192
+[   0.377][d][ffmpeg/video] vp9: min_height: 128, max_height: 8192
+[   0.398][v][libmpv_render] Window size: 1920x1080 (Borders: l=0 t=0 r=0 b=0)
+[   0.398][v][libmpv_render] Video source: 0x0 (0:0)
+[   0.398][v][libmpv_render] Video display: (0, 0) 1x1 -> (959, 0) 1x1080
+[   0.398][v][libmpv_render] Video scale: 1.000000/1080.000000
+[   0.398][v][libmpv_render] OSD borders: l=959 t=0 r=960 b=0
+[   0.398][v][libmpv_render] Video borders: l=959 t=0 r=960 b=0
+[   0.496][i][vd] Using hardware decoding (nvdec).
+[   0.496][v][vd] Decoder format: 7680x4320 [0:1] cuda[nv12] bt.709/auto/auto/limited/auto CL=unknown crop=7680x4320+0+0 A=none
+[   0.496][v][vd] Using container aspect ratio.
+[   0.496][v][vf] [in] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][v][vf] [userdeint] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][v][vf] [userdeint] (disabled)
+[   0.496][v][vf] [autovflip] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][v][vf] [autovflip] (disabled)
+[   0.496][v][vf] [autorotate] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][v][vf] [autorotate] (disabled)
+[   0.496][v][vf] [convert] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][d][hwupload] looking at format cuda/nv12
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/nv16
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv420p
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuva420p
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv444p
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/p010
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/p016
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/p210
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/p216
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv422p
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv420p10
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv422p10
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv444p10
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv444p10msb
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv444p12msb
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/yuv444p16
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/bgr0
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/rgb0
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/bgra
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/rgba
+[   0.496][d][hwupload]   supports: nv12 nv16 yuv420p yuva420p yuv444p p010 p016 p210 p216 yuv422p yuv420p10 yuv422p10 yuv444p10 yuv444p10msb yuv444p12msb yuv444p16 bgr0 rgb0 bgra rgba vulkan
+[   0.496][d][hwupload] looking at format cuda/vulkan
+[   0.496][d][hwupload]   supports vulkan (a hardware format)
+[   0.496][v][vf] [out] 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.496][v][ao] Trying audio driver 'wasapi'
+[   0.496][v][ao/wasapi] requested format: 44100 Hz, stereo channels, floatp
+[   0.496][d][ao/wasapi] Init wasapi
+[   0.496][d][ao/wasapi] Find device ''
+[   0.497][v][ao/wasapi] No device specified. Selecting default.
+[   0.500][v][ao/wasapi] Selecting device '{188041c9-f73c-41a6-942e-4d411822327e}' (SPDIF Interface (4- DAC-X6))
+[   0.500][v][ao/wasapi] Monitoring changes in device {0.0.0.00000000}.{188041c9-f73c-41a6-942e-4d411822327e}
+[   0.500][d][ao/wasapi] Init wasapi thread
+[   0.500][d][ao/wasapi] Activating pAudioClient interface
+[   0.501][d][ao/wasapi] Probing formats
+[   0.503][v][ao/wasapi] Trying stereo float (32/32 bits) @ 48000hz (shared) -> ok
+[   0.503][v][ao/wasapi] Accepted as stereo float @ 48000hz -> stereo float (32/32 bits) @ 48000hz (shared)
+[   0.503][d][ao/wasapi] Fixing format
+[   0.503][d][ao/wasapi] IAudioClient::GetDevicePeriod
+[   0.503][v][ao/wasapi] Device period: default 10000 us, minimum 3000 us
+[   0.503][d][ao/wasapi] IAudioClient::Initialize
+[   0.520][d][ao/wasapi] IAudioClient::Initialize pRenderClient
+[   0.520][d][ao/wasapi] IAudioClient::Initialize IAudioClient_SetEventHandle
+[   0.520][d][ao/wasapi] IAudioClient::Initialize IAudioClient_GetBufferSize
+[   0.520][v][ao/wasapi] Buffer frame count: 1056 (22000 us)
+[   0.520][v][ao/wasapi] IAudioClock::GetFrequency gave a frequency of 384000.
+[   0.521][d][ao/wasapi] IAudioClient::Initialize pAudioVolume
+[   0.521][d][ao/wasapi] Entering dispatch loop
+[   0.521][d][ao/wasapi] Init wasapi done
+[   0.521][v][ao/wasapi] device buffer: 1056 samples.
+[   0.521][v][ao/wasapi] using soft-buffer of 9600 samples.
+[   0.521][i][cplayer] AO: [wasapi] 48000Hz stereo 2ch float
+[   0.521][v][cplayer] AO: Description: Windows WASAPI audio output (event mode)
+[   0.521][v][autoconvert] inserting resampler
+[   0.521][v][swresample] format change, reinitializing resampler
+[   0.521][v][swresample] 44100Hz stereo floatp -> 48000Hz stereo float
+[   0.521][v][af] [out] 48000Hz stereo 2ch float
+[   0.521][i][cplayer] VO: [libmpv] 7680x4320 cuda[nv12]
+[   0.521][v][cplayer] VO: Description: render API for libmpv
+[   0.521][v][vo/libmpv] reconfig to 7680x4320 cuda[nv12] bt.709/bt.709/bt.1886/limited/display CL=mpeg2/4/h264 crop=7680x4320+0+0 A=none
+[   0.522][v][libmpv_render] Window size: 1920x1080 (Borders: l=0 t=0 r=0 b=0)
+[   0.522][v][libmpv_render] Video source: 7680x4320 (1:1)
+[   0.522][v][libmpv_render] Video display: (0, 0) 7680x4320 -> (0, 0) 1920x1080
+[   0.522][v][libmpv_render] Video scale: 0.250000/0.250000
+[   0.522][v][libmpv_render] OSD borders: l=0 t=0 r=0 b=0
+[   0.522][v][libmpv_render] Video borders: l=0 t=0 r=0 b=0
+[   0.524][v][libmpv_render] Testing FBO format rgba16f
+[   0.524][d][libmpv_render] Resizing texture: 16x16
+[   0.524][v][libmpv_render] Using FBO format rgba16f.
+[   0.526][d][libmpv_render] Resizing texture: 7680x4320
+[   0.536][d][libmpv_render] vertex shader source:
+[   0.536][d][libmpv_render] [  1] #version 320 es
+[   0.536][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.536][d][libmpv_render] [  3] precision highp float;
+[   0.536][d][libmpv_render] [  4] #else
+[   0.536][d][libmpv_render] [  5] precision mediump float;
+[   0.536][d][libmpv_render] [  6] #endif
+[   0.536][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.536][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.536][d][libmpv_render] [  9] #define tex1D texture
+[   0.536][d][libmpv_render] [ 10] #define tex3D texture
+[   0.536][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.536][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.536][d][libmpv_render] [ 13] in vec2 vertex_texcoord0;
+[   0.536][d][libmpv_render] [ 14] out vec2 texcoord0;
+[   0.536][d][libmpv_render] [ 15] void main() {
+[   0.536][d][libmpv_render] [ 16] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.536][d][libmpv_render] [ 17] texcoord0 = vertex_texcoord0;
+[   0.536][d][libmpv_render] [ 18] }
+[   0.536][d][libmpv_render] fragment shader source:
+[   0.536][d][libmpv_render] [  1] #version 320 es
+[   0.536][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.536][d][libmpv_render] [  3] precision highp float;
+[   0.536][d][libmpv_render] [  4] #else
+[   0.536][d][libmpv_render] [  5] precision mediump float;
+[   0.536][d][libmpv_render] [  6] #endif
+[   0.536][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.536][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.536][d][libmpv_render] [  9] #define tex1D texture
+[   0.536][d][libmpv_render] [ 10] #define tex3D texture
+[   0.536][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.536][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.536][d][libmpv_render] [ 13] in vec2 texcoord0;
+[   0.536][d][libmpv_render] [ 14] uniform sampler2D lut;
+[   0.536][d][libmpv_render] [ 15] uniform sampler2D texture0;
+[   0.536][d][libmpv_render] [ 16] uniform vec2 texture_size0;
+[   0.536][d][libmpv_render] [ 17] uniform mat2 texture_rot0;
+[   0.536][d][libmpv_render] [ 18] uniform vec2 texture_off0;
+[   0.536][d][libmpv_render] [ 19] uniform vec2 pixel_size0;
+[   0.536][d][libmpv_render] [ 20] void main() {
+[   0.536][d][libmpv_render] [ 21] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.536][d][libmpv_render] [ 22] // upscaling plane 1
+[   0.536][d][libmpv_render] [ 23] #undef tex
+[   0.536][d][libmpv_render] [ 24] #undef texmap
+[   0.536][d][libmpv_render] [ 25] #define tex texture0
+[   0.536][d][libmpv_render] [ 26] #define texmap texmap0
+[   0.536][d][libmpv_render] [ 27] vec2 pos = texcoord0;
+[   0.536][d][libmpv_render] [ 28] vec2 size = texture_size0;
+[   0.536][d][libmpv_render] [ 29] vec2 pt = pixel_size0;
+[   0.536][d][libmpv_render] [ 30] color = vec4(0.0);
+[   0.536][d][libmpv_render] [ 31] {
+[   0.536][d][libmpv_render] [ 32] vec2 fcoord = fract(pos * size - vec2(0.5));
+[   0.536][d][libmpv_render] [ 33] vec2 base = pos - fcoord * pt;
+[   0.536][d][libmpv_render] [ 34] float w, d, wsum = 0.0;
+[   0.536][d][libmpv_render] [ 35] vec4 in0;
+[   0.536][d][libmpv_render] [ 36] vec4 in1;
+[   0.536][d][libmpv_render] [ 37] int idx;
+[   0.536][d][libmpv_render] [ 38] // scaler samples
+[   0.537][d][libmpv_render] [ 39] d = length(vec2(-2.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 40] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 41] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 42] wsum += w;
+[   0.537][d][libmpv_render] [ 43] in0 = texture(tex, base + pt * vec2(-2.0, -2.0));
+[   0.537][d][libmpv_render] [ 44] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 45] }
+[   0.537][d][libmpv_render] [ 46] d = length(vec2(0.0, -3.0) - fcoord);
+[   0.537][d][libmpv_render] [ 47] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 48] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 49] wsum += w;
+[   0.537][d][libmpv_render] [ 50] in0 = texture(tex, base + pt * vec2(0.0, -3.0));
+[   0.537][d][libmpv_render] [ 51] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 52] }
+[   0.537][d][libmpv_render] [ 53] d = length(vec2(-1.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 54] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 55] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 56] wsum += w;
+[   0.537][d][libmpv_render] [ 57] in0 = texture(tex, base + pt * vec2(-1.0, -2.0));
+[   0.537][d][libmpv_render] [ 58] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 59] }
+[   0.537][d][libmpv_render] [ 60] d = length(vec2(0.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 61] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 62] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 63] wsum += w;
+[   0.537][d][libmpv_render] [ 64] in0 = texture(tex, base + pt * vec2(0.0, -2.0));
+[   0.537][d][libmpv_render] [ 65] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 66] }
+[   0.537][d][libmpv_render] [ 67] d = length(vec2(1.0, -3.0) - fcoord);
+[   0.537][d][libmpv_render] [ 68] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 69] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 70] wsum += w;
+[   0.537][d][libmpv_render] [ 71] in0 = texture(tex, base + pt * vec2(1.0, -3.0));
+[   0.537][d][libmpv_render] [ 72] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 73] }
+[   0.537][d][libmpv_render] [ 74] d = length(vec2(1.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 75] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 76] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 77] wsum += w;
+[   0.537][d][libmpv_render] [ 78] in0 = texture(tex, base + pt * vec2(1.0, -2.0));
+[   0.537][d][libmpv_render] [ 79] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 80] }
+[   0.537][d][libmpv_render] [ 81] d = length(vec2(2.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 82] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 83] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 84] wsum += w;
+[   0.537][d][libmpv_render] [ 85] in0 = texture(tex, base + pt * vec2(2.0, -2.0));
+[   0.537][d][libmpv_render] [ 86] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 87] }
+[   0.537][d][libmpv_render] [ 88] d = length(vec2(3.0, -2.0) - fcoord);
+[   0.537][d][libmpv_render] [ 89] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 90] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 91] wsum += w;
+[   0.537][d][libmpv_render] [ 92] in0 = texture(tex, base + pt * vec2(3.0, -2.0));
+[   0.537][d][libmpv_render] [ 93] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [ 94] }
+[   0.537][d][libmpv_render] [ 95] d = length(vec2(-2.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [ 96] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [ 97] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [ 98] wsum += w;
+[   0.537][d][libmpv_render] [ 99] in0 = texture(tex, base + pt * vec2(-2.0, -1.0));
+[   0.537][d][libmpv_render] [100] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [101] }
+[   0.537][d][libmpv_render] [102] d = length(vec2(-3.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [103] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [104] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [105] wsum += w;
+[   0.537][d][libmpv_render] [106] in0 = texture(tex, base + pt * vec2(-3.0, 0.0));
+[   0.537][d][libmpv_render] [107] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [108] }
+[   0.537][d][libmpv_render] [109] d = length(vec2(-2.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [110] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [111] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [112] wsum += w;
+[   0.537][d][libmpv_render] [113] in0 = texture(tex, base + pt * vec2(-2.0, 0.0));
+[   0.537][d][libmpv_render] [114] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [115] }
+[   0.537][d][libmpv_render] [116] in0 = textureGatherOffset(tex, base, ivec2(-1, -1), 0);
+[   0.537][d][libmpv_render] [117] in1 = textureGatherOffset(tex, base, ivec2(-1, -1), 1);
+[   0.537][d][libmpv_render] [118] idx = 0;
+[   0.537][d][libmpv_render] [119] d = length(vec2(-1.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [120] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [121] wsum += w;
+[   0.537][d][libmpv_render] [122] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [123] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [124] idx = 1;
+[   0.537][d][libmpv_render] [125] d = length(vec2(0.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [126] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [127] wsum += w;
+[   0.537][d][libmpv_render] [128] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [129] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [130] idx = 2;
+[   0.537][d][libmpv_render] [131] d = length(vec2(0.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [132] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [133] wsum += w;
+[   0.537][d][libmpv_render] [134] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [135] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [136] idx = 3;
+[   0.537][d][libmpv_render] [137] d = length(vec2(-1.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [138] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [139] wsum += w;
+[   0.537][d][libmpv_render] [140] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [141] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [142] in0 = textureGatherOffset(tex, base, ivec2(1, -1), 0);
+[   0.537][d][libmpv_render] [143] in1 = textureGatherOffset(tex, base, ivec2(1, -1), 1);
+[   0.537][d][libmpv_render] [144] idx = 0;
+[   0.537][d][libmpv_render] [145] d = length(vec2(1.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [146] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [147] wsum += w;
+[   0.537][d][libmpv_render] [148] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [149] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [150] idx = 1;
+[   0.537][d][libmpv_render] [151] d = length(vec2(2.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [152] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [153] wsum += w;
+[   0.537][d][libmpv_render] [154] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [155] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [156] idx = 2;
+[   0.537][d][libmpv_render] [157] d = length(vec2(2.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [158] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [159] wsum += w;
+[   0.537][d][libmpv_render] [160] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [161] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [162] idx = 3;
+[   0.537][d][libmpv_render] [163] d = length(vec2(1.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [164] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [165] wsum += w;
+[   0.537][d][libmpv_render] [166] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [167] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [168] d = length(vec2(3.0, -1.0) - fcoord);
+[   0.537][d][libmpv_render] [169] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [170] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [171] wsum += w;
+[   0.537][d][libmpv_render] [172] in0 = texture(tex, base + pt * vec2(3.0, -1.0));
+[   0.537][d][libmpv_render] [173] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [174] }
+[   0.537][d][libmpv_render] [175] d = length(vec2(3.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [176] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [177] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [178] wsum += w;
+[   0.537][d][libmpv_render] [179] in0 = texture(tex, base + pt * vec2(3.0, 0.0));
+[   0.537][d][libmpv_render] [180] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [181] }
+[   0.537][d][libmpv_render] [182] d = length(vec2(4.0, 0.0) - fcoord);
+[   0.537][d][libmpv_render] [183] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [184] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [185] wsum += w;
+[   0.537][d][libmpv_render] [186] in0 = texture(tex, base + pt * vec2(4.0, 0.0));
+[   0.537][d][libmpv_render] [187] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [188] }
+[   0.537][d][libmpv_render] [189] d = length(vec2(-3.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [190] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [191] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [192] wsum += w;
+[   0.537][d][libmpv_render] [193] in0 = texture(tex, base + pt * vec2(-3.0, 1.0));
+[   0.537][d][libmpv_render] [194] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [195] }
+[   0.537][d][libmpv_render] [196] d = length(vec2(-2.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [197] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [198] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [199] wsum += w;
+[   0.537][d][libmpv_render] [200] in0 = texture(tex, base + pt * vec2(-2.0, 1.0));
+[   0.537][d][libmpv_render] [201] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [202] }
+[   0.537][d][libmpv_render] [203] d = length(vec2(-2.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [204] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [205] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [206] wsum += w;
+[   0.537][d][libmpv_render] [207] in0 = texture(tex, base + pt * vec2(-2.0, 2.0));
+[   0.537][d][libmpv_render] [208] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [209] }
+[   0.537][d][libmpv_render] [210] in0 = textureGatherOffset(tex, base, ivec2(-1, 1), 0);
+[   0.537][d][libmpv_render] [211] in1 = textureGatherOffset(tex, base, ivec2(-1, 1), 1);
+[   0.537][d][libmpv_render] [212] idx = 0;
+[   0.537][d][libmpv_render] [213] d = length(vec2(-1.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [214] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [215] wsum += w;
+[   0.537][d][libmpv_render] [216] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [217] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [218] idx = 1;
+[   0.537][d][libmpv_render] [219] d = length(vec2(0.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [220] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [221] wsum += w;
+[   0.537][d][libmpv_render] [222] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [223] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [224] idx = 2;
+[   0.537][d][libmpv_render] [225] d = length(vec2(0.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [226] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [227] wsum += w;
+[   0.537][d][libmpv_render] [228] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [229] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [230] idx = 3;
+[   0.537][d][libmpv_render] [231] d = length(vec2(-1.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [232] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [233] wsum += w;
+[   0.537][d][libmpv_render] [234] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [235] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [236] in0 = textureGatherOffset(tex, base, ivec2(1, 1), 0);
+[   0.537][d][libmpv_render] [237] in1 = textureGatherOffset(tex, base, ivec2(1, 1), 1);
+[   0.537][d][libmpv_render] [238] idx = 0;
+[   0.537][d][libmpv_render] [239] d = length(vec2(1.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [240] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [241] wsum += w;
+[   0.537][d][libmpv_render] [242] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [243] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [244] idx = 1;
+[   0.537][d][libmpv_render] [245] d = length(vec2(2.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [246] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [247] wsum += w;
+[   0.537][d][libmpv_render] [248] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [249] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [250] idx = 2;
+[   0.537][d][libmpv_render] [251] d = length(vec2(2.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [252] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [253] wsum += w;
+[   0.537][d][libmpv_render] [254] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [255] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [256] idx = 3;
+[   0.537][d][libmpv_render] [257] d = length(vec2(1.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [258] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [259] wsum += w;
+[   0.537][d][libmpv_render] [260] color[0] += w * in0[idx];
+[   0.537][d][libmpv_render] [261] color[1] += w * in1[idx];
+[   0.537][d][libmpv_render] [262] d = length(vec2(3.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [263] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [264] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [265] wsum += w;
+[   0.537][d][libmpv_render] [266] in0 = texture(tex, base + pt * vec2(3.0, 1.0));
+[   0.537][d][libmpv_render] [267] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [268] }
+[   0.537][d][libmpv_render] [269] d = length(vec2(4.0, 1.0) - fcoord);
+[   0.537][d][libmpv_render] [270] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [271] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [272] wsum += w;
+[   0.537][d][libmpv_render] [273] in0 = texture(tex, base + pt * vec2(4.0, 1.0));
+[   0.537][d][libmpv_render] [274] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [275] }
+[   0.537][d][libmpv_render] [276] d = length(vec2(3.0, 2.0) - fcoord);
+[   0.537][d][libmpv_render] [277] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [278] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [279] wsum += w;
+[   0.537][d][libmpv_render] [280] in0 = texture(tex, base + pt * vec2(3.0, 2.0));
+[   0.537][d][libmpv_render] [281] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [282] }
+[   0.537][d][libmpv_render] [283] d = length(vec2(-2.0, 3.0) - fcoord);
+[   0.537][d][libmpv_render] [284] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [285] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [286] wsum += w;
+[   0.537][d][libmpv_render] [287] in0 = texture(tex, base + pt * vec2(-2.0, 3.0));
+[   0.537][d][libmpv_render] [288] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [289] }
+[   0.537][d][libmpv_render] [290] d = length(vec2(-1.0, 3.0) - fcoord);
+[   0.537][d][libmpv_render] [291] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [292] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [293] wsum += w;
+[   0.537][d][libmpv_render] [294] in0 = texture(tex, base + pt * vec2(-1.0, 3.0));
+[   0.537][d][libmpv_render] [295] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [296] }
+[   0.537][d][libmpv_render] [297] d = length(vec2(0.0, 3.0) - fcoord);
+[   0.537][d][libmpv_render] [298] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [299] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [300] wsum += w;
+[   0.537][d][libmpv_render] [301] in0 = texture(tex, base + pt * vec2(0.0, 3.0));
+[   0.537][d][libmpv_render] [302] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [303] }
+[   0.537][d][libmpv_render] [304] d = length(vec2(0.0, 4.0) - fcoord);
+[   0.537][d][libmpv_render] [305] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [306] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [307] wsum += w;
+[   0.537][d][libmpv_render] [308] in0 = texture(tex, base + pt * vec2(0.0, 4.0));
+[   0.537][d][libmpv_render] [309] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [310] }
+[   0.537][d][libmpv_render] [311] d = length(vec2(1.0, 3.0) - fcoord);
+[   0.537][d][libmpv_render] [312] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [313] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [314] wsum += w;
+[   0.537][d][libmpv_render] [315] in0 = texture(tex, base + pt * vec2(1.0, 3.0));
+[   0.537][d][libmpv_render] [316] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [317] }
+[   0.537][d][libmpv_render] [318] d = length(vec2(2.0, 3.0) - fcoord);
+[   0.537][d][libmpv_render] [319] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [320] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [321] wsum += w;
+[   0.537][d][libmpv_render] [322] in0 = texture(tex, base + pt * vec2(2.0, 3.0));
+[   0.537][d][libmpv_render] [323] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [324] }
+[   0.537][d][libmpv_render] [325] d = length(vec2(1.0, 4.0) - fcoord);
+[   0.537][d][libmpv_render] [326] if (d < 3.015604) {
+[   0.537][d][libmpv_render] [327] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.537][d][libmpv_render] [328] wsum += w;
+[   0.537][d][libmpv_render] [329] in0 = texture(tex, base + pt * vec2(1.0, 4.0));
+[   0.537][d][libmpv_render] [330] color += vec4(w) * in0;
+[   0.537][d][libmpv_render] [331] }
+[   0.537][d][libmpv_render] [332] d = length(vec2(3.0, 3.0) - fcoord);
+[   0.538][d][libmpv_render] [333] if (d < 3.015604) {
+[   0.538][d][libmpv_render] [334] w = texture(lut, vec2(0.5, LUT_POS(d * 1.0/3.177599, 256.0))).r;
+[   0.538][d][libmpv_render] [335] wsum += w;
+[   0.538][d][libmpv_render] [336] in0 = texture(tex, base + pt * vec2(3.0, 3.0));
+[   0.538][d][libmpv_render] [337] color += vec4(w) * in0;
+[   0.538][d][libmpv_render] [338] }
+[   0.538][d][libmpv_render] [339] color = color / vec4(wsum);
+[   0.538][d][libmpv_render] [340] }
+[   0.538][d][libmpv_render] [341] color *= 1.000000;
+[   0.538][d][libmpv_render] [342] color.b = 0.000000;
+[   0.538][d][libmpv_render] [343] color.a = 1.000000;
+[   0.538][d][libmpv_render] [344] out_color = color;
+[   0.538][d][libmpv_render] [345] }
+[   0.538][d][libmpv_render] shader link log (status=1): 
+[   0.539][d][libmpv_render] Resizing texture: 7680x4320
+[   0.553][d][libmpv_render] vertex shader source:
+[   0.553][d][libmpv_render] [  1] #version 320 es
+[   0.553][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.553][d][libmpv_render] [  3] precision highp float;
+[   0.553][d][libmpv_render] [  4] #else
+[   0.553][d][libmpv_render] [  5] precision mediump float;
+[   0.553][d][libmpv_render] [  6] #endif
+[   0.553][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.553][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.553][d][libmpv_render] [  9] #define tex1D texture
+[   0.553][d][libmpv_render] [ 10] #define tex3D texture
+[   0.553][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.553][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.553][d][libmpv_render] [ 13] in vec2 vertex_texcoord0;
+[   0.553][d][libmpv_render] [ 14] out vec2 texcoord0;
+[   0.553][d][libmpv_render] [ 15] in vec2 vertex_texcoord1;
+[   0.553][d][libmpv_render] [ 16] out vec2 texcoord1;
+[   0.553][d][libmpv_render] [ 17] void main() {
+[   0.553][d][libmpv_render] [ 18] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.553][d][libmpv_render] [ 19] texcoord0 = vertex_texcoord0;
+[   0.553][d][libmpv_render] [ 20] texcoord1 = vertex_texcoord1;
+[   0.553][d][libmpv_render] [ 21] }
+[   0.553][d][libmpv_render] fragment shader source:
+[   0.553][d][libmpv_render] [  1] #version 320 es
+[   0.553][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.553][d][libmpv_render] [  3] precision highp float;
+[   0.553][d][libmpv_render] [  4] #else
+[   0.553][d][libmpv_render] [  5] precision mediump float;
+[   0.553][d][libmpv_render] [  6] #endif
+[   0.553][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.553][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.553][d][libmpv_render] [  9] #define tex1D texture
+[   0.553][d][libmpv_render] [ 10] #define tex3D texture
+[   0.553][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.553][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.553][d][libmpv_render] [ 13] in vec2 texcoord0;
+[   0.553][d][libmpv_render] [ 14] in vec2 texcoord1;
+[   0.553][d][libmpv_render] [ 15] uniform mat3 colormatrix;
+[   0.553][d][libmpv_render] [ 16] uniform vec3 colormatrix_c;
+[   0.553][d][libmpv_render] [ 17] uniform sampler2D texture0;
+[   0.553][d][libmpv_render] [ 18] uniform vec2 texture_size0;
+[   0.553][d][libmpv_render] [ 19] uniform mat2 texture_rot0;
+[   0.553][d][libmpv_render] [ 20] uniform vec2 texture_off0;
+[   0.553][d][libmpv_render] [ 21] uniform vec2 pixel_size0;
+[   0.553][d][libmpv_render] [ 22] uniform sampler2D texture1;
+[   0.553][d][libmpv_render] [ 23] uniform vec2 texture_size1;
+[   0.553][d][libmpv_render] [ 24] uniform mat2 texture_rot1;
+[   0.553][d][libmpv_render] [ 25] uniform vec2 texture_off1;
+[   0.553][d][libmpv_render] [ 26] uniform vec2 pixel_size1;
+[   0.553][d][libmpv_render] [ 27] void main() {
+[   0.553][d][libmpv_render] [ 28] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.553][d][libmpv_render] [ 29] color.r = 1.000000 * vec4(texture(texture0, texcoord0)).r;
+[   0.553][d][libmpv_render] [ 30] color.gb = 1.000000 * vec4(texture(texture1, texcoord1)).rg;
+[   0.553][d][libmpv_render] [ 31] color = color.rgbr;
+[   0.553][d][libmpv_render] [ 32] color.rgb = mat3(colormatrix) * color.rgb + colormatrix_c;
+[   0.553][d][libmpv_render] [ 33] color.a = 1.0;
+[   0.553][d][libmpv_render] [ 34] // scaler pre-conversion
+[   0.553][d][libmpv_render] [ 35] // linearize
+[   0.553][d][libmpv_render] [ 36] color.rgb = clamp(color.rgb, 0.0, 1.0);
+[   0.553][d][libmpv_render] [ 37] color.rgb = pow(color.rgb, vec3(2.4));
+[   0.553][d][libmpv_render] [ 38] color.rgb *= vec3(1.0/1.000000);
+[   0.553][d][libmpv_render] [ 39] // main scaling
+[   0.553][d][libmpv_render] [ 40] out_color = color;
+[   0.553][d][libmpv_render] [ 41] }
+[   0.553][d][libmpv_render] shader link log (status=1): 
+[   0.554][d][libmpv_render] Resizing texture: 7680x1080
+[   0.563][d][libmpv_render] vertex shader source:
+[   0.563][d][libmpv_render] [  1] #version 320 es
+[   0.563][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.563][d][libmpv_render] [  3] precision highp float;
+[   0.563][d][libmpv_render] [  4] #else
+[   0.563][d][libmpv_render] [  5] precision mediump float;
+[   0.563][d][libmpv_render] [  6] #endif
+[   0.563][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.563][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.563][d][libmpv_render] [  9] #define tex1D texture
+[   0.563][d][libmpv_render] [ 10] #define tex3D texture
+[   0.563][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.563][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.563][d][libmpv_render] [ 13] in vec2 vertex_texcoord0;
+[   0.563][d][libmpv_render] [ 14] out vec2 texcoord0;
+[   0.563][d][libmpv_render] [ 15] void main() {
+[   0.563][d][libmpv_render] [ 16] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.563][d][libmpv_render] [ 17] texcoord0 = vertex_texcoord0;
+[   0.563][d][libmpv_render] [ 18] }
+[   0.563][d][libmpv_render] fragment shader source:
+[   0.563][d][libmpv_render] [  1] #version 320 es
+[   0.563][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.563][d][libmpv_render] [  3] precision highp float;
+[   0.563][d][libmpv_render] [  4] #else
+[   0.563][d][libmpv_render] [  5] precision mediump float;
+[   0.564][d][libmpv_render] [  6] #endif
+[   0.564][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.564][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.564][d][libmpv_render] [  9] #define tex1D texture
+[   0.564][d][libmpv_render] [ 10] #define tex3D texture
+[   0.564][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.564][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.564][d][libmpv_render] [ 13] in vec2 texcoord0;
+[   0.564][d][libmpv_render] [ 14] uniform sampler2D lut;
+[   0.564][d][libmpv_render] [ 15] uniform sampler2D texture0;
+[   0.564][d][libmpv_render] [ 16] uniform vec2 texture_size0;
+[   0.564][d][libmpv_render] [ 17] uniform mat2 texture_rot0;
+[   0.564][d][libmpv_render] [ 18] uniform vec2 texture_off0;
+[   0.564][d][libmpv_render] [ 19] uniform vec2 pixel_size0;
+[   0.564][d][libmpv_render] [ 20] void main() {
+[   0.564][d][libmpv_render] [ 21] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.564][d][libmpv_render] [ 22] #undef tex
+[   0.564][d][libmpv_render] [ 23] #undef texmap
+[   0.564][d][libmpv_render] [ 24] #define tex texture0
+[   0.564][d][libmpv_render] [ 25] #define texmap texmap0
+[   0.564][d][libmpv_render] [ 26] vec2 pos = texcoord0;
+[   0.564][d][libmpv_render] [ 27] vec2 size = texture_size0;
+[   0.564][d][libmpv_render] [ 28] vec2 pt = pixel_size0;
+[   0.564][d][libmpv_render] [ 29] // first pass
+[   0.564][d][libmpv_render] [ 30] color = vec4(0.0);
+[   0.564][d][libmpv_render] [ 31] {
+[   0.564][d][libmpv_render] [ 32] vec2 dir = vec2(0.0, 1.0);
+[   0.564][d][libmpv_render] [ 33] pt *= dir;
+[   0.564][d][libmpv_render] [ 34] float fcoord = dot(fract(pos * size - vec2(0.5)), dir);
+[   0.564][d][libmpv_render] [ 35] vec2 base = pos - fcoord * pt - pt * vec2(3.0);
+[   0.564][d][libmpv_render] [ 36] vec4 c;
+[   0.564][d][libmpv_render] [ 37] float ypos = LUT_POS(fcoord, 256.0);
+[   0.564][d][libmpv_render] [ 38] float weights[8];
+[   0.564][d][libmpv_render] [ 39] c = texture(lut, vec2(0.250000, ypos));
+[   0.564][d][libmpv_render] [ 40] weights[0] = c[0];
+[   0.564][d][libmpv_render] [ 41] weights[1] = c[1];
+[   0.564][d][libmpv_render] [ 42] weights[2] = c[2];
+[   0.564][d][libmpv_render] [ 43] weights[3] = c[3];
+[   0.564][d][libmpv_render] [ 44] c = texture(lut, vec2(0.750000, ypos));
+[   0.564][d][libmpv_render] [ 45] weights[4] = c[0];
+[   0.564][d][libmpv_render] [ 46] weights[5] = c[1];
+[   0.564][d][libmpv_render] [ 47] weights[6] = c[2];
+[   0.564][d][libmpv_render] [ 48] weights[7] = c[3];
+[   0.564][d][libmpv_render] [ 49] // scaler samples
+[   0.564][d][libmpv_render] [ 50] c = texture(tex, base + pt * vec2(0.0));
+[   0.564][d][libmpv_render] [ 51] color += vec4(weights[0]) * c;
+[   0.564][d][libmpv_render] [ 52] c = texture(tex, base + pt * vec2(1.0));
+[   0.564][d][libmpv_render] [ 53] color += vec4(weights[1]) * c;
+[   0.564][d][libmpv_render] [ 54] c = texture(tex, base + pt * vec2(2.0));
+[   0.564][d][libmpv_render] [ 55] color += vec4(weights[2]) * c;
+[   0.564][d][libmpv_render] [ 56] c = texture(tex, base + pt * vec2(3.0));
+[   0.564][d][libmpv_render] [ 57] color += vec4(weights[3]) * c;
+[   0.564][d][libmpv_render] [ 58] c = texture(tex, base + pt * vec2(4.0));
+[   0.564][d][libmpv_render] [ 59] color += vec4(weights[4]) * c;
+[   0.564][d][libmpv_render] [ 60] c = texture(tex, base + pt * vec2(5.0));
+[   0.564][d][libmpv_render] [ 61] color += vec4(weights[5]) * c;
+[   0.564][d][libmpv_render] [ 62] c = texture(tex, base + pt * vec2(6.0));
+[   0.564][d][libmpv_render] [ 63] color += vec4(weights[6]) * c;
+[   0.564][d][libmpv_render] [ 64] c = texture(tex, base + pt * vec2(7.0));
+[   0.564][d][libmpv_render] [ 65] color += vec4(weights[7]) * c;
+[   0.564][d][libmpv_render] [ 66] }
+[   0.564][d][libmpv_render] [ 67] color *= 1.000000;
+[   0.564][d][libmpv_render] [ 68] out_color = color;
+[   0.564][d][libmpv_render] [ 69] }
+[   0.564][d][libmpv_render] shader link log (status=1): 
+[   0.564][v][libmpv_render] Dither to 8.
+[   0.577][d][libmpv_render] vertex shader source:
+[   0.577][d][libmpv_render] [  1] #version 320 es
+[   0.577][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.577][d][libmpv_render] [  3] precision highp float;
+[   0.577][d][libmpv_render] [  4] #else
+[   0.577][d][libmpv_render] [  5] precision mediump float;
+[   0.577][d][libmpv_render] [  6] #endif
+[   0.577][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.577][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.577][d][libmpv_render] [  9] #define tex1D texture
+[   0.577][d][libmpv_render] [ 10] #define tex3D texture
+[   0.577][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.577][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.577][d][libmpv_render] [ 13] in vec2 vertex_texcoord0;
+[   0.577][d][libmpv_render] [ 14] out vec2 texcoord0;
+[   0.577][d][libmpv_render] [ 15] void main() {
+[   0.577][d][libmpv_render] [ 16] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.577][d][libmpv_render] [ 17] texcoord0 = vertex_texcoord0;
+[   0.577][d][libmpv_render] [ 18] }
+[   0.577][d][libmpv_render] fragment shader source:
+[   0.577][d][libmpv_render] [  1] #version 320 es
+[   0.577][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.577][d][libmpv_render] [  3] precision highp float;
+[   0.577][d][libmpv_render] [  4] #else
+[   0.577][d][libmpv_render] [  5] precision mediump float;
+[   0.577][d][libmpv_render] [  6] #endif
+[   0.577][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.577][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.577][d][libmpv_render] [  9] #define tex1D texture
+[   0.577][d][libmpv_render] [ 10] #define tex3D texture
+[   0.577][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.577][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.577][d][libmpv_render] [ 13] in vec2 texcoord0;
+[   0.577][d][libmpv_render] [ 14] uniform sampler2D lut;
+[   0.577][d][libmpv_render] [ 15] uniform vec3 src_luma;
+[   0.577][d][libmpv_render] [ 16] uniform vec3 dst_luma;
+[   0.577][d][libmpv_render] [ 17] uniform sampler2D dither;
+[   0.577][d][libmpv_render] [ 18] uniform sampler2D texture0;
+[   0.577][d][libmpv_render] [ 19] uniform vec2 texture_size0;
+[   0.577][d][libmpv_render] [ 20] uniform mat2 texture_rot0;
+[   0.577][d][libmpv_render] [ 21] uniform vec2 texture_off0;
+[   0.577][d][libmpv_render] [ 22] uniform vec2 pixel_size0;
+[   0.577][d][libmpv_render] [ 23] void main() {
+[   0.577][d][libmpv_render] [ 24] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.577][d][libmpv_render] [ 25] #undef tex
+[   0.577][d][libmpv_render] [ 26] #undef texmap
+[   0.577][d][libmpv_render] [ 27] #define tex texture0
+[   0.577][d][libmpv_render] [ 28] #define texmap texmap0
+[   0.577][d][libmpv_render] [ 29] vec2 pos = texcoord0;
+[   0.577][d][libmpv_render] [ 30] vec2 size = texture_size0;
+[   0.577][d][libmpv_render] [ 31] vec2 pt = pixel_size0;
+[   0.577][d][libmpv_render] [ 32] color = vec4(0.0);
+[   0.577][d][libmpv_render] [ 33] {
+[   0.577][d][libmpv_render] [ 34] vec2 dir = vec2(1.0, 0.0);
+[   0.577][d][libmpv_render] [ 35] pt *= dir;
+[   0.577][d][libmpv_render] [ 36] float fcoord = dot(fract(pos * size - vec2(0.5)), dir);
+[   0.577][d][libmpv_render] [ 37] vec2 base = pos - fcoord * pt - pt * vec2(3.0);
+[   0.577][d][libmpv_render] [ 38] vec4 c;
+[   0.577][d][libmpv_render] [ 39] float ypos = LUT_POS(fcoord, 256.0);
+[   0.577][d][libmpv_render] [ 40] float weights[8];
+[   0.577][d][libmpv_render] [ 41] c = texture(lut, vec2(0.250000, ypos));
+[   0.577][d][libmpv_render] [ 42] weights[0] = c[0];
+[   0.577][d][libmpv_render] [ 43] weights[1] = c[1];
+[   0.577][d][libmpv_render] [ 44] weights[2] = c[2];
+[   0.577][d][libmpv_render] [ 45] weights[3] = c[3];
+[   0.577][d][libmpv_render] [ 46] c = texture(lut, vec2(0.750000, ypos));
+[   0.577][d][libmpv_render] [ 47] weights[4] = c[0];
+[   0.577][d][libmpv_render] [ 48] weights[5] = c[1];
+[   0.577][d][libmpv_render] [ 49] weights[6] = c[2];
+[   0.577][d][libmpv_render] [ 50] weights[7] = c[3];
+[   0.577][d][libmpv_render] [ 51] // scaler samples
+[   0.577][d][libmpv_render] [ 52] c = texture(tex, base + pt * vec2(0.0));
+[   0.577][d][libmpv_render] [ 53] color += vec4(weights[0]) * c;
+[   0.577][d][libmpv_render] [ 54] c = texture(tex, base + pt * vec2(1.0));
+[   0.577][d][libmpv_render] [ 55] color += vec4(weights[1]) * c;
+[   0.577][d][libmpv_render] [ 56] c = texture(tex, base + pt * vec2(2.0));
+[   0.577][d][libmpv_render] [ 57] color += vec4(weights[2]) * c;
+[   0.577][d][libmpv_render] [ 58] c = texture(tex, base + pt * vec2(3.0));
+[   0.577][d][libmpv_render] [ 59] color += vec4(weights[3]) * c;
+[   0.577][d][libmpv_render] [ 60] c = texture(tex, base + pt * vec2(4.0));
+[   0.577][d][libmpv_render] [ 61] color += vec4(weights[4]) * c;
+[   0.577][d][libmpv_render] [ 62] c = texture(tex, base + pt * vec2(5.0));
+[   0.577][d][libmpv_render] [ 63] color += vec4(weights[5]) * c;
+[   0.577][d][libmpv_render] [ 64] c = texture(tex, base + pt * vec2(6.0));
+[   0.577][d][libmpv_render] [ 65] color += vec4(weights[6]) * c;
+[   0.577][d][libmpv_render] [ 66] c = texture(tex, base + pt * vec2(7.0));
+[   0.577][d][libmpv_render] [ 67] color += vec4(weights[7]) * c;
+[   0.577][d][libmpv_render] [ 68] }
+[   0.577][d][libmpv_render] [ 69] color.a = 1.000000;
+[   0.577][d][libmpv_render] [ 70] // scaler post-conversion
+[   0.577][d][libmpv_render] [ 71] // color mapping
+[   0.577][d][libmpv_render] [ 72] color.rgb *= vec3(1.000000);
+[   0.577][d][libmpv_render] [ 73] color.rgb *= vec3(1.000000);
+[   0.577][d][libmpv_render] [ 74] // delinearize
+[   0.577][d][libmpv_render] [ 75] color.rgb = clamp(color.rgb, 0.0, 1.0);
+[   0.577][d][libmpv_render] [ 76] color.rgb *= vec3(1.000000);
+[   0.577][d][libmpv_render] [ 77] color.rgb = pow(color.rgb, vec3(1.0/2.4));
+[   0.577][d][libmpv_render] [ 78] // dithering
+[   0.577][d][libmpv_render] [ 79] vec2 dither_coord = vec2(gl_FragCoord.x, 0.0 + 1.000000 * gl_FragCoord.y);vec2 dither_pos = dither_coord * 1.0/64.0;
+[   0.577][d][libmpv_render] [ 80] float dither_value = texture(dither, dither_pos).r;
+[   0.577][d][libmpv_render] [ 81] color = floor(color * 255.0 + dither_value + 0.5 / 4096.0) * 1.0/255.0;
+[   0.577][d][libmpv_render] [ 82] out_color = color;
+[   0.577][d][libmpv_render] [ 83] }
+[   0.577][d][libmpv_render] shader link log (status=1): 
+[   0.577][v][cplayer] first video frame after restart shown
+[   0.578][d][libmpv_render] Resizing texture: 1920x1080
+[   0.578][v][cplayer] audio ready
+[   0.578][d][cplayer] starting video playback
+[   0.578][v][cplayer] starting audio playback
+[   0.578][d][ao/wasapi] Thread Resume
+[   0.578][d][ao/wasapi] Thread Reset
+[   0.578][d][ao/wasapi] Thread Pause
+[   0.578][v][cplayer] playback restart complete @ 0.000000, audio=playing, video=playing
+[   0.578][d][ao/wasapi] Thread Unpause
+[   0.580][d][libmpv_render] vertex shader source:
+[   0.580][d][libmpv_render] [  1] #version 320 es
+[   0.580][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.580][d][libmpv_render] [  3] precision highp float;
+[   0.580][d][libmpv_render] [  4] #else
+[   0.580][d][libmpv_render] [  5] precision mediump float;
+[   0.580][d][libmpv_render] [  6] #endif
+[   0.580][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.580][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.580][d][libmpv_render] [  9] #define tex1D texture
+[   0.580][d][libmpv_render] [ 10] #define tex3D texture
+[   0.580][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.580][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.580][d][libmpv_render] [ 13] in vec2 vertex_texcoord0;
+[   0.580][d][libmpv_render] [ 14] out vec2 texcoord0;
+[   0.580][d][libmpv_render] [ 15] void main() {
+[   0.580][d][libmpv_render] [ 16] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.580][d][libmpv_render] [ 17] texcoord0 = vertex_texcoord0;
+[   0.580][d][libmpv_render] [ 18] }
+[   0.580][d][libmpv_render] fragment shader source:
+[   0.580][d][libmpv_render] [  1] #version 320 es
+[   0.580][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.580][d][libmpv_render] [  3] precision highp float;
+[   0.580][d][libmpv_render] [  4] #else
+[   0.580][d][libmpv_render] [  5] precision mediump float;
+[   0.580][d][libmpv_render] [  6] #endif
+[   0.580][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.580][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.580][d][libmpv_render] [  9] #define tex1D texture
+[   0.580][d][libmpv_render] [ 10] #define tex3D texture
+[   0.580][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.580][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.580][d][libmpv_render] [ 13] in vec2 texcoord0;
+[   0.580][d][libmpv_render] [ 14] uniform sampler2D lut;
+[   0.580][d][libmpv_render] [ 15] uniform vec3 src_luma;
+[   0.580][d][libmpv_render] [ 16] uniform vec3 dst_luma;
+[   0.580][d][libmpv_render] [ 17] uniform sampler2D dither;
+[   0.580][d][libmpv_render] [ 18] uniform sampler2D texture0;
+[   0.580][d][libmpv_render] [ 19] uniform vec2 texture_size0;
+[   0.580][d][libmpv_render] [ 20] uniform mat2 texture_rot0;
+[   0.580][d][libmpv_render] [ 21] uniform vec2 texture_off0;
+[   0.580][d][libmpv_render] [ 22] uniform vec2 pixel_size0;
+[   0.580][d][libmpv_render] [ 23] void main() {
+[   0.580][d][libmpv_render] [ 24] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.580][d][libmpv_render] [ 25] #undef tex
+[   0.580][d][libmpv_render] [ 26] #undef texmap
+[   0.580][d][libmpv_render] [ 27] #define tex texture0
+[   0.580][d][libmpv_render] [ 28] #define texmap texmap0
+[   0.580][d][libmpv_render] [ 29] vec2 pos = texcoord0;
+[   0.580][d][libmpv_render] [ 30] vec2 size = texture_size0;
+[   0.580][d][libmpv_render] [ 31] vec2 pt = pixel_size0;
+[   0.580][d][libmpv_render] [ 32] color = vec4(0.0);
+[   0.580][d][libmpv_render] [ 33] {
+[   0.580][d][libmpv_render] [ 34] vec2 dir = vec2(1.0, 0.0);
+[   0.580][d][libmpv_render] [ 35] pt *= dir;
+[   0.580][d][libmpv_render] [ 36] float fcoord = dot(fract(pos * size - vec2(0.5)), dir);
+[   0.580][d][libmpv_render] [ 37] vec2 base = pos - fcoord * pt - pt * vec2(3.0);
+[   0.580][d][libmpv_render] [ 38] vec4 c;
+[   0.580][d][libmpv_render] [ 39] float ypos = LUT_POS(fcoord, 256.0);
+[   0.580][d][libmpv_render] [ 40] float weights[8];
+[   0.580][d][libmpv_render] [ 41] c = texture(lut, vec2(0.250000, ypos));
+[   0.580][d][libmpv_render] [ 42] weights[0] = c[0];
+[   0.580][d][libmpv_render] [ 43] weights[1] = c[1];
+[   0.580][d][libmpv_render] [ 44] weights[2] = c[2];
+[   0.580][d][libmpv_render] [ 45] weights[3] = c[3];
+[   0.580][d][libmpv_render] [ 46] c = texture(lut, vec2(0.750000, ypos));
+[   0.580][d][libmpv_render] [ 47] weights[4] = c[0];
+[   0.580][d][libmpv_render] [ 48] weights[5] = c[1];
+[   0.580][d][libmpv_render] [ 49] weights[6] = c[2];
+[   0.580][d][libmpv_render] [ 50] weights[7] = c[3];
+[   0.580][d][libmpv_render] [ 51] // scaler samples
+[   0.580][d][libmpv_render] [ 52] c = texture(tex, base + pt * vec2(0.0));
+[   0.580][d][libmpv_render] [ 53] color += vec4(weights[0]) * c;
+[   0.580][d][libmpv_render] [ 54] c = texture(tex, base + pt * vec2(1.0));
+[   0.580][d][libmpv_render] [ 55] color += vec4(weights[1]) * c;
+[   0.580][d][libmpv_render] [ 56] c = texture(tex, base + pt * vec2(2.0));
+[   0.580][d][libmpv_render] [ 57] color += vec4(weights[2]) * c;
+[   0.580][d][libmpv_render] [ 58] c = texture(tex, base + pt * vec2(3.0));
+[   0.580][d][libmpv_render] [ 59] color += vec4(weights[3]) * c;
+[   0.580][d][libmpv_render] [ 60] c = texture(tex, base + pt * vec2(4.0));
+[   0.580][d][libmpv_render] [ 61] color += vec4(weights[4]) * c;
+[   0.580][d][libmpv_render] [ 62] c = texture(tex, base + pt * vec2(5.0));
+[   0.580][d][libmpv_render] [ 63] color += vec4(weights[5]) * c;
+[   0.580][d][libmpv_render] [ 64] c = texture(tex, base + pt * vec2(6.0));
+[   0.580][d][libmpv_render] [ 65] color += vec4(weights[6]) * c;
+[   0.580][d][libmpv_render] [ 66] c = texture(tex, base + pt * vec2(7.0));
+[   0.580][d][libmpv_render] [ 67] color += vec4(weights[7]) * c;
+[   0.580][d][libmpv_render] [ 68] }
+[   0.580][d][libmpv_render] [ 69] color.a = 1.000000;
+[   0.580][d][libmpv_render] [ 70] // scaler post-conversion
+[   0.580][d][libmpv_render] [ 71] // color mapping
+[   0.580][d][libmpv_render] [ 72] color.rgb *= vec3(1.000000);
+[   0.580][d][libmpv_render] [ 73] color.rgb *= vec3(1.000000);
+[   0.580][d][libmpv_render] [ 74] // delinearize
+[   0.580][d][libmpv_render] [ 75] color.rgb = clamp(color.rgb, 0.0, 1.0);
+[   0.580][d][libmpv_render] [ 76] color.rgb *= vec3(1.000000);
+[   0.580][d][libmpv_render] [ 77] color.rgb = pow(color.rgb, vec3(1.0/2.4));
+[   0.580][d][libmpv_render] [ 78] // dithering
+[   0.580][d][libmpv_render] [ 79] vec2 dither_coord = vec2(gl_FragCoord.x, 0.0 + 1.000000 * gl_FragCoord.y);vec2 dither_pos = dither_coord * 1.0/64.0;
+[   0.580][d][libmpv_render] [ 80] float dither_value = texture(dither, dither_pos).r;
+[   0.580][d][libmpv_render] [ 81] color = floor(color * 255.0 + dither_value + 0.5 / 4096.0) * 1.0/255.0;
+[   0.580][d][libmpv_render] [ 82] out_color = color;
+[   0.580][d][libmpv_render] [ 83] }
+[   0.580][d][libmpv_render] shader link log (status=1): 
+[   0.580][d][osd/libass] ASS library version: 0x1704000 (runtime 0x1704000)
+[   0.580][v][osd/libass] libass API version: 0x1704000
+[   0.580][v][osd/libass] libass source: meson, commit: 0.17.4-29-gc425f6d7ec9ca7e5dfa3f8bbed29a6ddbf39a596
+[   0.581][v][osd/libass] Shaper: FriBidi 1.0.16 (SIMPLE) HarfBuzz-ng 14.2.0 (COMPLEX)
+[   0.581][v][osd/libass] Setting up fonts...
+[   0.581][v][osd/libass] Using font provider directwrite (with GDI)
+[   0.581][v][osd/libass] Done.
+[   0.586][v][osd/libass] fontselect: (sans-serif, 400, 0) -> ArialMT, 0, ArialMT
+[   0.588][d][osd] Spent 8.262 ms in osd_render (slow!)
+[   0.588][v][libmpv_render] Reallocating OSD texture to 1024x128.
+[   0.589][d][libmpv_render] vertex shader source:
+[   0.589][d][libmpv_render] [  1] #version 320 es
+[   0.589][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.589][d][libmpv_render] [  3] precision highp float;
+[   0.589][d][libmpv_render] [  4] #else
+[   0.589][d][libmpv_render] [  5] precision mediump float;
+[   0.589][d][libmpv_render] [  6] #endif
+[   0.589][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.589][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.589][d][libmpv_render] [  9] #define tex1D texture
+[   0.589][d][libmpv_render] [ 10] #define tex3D texture
+[   0.589][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.589][d][libmpv_render] [ 12] in vec2 vertex_position;
+[   0.589][d][libmpv_render] [ 13] in vec2 vertex_texcoord;
+[   0.589][d][libmpv_render] [ 14] out vec2 texcoord;
+[   0.589][d][libmpv_render] [ 15] in vec4 vertex_ass_color;
+[   0.589][d][libmpv_render] [ 16] out vec4 ass_color;
+[   0.589][d][libmpv_render] [ 17] void main() {
+[   0.589][d][libmpv_render] [ 18] gl_Position = vec4(vertex_position, 1.0, 1.0);
+[   0.589][d][libmpv_render] [ 19] texcoord = vertex_texcoord;
+[   0.589][d][libmpv_render] [ 20] ass_color = vertex_ass_color;
+[   0.589][d][libmpv_render] [ 21] }
+[   0.589][d][libmpv_render] fragment shader source:
+[   0.589][d][libmpv_render] [  1] #version 320 es
+[   0.589][d][libmpv_render] [  2] #ifdef GL_FRAGMENT_PRECISION_HIGH
+[   0.589][d][libmpv_render] [  3] precision highp float;
+[   0.589][d][libmpv_render] [  4] #else
+[   0.589][d][libmpv_render] [  5] precision mediump float;
+[   0.589][d][libmpv_render] [  6] #endif
+[   0.589][d][libmpv_render] [  7] precision mediump sampler2D;
+[   0.589][d][libmpv_render] [  8] precision mediump sampler3D;
+[   0.589][d][libmpv_render] [  9] #define tex1D texture
+[   0.589][d][libmpv_render] [ 10] #define tex3D texture
+[   0.589][d][libmpv_render] [ 11] #define LUT_POS(x, lut_size) mix(0.5 / (lut_size), 1.0 - 0.5 / (lut_size), (x))
+[   0.589][d][libmpv_render] [ 12] out vec4 out_color;
+[   0.589][d][libmpv_render] [ 13] in vec2 texcoord;
+[   0.589][d][libmpv_render] [ 14] in vec4 ass_color;
+[   0.589][d][libmpv_render] [ 15] uniform sampler2D osdtex;
+[   0.589][d][libmpv_render] [ 16] uniform vec3 src_luma;
+[   0.589][d][libmpv_render] [ 17] uniform vec3 dst_luma;
+[   0.589][d][libmpv_render] [ 18] void main() {
+[   0.589][d][libmpv_render] [ 19] vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+[   0.589][d][libmpv_render] [ 20] color = vec4(ass_color.rgb, ass_color.a * texture(osdtex, texcoord).r);
+[   0.589][d][libmpv_render] [ 21] // color mapping
+[   0.589][d][libmpv_render] [ 22] color.rgb *= vec3(1.000000);
+[   0.589][d][libmpv_render] [ 23] color.rgb *= vec3(1.000000);
+[   0.589][d][libmpv_render] [ 24] out_color = color;
+[   0.589][d][libmpv_render] [ 25] }
+[   0.589][d][libmpv_render] shader link log (status=1): 
+[  10.457][d][cplayer] Run command: quit, flags=64, args=[code="0"]
+[  10.457][v][cplayer] EOF code: 5  
+[  10.457][d][ao/wasapi] Thread Reset
+[  10.457][d][ao/wasapi] Thread Pause
+[  10.457][d][ad] Uninit decoder.
+[  10.457][d][vd] Uninit decoder.
+[  10.458][v][ipc_0] Client disconnected
+[  10.458][d][ipc_0] Destroying client handle...
+[  10.461][d][cplayer] Terminating demuxers...
+[  10.461][d][cplayer] Done terminating demuxers.
+[  10.461][v][cplayer] finished playback, success (reason 3)
+[  10.461][v][cplayer] Running hook: ytdl_hook/on_after_end_file
+[  10.469][d][cplayer] Run command: del, flags=64, args=[name="user-data/mpv/ytdl/json-subprocess-result"]
+[  10.471][d][ytdl_hook] Destroying client handle...
+[  10.471][d][stats] Destroying client handle...
+[  10.471][d][select] Destroying client handle...
+[  10.471][d][positioning] Destroying client handle...
+[  10.471][d][dnd] Destroying client handle...
+[  10.471][d][commands] Destroying client handle...
+[  11.050][d][cplayer] Run command: quit, flags=73, args=[code="0"]
+[  12.732][d][libmpv_render] flushing shader cache
+[  12.744][d][implay] Destroying client handle...
+[  12.744][d][cplayer] Run command: quit, flags=64, args=[code="0"]
+[  12.744][d][main] Destroying client handle...
+[  12.744][d][cplayer] Run command: quit, flags=64, args=[code="0"]
+[  12.745][d][ao/wasapi] Uninit wasapi
+[  12.745][d][ao/wasapi] Thread Reset
+[  12.745][d][ao/wasapi] Thread Pause
+[  12.745][d][ao/wasapi] Thread shutdown
+[  12.753][d][ao/wasapi] Thread uninit done
+[  12.753][d][ao/wasapi] Thread return
+[  12.753][d][ao/wasapi] Uninit wasapi done
+[  12.753][d][ao/wasapi] Hotplug uninit

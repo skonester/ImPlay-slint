@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased: direct Slint video rendering
+
+- Render into Slint's displayed texture in `BeforeRendering`, using one GL
+  context and one framebuffer. This replaces the three-frame texture queue,
+  cross-context fence waits, and extra GPU blit with the direct approach used
+  by CedarApple.
+- Reset GL state before mpv renders, use physical pixel dimensions, and redraw
+  paused frames after resize. Render errors are reported instead of ignored.
+- Remove the forced 60 Hz clock, synthetic presentation reports, and automatic
+  `gpu-hq` profile. Untouched generated configurations are backed up and
+  migrated; custom configurations retain their settings.
+
 ## Milestone 10/26/26 (1.6.3): smooth UI during playback
 
 **The problem.** Clicking around the app while a video played could make the

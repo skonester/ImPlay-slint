@@ -30,8 +30,8 @@ fn Sink(comptime T: type) type {
     return ?*const fn (userdata: ?*anyopaque, items: [*]const T, count: usize) callconv(.c) void;
 }
 
-/// Mirrors implay_mpv_callbacks. `wakeup` runs on an mpv thread and `render_update` on the
-/// render thread; everything else runs inside implay_mpv_pump on the caller's thread.
+/// Mirrors implay_mpv_callbacks. `wakeup` and `render_update` can run on mpv threads;
+/// everything else runs inside implay_mpv_pump on the caller's thread.
 pub const Callbacks = extern struct {
     userdata: ?*anyopaque = null,
     wakeup: ?*const fn (userdata: ?*anyopaque) callconv(.c) void = null,
@@ -310,33 +310,32 @@ export fn implay_mpv_render_init(core: *Core, gl_load: GlLoadFn) Status {
 }
 
 export fn implay_mpv_render_free(core: *Core) void {
-    if (core.render_ctx) |ctx| c.mpv_render_context_free(ctx);
+    if (core.render_ctx) |ctx| {
+        c.mpv_render_context_set_update_callback(ctx, null, null);
+        c.mpv_render_context_free(ctx);
+    }
     core.render_ctx = null;
 }
 
 /// With `block`, waits until the frame's display time (up to video-timing-offset), which
 /// keeps A/V timing exact; only a dedicated render thread should do that.
-export fn implay_mpv_render(core: *Core, w: c_int, h: c_int, fbo: c_int, flip: bool, block: bool) void {
-    const ctx = core.render_ctx orelse return;
+export fn implay_mpv_render(core: *Core, w: c_int, h: c_int, fbo: c_int, flip: bool, block: bool) c_int {
+    const ctx = core.render_ctx orelse return c.MPV_ERROR_UNINITIALIZED;
     var flip_y: c_int = @intFromBool(flip);
     var block_for_target: c_int = @intFromBool(block);
-    var target: c.mpv_opengl_fbo = .{ .fbo = fbo, .w = w, .h = h, .internal_format = 0 };
+    var target: c.mpv_opengl_fbo = .{ .fbo = fbo, .w = w, .h = h, .internal_format = 0x8058 }; // GL_RGBA8
     var params = [_]c.mpv_render_param{
         .{ .type = c.MPV_RENDER_PARAM_OPENGL_FBO, .data = &target },
         .{ .type = c.MPV_RENDER_PARAM_FLIP_Y, .data = &flip_y },
         .{ .type = c.MPV_RENDER_PARAM_BLOCK_FOR_TARGET_TIME, .data = &block_for_target },
         .{ .type = c.MPV_RENDER_PARAM_INVALID, .data = null },
     };
-    _ = c.mpv_render_context_render(ctx, &params);
+    return c.mpv_render_context_render(ctx, &params);
 }
 
 export fn implay_mpv_want_render(core: *Core) bool {
     const ctx = core.render_ctx orelse return false;
     return (c.mpv_render_context_update(ctx) & c.MPV_RENDER_UPDATE_FRAME) != 0;
-}
-
-export fn implay_mpv_report_swap(core: *Core) void {
-    if (core.render_ctx) |ctx| c.mpv_render_context_report_swap(ctx);
 }
 
 // Errors

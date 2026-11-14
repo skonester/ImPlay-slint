@@ -1,6 +1,6 @@
 {
   "name": "implay-slint",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "private": true,
   "release": {
     "prerelease": true

@@ -75,12 +75,11 @@ jobs:
           # Extras the upstream CPack package shipped (see cmake/CreateCpackPackage.cmake), minus
           # ANGLE's libEGL/libGLESv2: Slint renders through WGL, and window.cpp prefers a bundled
           # libGLESv2.dll, which then fails with "Unable to load the OpenGL ES functions".
-          # The mpv build only supplies mpv.com (console launcher, renamed ImPlay.com) and the
-          # manual, so it doesn't need to match the libmpv version in the dev archive.
+          # Keep the console launcher and manual matched to the bundled libmpv dev archive.
           $extras = @(
             @{ File = "mpv.7z"
-               Url  = "https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20260924/mpv-x86_64-20260924-git-2a4eb8067c.7z"
-               Hash = "0d39c18086f9df02fbd087b18c8b30e7e328a79481bce83e57f86ab70d0e53bf" }
+               Url  = "https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20261111/mpv-x86_64-20261111-git-bcde6b93cc.7z"
+               Hash = "f259b5fd4b5c395617c948a4fadcdf55bba1c5282fb7c13e88626b3f71072baf" }
           )
           New-Item -ItemType Directory -Force extras | Out-Null
           foreach ($e in $extras) {

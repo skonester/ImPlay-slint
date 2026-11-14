@@ -16,7 +16,7 @@
   <br>
   <img alt="C++20" src="https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus">
   <img alt="Zig 0.16" src="https://img.shields.io/badge/Zig-0.16-F7A41D?logo=zig&logoColor=white">
-  <img alt="Slint 1.12" src="https://img.shields.io/badge/Slint-1.12-2379F4">
+  <img alt="Slint 1.17.1" src="https://img.shields.io/badge/Slint-1.17.1-2379F4">
   <img alt="Powered by libmpv" src="https://img.shields.io/badge/powered%20by-libmpv-691F69">
   <img alt="OpenGL" src="https://img.shields.io/badge/rendering-OpenGL-5586A4?logo=opengl&logoColor=white">
 </p>
@@ -79,13 +79,13 @@ YouTube and other web links play directly.
 
 All drawing goes through **OpenGL**. Slint draws the interface with OpenGL,
 and mpv draws each video frame into an OpenGL texture that Slint displays
-underneath the controls. OpenGL is the only GPU method mpv offers to programs
-that embed it and draw their own interface over the video, so ImPlay doesn't
-use Direct3D or Vulkan for drawing.
+underneath the controls. This integration uses libmpv's OpenGL render API.
 
-mpv draws on a thread of its own, separate from the interface. Clicking menus
-or dragging the seek bar never waits on the video, and the video never waits
-on the interface. The [1.6.3 changelog](CHANGELOG.md) explains how.
+mpv draws directly into that texture during Slint's `BeforeRendering` callback,
+using the same GL context as the interface. There is one video texture, with no
+intermediate frame queue, cross-context fence waits, or extra GPU copy. Frame
+callbacks request a redraw; mpv's render call does not wait for a future timestamp.
+Scaling uses mpv's normal defaults, with hardware decoding enabled when supported.
 
 ### Decoding the video: your GPU's video chip
 
@@ -138,8 +138,10 @@ You'll need:
 - Zig 0.16 or newer
 - Rust, to build Slint
 
-The libmpv development files come with the repository (`mpv-dev-*.7z`) and are
-unpacked automatically. The first configure also downloads Slint, {fmt} and
+The libmpv development files (DLL, import library and headers) come with the
+repository as `mpv-dev-x86_64-20261111-git-bcde6b93cc.7z` from the
+[20261111 Windows build](https://github.com/shinchiro/mpv-winbuild-cmake/releases/tag/20261111).
+CMake verifies its SHA-256 and unpacks it automatically. The first configure also downloads Slint, {fmt} and
 nlohmann/json, so it needs an internet connection.
 
 ```powershell

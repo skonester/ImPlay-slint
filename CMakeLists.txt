@@ -43,10 +43,13 @@ FetchContent_Declare(
 FetchContent_Declare(
   Slint
   GIT_REPOSITORY https://github.com/slint-ui/slint.git
-  GIT_TAG v1.12.1
+  GIT_TAG v1.17.1
   SOURCE_SUBDIR api/cpp
 )
 set(SLINT_FEATURE_RENDERER_FEMTOVG ON CACHE BOOL "" FORCE)
+# The C++ bindings exclude unstable WGPU image variants. Keep the Rust runtime
+# on the same OpenGL-only layout instead of inheriting an older WGPU cache value.
+set(SLINT_FEATURE_RENDERER_FEMTOVG_WGPU OFF CACHE BOOL "" FORCE)
 set(SLINT_FEATURE_RENDERER_SOFTWARE OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(fmt json Slint)
 
@@ -80,7 +83,7 @@ add_custom_command(
   OUTPUT ${IMPLAY_MPV_CORE_LIB}
   COMMAND ${ZIG_EXECUTABLE} build ${IMPLAY_ZIG_ARGS}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  DEPENDS ${CMAKE_SOURCE_DIR}/build.zig ${IMPLAY_ZIG_SOURCES}
+  DEPENDS ${CMAKE_SOURCE_DIR}/build.zig ${IMPLAY_ZIG_SOURCES} ${MPV_DEV_ARCHIVE}
   COMMENT "Building Zig mpv core"
   VERBATIM)
 add_custom_target(implay_mpv_core DEPENDS ${IMPLAY_MPV_CORE_LIB})
@@ -143,9 +146,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 )
 slint_target_sources(${PROJECT_NAME} ui/app-window.slint)
 if(WIN32)
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND_EXPAND_LISTS)
+  # A rebuilt DLL can leave its import library unchanged, so the executable may
+  # not relink. Refresh the runtime files on every build rather than only on link.
+  add_custom_target(implay_runtime ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    DEPENDS ${PROJECT_NAME}
+    COMMAND_EXPAND_LISTS
+    VERBATIM)
 endif()
 add_dependencies(${PROJECT_NAME} implay_mpv_core)
 if(USE_MPV_WIN_BUILD)

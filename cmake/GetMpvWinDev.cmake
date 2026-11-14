@@ -4,9 +4,11 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 function(get_mpv_win_dev name)
+  # Bundled from https://github.com/shinchiro/mpv-winbuild-cmake/releases/tag/20261111
+  set(MPV_DEV_ARCHIVE "${PROJECT_SOURCE_DIR}/mpv-dev-x86_64-20261111-git-bcde6b93cc.7z")
   ExternalProject_Add(${name}
-    URL ${PROJECT_SOURCE_DIR}/mpv-dev-x86_64-20260503-git-948c86d24c.7z
-    URL_HASH SHA256=2D88F4A6BD63A559814E6FD28A0D2E286EE381028A2D22EFA4452AFD4252000E
+    URL "${MPV_DEV_ARCHIVE}"
+    URL_HASH SHA256=273c079b11ea5575822f972756f4c9a71149a5c10130353abeb8586738938452
     DOWNLOAD_NO_PROGRESS ON
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -18,6 +20,7 @@ function(get_mpv_win_dev name)
   ExternalProject_Get_property(${name} BINARY_DIR)
   set(MPV_DEV_DIR ${BINARY_DIR})
 
+  set(MPV_DEV_ARCHIVE "${MPV_DEV_ARCHIVE}" PARENT_SCOPE)
   set(MPV_INCLUDE_DIRS ${MPV_DEV_DIR}/include PARENT_SCOPE)
   set(MPV_LIBRARY_DIRS ${MPV_DEV_DIR} PARENT_SCOPE)
   set(MPV_LIBRARIES mpv PARENT_SCOPE)

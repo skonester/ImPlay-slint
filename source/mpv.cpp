@@ -64,11 +64,11 @@ void Mpv::requestLog(const char *level, LogHandler handler) {
 
 int Mpv::loadConfig(const char *path) { return implay_mpv_load_config_file(core, path); }
 
-void Mpv::render(int w, int h, int fbo, bool flip, bool block) { implay_mpv_render(core, w, h, fbo, flip, block); }
+int Mpv::render(int w, int h, int fbo, bool flip, bool block) {
+  return implay_mpv_render(core, w, h, fbo, flip, block);
+}
 
 bool Mpv::wantRender() { return implay_mpv_want_render(core); }
-
-void Mpv::reportSwap() { implay_mpv_report_swap(core); }
 
 void Mpv::init(int64_t wid) {
   if (auto status = implay_mpv_init(core, wid); status != IMPLAY_MPV_OK)
